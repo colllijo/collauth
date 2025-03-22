@@ -12,11 +12,18 @@ set(INCLUDE_DIR "include")
 
 set(SOURCES
   "${SOURCE_DIR}/main.cpp"
+  "${SOURCE_DIR}/events/EpollPoller.cpp"
+  "${SOURCE_DIR}/events/SelectPoller.cpp"
   "${SOURCE_DIR}/networking/Socket.cpp"
+  "${SOURCE_DIR}/networking/WebServer.cpp"
 )
 
 set(HEADERS
+  "${INCLUDE_DIR}/events/EventPoller.hpp"
+  "${INCLUDE_DIR}/events/EpollPoller.hpp"
+  "${INCLUDE_DIR}/events/SelectPoller.hpp"
   "${INCLUDE_DIR}/networking/Socket.hpp"
+  "${INCLUDE_DIR}/networking/WebServer.hpp"
 )
 
 include_directories(${INCLUDE_DIR})
