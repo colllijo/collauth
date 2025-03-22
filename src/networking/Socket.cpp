@@ -1,9 +1,12 @@
 #include "networking/Socket.hpp"
 
 #include <arpa/inet.h>
+#include <fcntl.h>
 #include <unistd.h>
 
-#include <cstddef>
+#include <array>
+#include <cstring>
+#include <iostream>
 #include <stdexcept>
 
 Socket::Socket(int domain, int type, int protocol) : domain(domain)
@@ -13,31 +16,41 @@ Socket::Socket(int domain, int type, int protocol) : domain(domain)
 		throw std::runtime_error("Invalid domain");
 	}
 
-	fileDescriptor = ::socket(domain, type, protocol);
-
-	if (fileDescriptor < 0)
+	sockfd = ::socket(domain, type, protocol);
+	if (sockfd == -1)
 	{
-		throw std::runtime_error("Failed to create socket");
-	}
-}
-
-Socket::Socket(int domain, int fileDescriptor) : domain(domain), fileDescriptor(fileDescriptor)
-{
-	if (fileDescriptor < 0)
-	{
-		throw std::runtime_error("Failed to create socket");
+		throw std::runtime_error("Failed to create socket: " + std::string(strerror(errno)));
 	}
 }
 
 Socket::~Socket()
 {
-	if (fileDescriptor != -1)
+	try {
+		std::cout << "Closing socket " << sockfd << std::endl;
+		close();
+	}
+	catch (const std::exception& e)
 	{
-		::close(fileDescriptor);
+		std::cerr << "Failed to close socket: " << e.what() << std::endl;
 	}
 }
 
-void Socket::bind(const std::string& address, int port) const
+void Socket::setNonBlocking(int sockfd)
+{
+	int flags = ::fcntl(sockfd, F_GETFL, 0);
+
+	if (flags == -1 || ::fcntl(sockfd, F_SETFL, flags | O_NONBLOCK) == -1)
+	{
+		throw std::runtime_error("Failed to set socket flags: " + std::string(strerror(errno)));
+	}
+}
+
+void Socket::setNonBlocking()
+{
+	setNonBlocking(sockfd);
+}
+
+void Socket::bind(const std::string& address, int port)
 {
 	switch (domain)
 	{
@@ -50,53 +63,73 @@ void Socket::bind(const std::string& address, int port) const
 	}
 }
 
-void Socket::listen(int backlog) const
+void Socket::listen(int backlog)
 {
-	if (::listen(fileDescriptor, backlog) < 0)
+	if (::listen(sockfd, backlog) < 0)
 	{
-		throw std::runtime_error("Failed to listen on socket");
+		throw std::runtime_error("Failed to listen on socket: " + std::string(strerror(errno)));
 	}
 }
 
-Socket Socket::accept(sockaddr_in* client_addr) const
+int Socket::accept(sockaddr_in* client_addr)
 {
 	socklen_t client_addr_len = sizeof(*client_addr);
-	int client_fd = ::accept(fileDescriptor, (struct sockaddr*)client_addr, &client_addr_len);
+	int client_fd = ::accept(sockfd, reinterpret_cast<sockaddr*>(client_addr), &client_addr_len);
 
-	if (client_fd < 0)
+	if (client_fd == -1)
 	{
-		throw std::runtime_error("Failed to accept connection");
+		throw std::runtime_error("Failed to accept connection: " + std::string(strerror(errno)));
 	}
 
-	return Socket(domain, client_fd);
+	return client_fd;
 }
 
-void Socket::send(const std::string& data) const
+void Socket::send(int sockfd, const std::string& data)
 {
-	if (::send(fileDescriptor, data.c_str(), data.size(), 0) < 0)
+	if (::send(sockfd, data.c_str(), data.size(), 0) < 0)
 	{
-		throw std::runtime_error("Failed to send data");
+		throw std::runtime_error("Failed to send data: " + std::string(strerror(errno)));
 	}
 }
 
-bool Socket::recv(std::string& buffer, int bufferSize) const
+void Socket::send(const std::string& data)
 {
-	char* data = new char[bufferSize];
-	long bytes_received = ::recv(fileDescriptor, data, bufferSize, 0);
-
-	if (bytes_received < 0)
-	{
-		delete[] data;
-		throw std::runtime_error("Failed to receive data");
-	}
-
-	buffer = std::string(data, bytes_received);
-	delete[] data;
-
-	return bytes_received > 0;
+	send(sockfd, data);
 }
 
-void Socket::bindIPv4(const std::string& address, int port) const
+ssize_t Socket::recv(int sockfd, std::array<char, BUFFER_SIZE>& buffer)
+{
+	return ::recv(sockfd, buffer.data(), buffer.size(), 0);
+}
+
+ssize_t Socket::recv(std::array<char, BUFFER_SIZE>& buffer)
+{
+	return recv(sockfd, buffer);
+}
+
+void Socket::close(int sockfd)
+{
+	if (sockfd != -1)
+	{
+		if (::close(sockfd) < 0)
+		{
+			throw std::runtime_error("Failed to close socket: " + std::string(strerror(errno)));
+		}
+	}
+}
+
+void Socket::close()
+{
+	close(sockfd);
+	sockfd = -1;
+}
+
+int Socket::getFileDescriptor() const
+{
+	return sockfd;
+}
+
+void Socket::bindIPv4(const std::string& address, int port)
 {
 	struct sockaddr_in server_addr = {};
 	server_addr.sin_family = AF_INET;
@@ -104,13 +137,13 @@ void Socket::bindIPv4(const std::string& address, int port) const
 
 	inet_pton(AF_INET, address.c_str(), &server_addr.sin_addr);
 
-	if (::bind(fileDescriptor, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0)
+	if (::bind(sockfd, reinterpret_cast<const sockaddr*>(&server_addr), sizeof(server_addr)) == -1)
 	{
-		throw std::runtime_error("Failed to bind socket");
+		throw std::runtime_error("Failed to bind socket: " + std::string(strerror(errno)));
 	}
 }
 
-void Socket::bindIPv6(const std::string& address, int port) const
+void Socket::bindIPv6(const std::string& address, int port)
 {
 	struct sockaddr_in6 server_addr = {};
 	server_addr.sin6_family = AF_INET6;
@@ -118,8 +151,8 @@ void Socket::bindIPv6(const std::string& address, int port) const
 
 	inet_pton(AF_INET6, address.c_str(), &server_addr.sin6_addr);
 
-	if (::bind(fileDescriptor, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0)
+	if (::bind(sockfd, reinterpret_cast<const sockaddr*>(&server_addr), sizeof(server_addr)) == -1)
 	{
-		throw std::runtime_error("Failed to bind socket");
+		throw std::runtime_error("Failed to bind socket: " + std::string(strerror(errno)));
 	}
 }

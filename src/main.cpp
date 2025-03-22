@@ -1,26 +1,32 @@
+#include <cerrno>
+#include <csignal>
+#include <cstdlib>
 #include <iostream>
-#include "networking/Socket.hpp"
+
+#include "events/EpollPoller.hpp"
+#include "events/SelectPoller.hpp"
+#include "networking/WebServer.hpp"
+
+constexpr int PORT = 8080;
 
 int main()
 {
-	Socket server(AF_INET, SOCK_STREAM, 0);
-	server.bind("0.0.0.0", 8080);
-	server.listen();
-
-	Socket client = server.accept();
-
-	std::string buffer;
-	while (client.recv(buffer))
+	try
 	{
-		std::cout << buffer;
+#ifdef USE_EPOLL
+		std::unique_ptr<EventPoller> poller = std::make_unique<EpollPoller>();
+#else
+		std::unique_ptr<EventPoller> poller = std::make_unique<SelectPoller>();
+#endif
+
+		WebServer server("0.0.0.0", PORT, std::move(poller));
+		server.run();
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << "Server error: " << e.what() << std::endl;
+		return EXIT_FAILURE;
 	}
 
-	std::string response = "HTTP/1.1 200 OK\r\n";
-    response += "Content-Type: text/plain\r\n";
-    response += "Connection: close\r\n";
-    response += "\r\n";
-    response += "Hello, world!";
-	server.send(response);
-
-	return 0;
+	return EXIT_SUCCESS;
 }
