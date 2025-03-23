@@ -6,11 +6,21 @@
 #include "events/EpollPoller.hpp"
 #include "events/SelectPoller.hpp"
 #include "networking/WebServer.hpp"
+#include "signal/SignalHandler.hpp"
 
 constexpr int PORT = 8080;
 
+// void signalHandler(int signal)
+// {
+// 	std::cout << "Received signal " << signal << ". Stopping server..." << std::endl;
+// }
+
 int main()
 {
+	SignalHandler& signalHandler = *SignalHandler::getInstance();
+
+	// std::signal(SIGINT, signalHandler);
+
 	try
 	{
 #ifdef USE_EPOLL
@@ -20,6 +30,9 @@ int main()
 #endif
 
 		WebServer server("0.0.0.0", PORT, std::move(poller));
+
+		signalHandler.bind(SIGINT, [&server](int) { server.stop(); });
+
 		server.run();
 	}
 	catch (const std::exception& e)

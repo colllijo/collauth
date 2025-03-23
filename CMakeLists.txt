@@ -16,6 +16,7 @@ set(SOURCES
   "${SOURCE_DIR}/events/SelectPoller.cpp"
   "${SOURCE_DIR}/networking/Socket.cpp"
   "${SOURCE_DIR}/networking/WebServer.cpp"
+  "${SOURCE_DIR}/signal/SignalHandler.cpp"
 )
 
 set(HEADERS
@@ -24,6 +25,7 @@ set(HEADERS
   "${INCLUDE_DIR}/events/SelectPoller.hpp"
   "${INCLUDE_DIR}/networking/Socket.hpp"
   "${INCLUDE_DIR}/networking/WebServer.hpp"
+  "${INCLUDE_DIR}/signal/SignalHandler.hpp"
 )
 
 include_directories(${INCLUDE_DIR})
