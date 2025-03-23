@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <memory>
 #include <string>
 
@@ -13,10 +14,13 @@ public:
 	~WebServer();
 
 	void run();
+	void stop();
 
 private:
 	std::unique_ptr<EventPoller> poller;
 	Socket serverSocket;
+
+	std::atomic<bool> stopFlag;
 
 	void handleClient(int client);
 

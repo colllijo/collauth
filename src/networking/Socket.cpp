@@ -6,7 +6,6 @@
 
 #include <array>
 #include <cstring>
-#include <iostream>
 #include <stdexcept>
 
 Socket::Socket(int domain, int type, int protocol) : domain(domain)
@@ -25,14 +24,7 @@ Socket::Socket(int domain, int type, int protocol) : domain(domain)
 
 Socket::~Socket()
 {
-	try {
-		std::cout << "Closing socket " << sockfd << std::endl;
-		close();
-	}
-	catch (const std::exception& e)
-	{
-		std::cerr << "Failed to close socket: " << e.what() << std::endl;
-	}
+	close();
 }
 
 void Socket::setNonBlocking(int sockfd)
