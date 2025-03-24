@@ -2,8 +2,9 @@
 
 #include <csignal>
 #include <cstring>
-#include <iostream>
-#include <sstream>
+
+#include "http/HttpRequest.hpp"
+#include "http/HttpResponse.hpp"
 
 WebServer::WebServer(const std::string& address, int port, std::unique_ptr<EventPoller> poller) : poller(std::move(poller)), serverSocket(AF_INET, SOCK_STREAM, 0), stopFlag(false)
 {
@@ -45,14 +46,15 @@ void WebServer::stop()
 
 void WebServer::handleClient(int client)
 {
+	std::string data;
+
 	std::array<char, BUFFER_SIZE> buffer{};
 	ssize_t bytesRead;
 
 	while ((bytesRead = Socket::recv(client, buffer)) > 0)
 	{
-		std::cout << buffer.data();
+		data.append(buffer.data(), bytesRead);
 	}
-	std::cout << "\n";
 
 	if (bytesRead == -1 && errno != EAGAIN)
 	{
@@ -62,21 +64,20 @@ void WebServer::handleClient(int client)
 	else if (bytesRead == 0)
 	{
 		Socket::close(client);
+		return;
+	}
+
+	HttpRequest request;
+	if (request.parse(data))
+	{
+		std::string response = HttpResponse::generateResponse(request);
+		Socket::send(client, response);
 	}
 	else
 	{
-		std::string response = buildResponse();
+		std::string response = "HTTP/1.1 400 Bad Request\r\n\r\n";
 		Socket::send(client, response);
 	}
-}
 
-std::string WebServer::buildResponse() const
-{
-	std::ostringstream response;
-	response << "HTTP/1.1 200 OK\r\n"
-			 << "Content-Type: text/plain\r\n"
-			 << "Content-Length: 13\r\n"
-			 << "\r\n"
-			 << "Hello, World!";
-	return response.str();
+	Socket::close(client);
 }
