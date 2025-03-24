@@ -23,6 +23,4 @@ private:
 	std::atomic<bool> stopFlag;
 
 	void handleClient(int client);
-
-	std::string buildResponse() const;
 };
