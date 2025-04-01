@@ -5,6 +5,7 @@
 
 #include "http/HttpRequest.hpp"
 #include "http/HttpResponse.hpp"
+#include "logging/Logger.hpp"
 #include "webserver/Middleware.hpp"
 
 WebServer::WebServer(const std::string& address, int port, std::unique_ptr<EventPoller> poller) : poller(std::move(poller)), serverSocket(AF_INET, SOCK_STREAM, 0), stopFlag(false)
