@@ -5,6 +5,7 @@
 #include <string>
 
 #include "events/EventPoller.hpp"
+#include "networking/Router.hpp"
 #include "networking/Socket.hpp"
 
 class WebServer
@@ -16,11 +17,15 @@ public:
 	void run();
 	void stop();
 
+	void registerRoute(HttpMethod method, const std::string& path, RouteHandler handler);
+
 private:
 	std::unique_ptr<EventPoller> poller;
 	Socket serverSocket;
 
 	std::atomic<bool> stopFlag;
+
+	Router router;
 
 	void handleClient(int client);
 };

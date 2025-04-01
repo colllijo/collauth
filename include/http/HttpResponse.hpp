@@ -1,8 +1,18 @@
 #pragma once
 
-#include "http/HttpRequest.hpp"
+#include <string>
+#include <unordered_map>
+
+#include "http/HttpStatus.hpp"
+
 class HttpResponse
 {
 public:
-	static std::string generateResponse(const HttpRequest& request);
+	HttpStatus status;
+	std::unordered_map<std::string, std::string> headers;
+	std::string body;
+
+	HttpResponse(HttpStatus status = HttpStatus::OK);
+
+	std::string build() const;
 };

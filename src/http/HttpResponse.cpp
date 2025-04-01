@@ -1,15 +1,19 @@
 #include "http/HttpResponse.hpp"
+#include "http/HttpStatus.hpp"
 
-std::string HttpResponse::generateResponse(const HttpRequest&)
+HttpResponse::HttpResponse(HttpStatus status) : status(status) {}
+
+std::string HttpResponse::build() const
 {
-	std::string response;
+	std::string response = "HTTP/1.1 " + statusToString(status) + "\r\n";
+	for (const auto& [key, value] : headers)
+	{
+		response += key + ": " + value + "\r\n";
+	}
 
-	response += "HTTP/1.1 200 OK\r\n";
-	response += "Content-Type: text/plain\r\n";
-	response += "Connection: close\r\n";
-	response += "Content-Length: 13\r\n";
+	response += "Content-Length: " + std::to_string(body.size()) + "\r\n";
 	response += "\r\n";
-	response += "Hello, World!";
+	response += body;
 
 	return response;
 }

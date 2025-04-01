@@ -20,8 +20,6 @@ public:
 	void reset();
 	bool parse(const std::string& request);
 	bool parseRequestLine(const std::string& requestLine);
-	bool parseHeaders(const std::string& headers);
+	bool parseHeader(const std::string& header);
 	void parseBody(const std::string& body);
-
-private:
 };

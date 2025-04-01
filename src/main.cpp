@@ -30,8 +30,22 @@ int main()
 #endif
 
 		WebServer server("0.0.0.0", PORT, std::move(poller));
-
 		signalHandler.bind(SIGINT, [&server](int) { server.stop(); });
+
+		server.registerRoute(HttpMethod::GET, "/", [](const HttpRequest&, HttpResponse& response) {
+			response.headers["Content-Type"] = "text/plain";
+			response.body = "Hello, world!";
+
+			return response;
+		});
+
+		server.registerRoute(HttpMethod::POST, "/echo", [](const HttpRequest& request, HttpResponse& response) {
+			if (request.headers.contains("Content-Type"))
+			{
+				response.headers["Content-Type"] = request.headers.at("Content-Type");
+			}
+			response.body = request.body;
+		});
 
 		server.run();
 	}
