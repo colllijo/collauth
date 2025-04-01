@@ -44,6 +44,11 @@ void WebServer::stop()
 	stopFlag.store(true);
 }
 
+void WebServer::registerRoute(HttpMethod method, const std::string& path, RouteHandler handler)
+{
+	router.registerRoute(method, path, handler);
+}
+
 void WebServer::handleClient(int client)
 {
 	std::string data;
@@ -70,13 +75,17 @@ void WebServer::handleClient(int client)
 	HttpRequest request;
 	if (request.parse(data))
 	{
-		std::string response = HttpResponse::generateResponse(request);
-		Socket::send(client, response);
+		HttpResponse response(HttpStatus::OK);
+		response.headers["Server"] = "CollServer";
+		response.headers["Content-Type"] = "text/plain";
+
+		router.handleRequest(request, response);
+		Socket::send(client, response.build());
 	}
 	else
 	{
-		std::string response = "HTTP/1.1 400 Bad Request\r\n\r\n";
-		Socket::send(client, response);
+		HttpResponse response(HttpStatus::BAD_REQUEST);
+		Socket::send(client, response.build());
 	}
 
 	Socket::close(client);

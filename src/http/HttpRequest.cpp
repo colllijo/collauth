@@ -29,11 +29,10 @@ bool HttpRequest::parse(const std::string& request)
 		return false;
 	}
 
-	while (std::getline(iss, line) && !line.empty())
+	while (std::getline(iss, line) && line != "\r")
 	{
-		if (!parseHeaders(line))
+		if (!parseHeader(line))
 		{
-			std::cout << "Bad header: '" << line << "'" << std::endl;
 			return false;
 		}
 	}
@@ -67,18 +66,28 @@ bool HttpRequest::parseRequestLine(const std::string& requestLine)
 	return method != HttpMethod::UNKNOWN && version != HttpVersion::UNKNOWN;
 }
 
-bool HttpRequest::parseHeaders(const std::string& headersStr)
+bool HttpRequest::parseHeader(const std::string& headerStr)
 {
-	std::istringstream iss(headersStr);
-	std::string key, value;
+	size_t pos = headerStr.find(":");
+	if (pos == std::string::npos || pos == 0 || pos == headerStr.size() - 1)
+	{
+		return false;
+	}
 
-	if (!(std::getline(iss, key, ':') && std::getline(iss, value)))
+	std::string key = headerStr.substr(0, pos);
+	std::string value = headerStr.substr(pos + 1);
+
+	key.erase(0, key.find_first_not_of(" \t"));
+	key.erase(key.find_last_not_of(" \t") + 1);
+	value.erase(0, value.find_first_not_of(" \t"));
+	value.erase(value.find_last_not_of(" \t") + 1);
+
+	if (key.empty() || value.empty())
 	{
 		return false;
 	}
 
 	headers[key] = value;
-
 	return true;
 }
 
