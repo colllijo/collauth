@@ -9,6 +9,7 @@
 
 WebServer::WebServer(const std::string& address, int port, std::unique_ptr<EventPoller> poller) : poller(std::move(poller)), serverSocket(AF_INET, SOCK_STREAM, 0), stopFlag(false)
 {
+	serverSocket.setSocketOption(SO_REUSEADDR, true);
 	serverSocket.setNonBlocking();
 	serverSocket.bind(address, port);
 	serverSocket.listen();

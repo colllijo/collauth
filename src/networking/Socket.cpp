@@ -27,6 +27,19 @@ Socket::~Socket()
 	close();
 }
 
+void Socket::setSocketOption(int sockfd, int option, int value)
+{
+	if (::setsockopt(sockfd, SOL_SOCKET, option, &value, sizeof(value)) < 0)
+	{
+		throw std::runtime_error("Failed to set socket option: " + std::string(strerror(errno)));
+	}
+}
+
+void Socket::setSocketOption(int option, int value)
+{
+	setSocketOption(sockfd, option, value);
+}
+
 void Socket::setNonBlocking(int sockfd)
 {
 	int flags = ::fcntl(sockfd, F_GETFL, 0);

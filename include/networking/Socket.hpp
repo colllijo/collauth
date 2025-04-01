@@ -17,6 +17,9 @@ public:
 	static void setNonBlocking(int sockfd);
 	void setNonBlocking();
 
+	static void setSocketOption(int sockfd, int option, int value);
+	void setSocketOption(int option, int value);
+
 	void bind(const std::string& address, int port);
 	void listen(int backlog = SOMAXCONN);
 
