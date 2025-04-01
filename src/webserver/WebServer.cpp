@@ -5,6 +5,7 @@
 
 #include "http/HttpRequest.hpp"
 #include "http/HttpResponse.hpp"
+#include "webserver/Middleware.hpp"
 
 WebServer::WebServer(const std::string& address, int port, std::unique_ptr<EventPoller> poller) : poller(std::move(poller)), serverSocket(AF_INET, SOCK_STREAM, 0), stopFlag(false)
 {
@@ -13,6 +14,9 @@ WebServer::WebServer(const std::string& address, int port, std::unique_ptr<Event
 	serverSocket.listen();
 
 	this->poller->add(serverSocket.getFileDescriptor());
+
+	middlewareManager.addMiddleware(errorHandlingMiddleware);
+	middlewareManager.addMiddleware(loggingMiddleware);
 }
 
 WebServer::~WebServer() = default;
@@ -42,6 +46,11 @@ void WebServer::run()
 void WebServer::stop()
 {
 	stopFlag.store(true);
+}
+
+void WebServer::registerMiddleware(MiddlewareFunc middleware)
+{
+	middlewareManager.addMiddleware(middleware);
 }
 
 void WebServer::registerRoute(HttpMethod method, const std::string& path, RouteHandler handler)
@@ -79,7 +88,7 @@ void WebServer::handleClient(int client)
 		response.headers["Server"] = "CollServer";
 		response.headers["Content-Type"] = "text/plain";
 
-		router.handleRequest(request, response);
+		middlewareManager.execute(request, response, [&]() { router.handleRequest(request, response); });
 		Socket::send(client, response.build());
 	}
 	else

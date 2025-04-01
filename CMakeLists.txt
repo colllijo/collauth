@@ -21,6 +21,8 @@ set(SOURCES
   "${SOURCE_DIR}/http/HttpVersion.cpp"
   "${SOURCE_DIR}/networking/Socket.cpp"
   "${SOURCE_DIR}/signal/SignalHandler.cpp"
+  "${SOURCE_DIR}/webserver/Middleware.cpp"
+  "${SOURCE_DIR}/webserver/MiddlewareManager.cpp"
   "${SOURCE_DIR}/webserver/Router.cpp"
   "${SOURCE_DIR}/webserver/WebServer.cpp"
 )
@@ -36,6 +38,8 @@ set(HEADERS
   "${INCLUDE_DIR}/http/HttpVersion.hpp"
   "${INCLUDE_DIR}/networking/Socket.hpp"
   "${INCLUDE_DIR}/signal/SignalHandler.hpp"
+  "${INCLUDE_DIR}/webserver/Middleware.hpp"
+  "${INCLUDE_DIR}/webserver/MiddlewareManager.hpp"
   "${INCLUDE_DIR}/webserver/Router.hpp"
   "${INCLUDE_DIR}/webserver/WebServer.hpp"
 )

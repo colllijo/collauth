@@ -5,6 +5,7 @@
 #include <string>
 
 #include "events/EventPoller.hpp"
+#include "webserver/MiddlewareManager.hpp"
 #include "webserver/Router.hpp"
 #include "networking/Socket.hpp"
 
@@ -17,6 +18,7 @@ public:
 	void run();
 	void stop();
 
+	void registerMiddleware(MiddlewareFunc middleware);
 	void registerRoute(HttpMethod method, const std::string& path, RouteHandler handler);
 
 private:
@@ -26,6 +28,7 @@ private:
 	std::atomic<bool> stopFlag;
 
 	Router router;
+	MiddlewareManager middlewareManager;
 
 	void handleClient(int client);
 };

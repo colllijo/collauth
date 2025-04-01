@@ -15,3 +15,4 @@ enum class HttpMethod
 };
 
 HttpMethod parseHttpMethod(const std::string& method);
+std::string httpMethodToString(HttpMethod method);

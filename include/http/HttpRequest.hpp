@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <string>
 #include <unordered_map>
 
@@ -19,6 +20,19 @@ public:
 
 	void reset();
 	bool parse(const std::string& request);
+
+	HttpMethod getMethod() const;
+
+	std::string getPath() const;
+
+	HttpVersion getVersion() const;
+
+	std::unordered_map<std::string, std::string> getHeaders() const;
+	std::optional<std::string> getHeader(const std::string& name) const;
+
+	std::string getBody() const;
+
+private:
 	bool parseRequestLine(const std::string& requestLine);
 	bool parseHeader(const std::string& header);
 	void parseBody(const std::string& body);
