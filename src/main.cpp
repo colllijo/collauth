@@ -5,7 +5,7 @@
 
 #include "events/EpollPoller.hpp"
 #include "events/SelectPoller.hpp"
-#include "networking/WebServer.hpp"
+#include "webserver/WebServer.hpp"
 #include "signal/SignalHandler.hpp"
 
 constexpr int PORT = 8080;

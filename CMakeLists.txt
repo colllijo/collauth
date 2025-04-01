@@ -19,10 +19,10 @@ set(SOURCES
   "${SOURCE_DIR}/http/HttpResponse.cpp"
   "${SOURCE_DIR}/http/HttpRequest.cpp"
   "${SOURCE_DIR}/http/HttpVersion.cpp"
-  "${SOURCE_DIR}/networking/Router.cpp"
   "${SOURCE_DIR}/networking/Socket.cpp"
-  "${SOURCE_DIR}/networking/WebServer.cpp"
   "${SOURCE_DIR}/signal/SignalHandler.cpp"
+  "${SOURCE_DIR}/webserver/Router.cpp"
+  "${SOURCE_DIR}/webserver/WebServer.cpp"
 )
 
 set(HEADERS
@@ -34,10 +34,10 @@ set(HEADERS
   "${INCLUDE_DIR}/http/HttpResponse.hpp"
   "${INCLUDE_DIR}/http/HttpRequest.hpp"
   "${INCLUDE_DIR}/http/HttpVersion.hpp"
-  "${INCLUDE_DIR}/networking/Router.hpp"
   "${INCLUDE_DIR}/networking/Socket.hpp"
-  "${INCLUDE_DIR}/networking/WebServer.hpp"
   "${INCLUDE_DIR}/signal/SignalHandler.hpp"
+  "${INCLUDE_DIR}/webserver/Router.hpp"
+  "${INCLUDE_DIR}/webserver/WebServer.hpp"
 )
 
 include_directories(${INCLUDE_DIR})
