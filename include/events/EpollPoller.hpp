@@ -18,7 +18,6 @@ public:
 	~EpollPoller() override;
 
 	void add(int fd) override;
-	void modify(int fd) override;
 	void remove(int fd) override;
 
 	std::vector<int> wait() const override;

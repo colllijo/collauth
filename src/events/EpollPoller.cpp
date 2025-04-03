@@ -36,18 +36,6 @@ void EpollPoller::add(int fd)
 	}
 }
 
-void EpollPoller::modify(int fd)
-{
-	struct epoll_event event{};
-	event.events = EPOLLIN;
-	event.data.fd = fd;
-
-	if (epoll_ctl(epollfd, EPOLL_CTL_MOD, fd, &event) == -1)
-	{
-		throw std::runtime_error("Failed to modify file descriptor in epoll instance: " + std::string(strerror(errno)));
-	}
-}
-
 void EpollPoller::remove(int fd)
 {
 	epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, nullptr);
