@@ -19,7 +19,7 @@ public:
 		ERROR,
 		FATAL
 	};
-	
+
 	template <typename... Args>
 	struct trace
 	{
@@ -28,7 +28,7 @@ public:
 			std::lock_guard<std::mutex> lock(logMutex);
 
 			std::string logMessage = std::format("[{}] [{}] [{}:{} ({})]: {}", getCurrentTime(), toString(Level::TRACE), getRelativePath(location.file_name()), location.line(),
-												getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
+												 getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
 
 			std::cout << logMessage << "\n";
 		}
@@ -36,7 +36,7 @@ public:
 
 	template <typename... Args>
 	trace(const std::string& message, Args&&...) -> trace<Args...>;
-	
+
 	template <typename... Args>
 	struct debug
 	{
@@ -45,7 +45,7 @@ public:
 			std::lock_guard<std::mutex> lock(logMutex);
 
 			std::string logMessage = std::format("[{}] [{}] [{}:{} ({})]: {}", getCurrentTime(), toString(Level::DEBUG), getRelativePath(location.file_name()), location.line(),
-												getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
+												 getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
 
 			std::cout << logMessage << "\n";
 		}
@@ -62,7 +62,7 @@ public:
 			std::lock_guard<std::mutex> lock(logMutex);
 
 			std::string logMessage = std::format("[{}] [{}] [{}:{} ({})]: {}", getCurrentTime(), toString(Level::INFO), getRelativePath(location.file_name()), location.line(),
-												getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
+												 getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
 
 			std::cout << logMessage << "\n";
 		}
@@ -70,7 +70,7 @@ public:
 
 	template <typename... Args>
 	log(const std::string& message, Args&&...) -> log<Args...>;
-	
+
 	template <typename... Args>
 	struct warning
 	{
@@ -79,15 +79,15 @@ public:
 			std::lock_guard<std::mutex> lock(logMutex);
 
 			std::string logMessage = std::format("[{}] [{}] [{}:{} ({})]: {}", getCurrentTime(), toString(Level::WARNING), getRelativePath(location.file_name()), location.line(),
-												getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
+												 getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
 
-			std::cout << logMessage << "\n";
+			std::cerr << logMessage << "\n";
 		}
 	};
 
 	template <typename... Args>
 	warning(const std::string& message, Args&&...) -> warning<Args...>;
-	
+
 	template <typename... Args>
 	struct error
 	{
@@ -96,15 +96,15 @@ public:
 			std::lock_guard<std::mutex> lock(logMutex);
 
 			std::string logMessage = std::format("[{}] [{}] [{}:{} ({})]: {}", getCurrentTime(), toString(Level::ERROR), getRelativePath(location.file_name()), location.line(),
-												getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
+												 getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
 
-			std::cout << logMessage << "\n";
+			std::cerr << logMessage << "\n";
 		}
 	};
 
 	template <typename... Args>
 	error(const std::string& message, Args&&...) -> error<Args...>;
-	
+
 	template <typename... Args>
 	struct fatal
 	{
@@ -113,9 +113,9 @@ public:
 			std::lock_guard<std::mutex> lock(logMutex);
 
 			std::string logMessage = std::format("[{}] [{}] [{}:{} ({})]: {}", getCurrentTime(), toString(Level::FATAL), getRelativePath(location.file_name()), location.line(),
-												getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
+												 getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
 
-			std::cout << logMessage << "\n";
+			std::cerr << logMessage << "\n";
 		}
 	};
 

@@ -1,7 +1,8 @@
 #include "http/HttpRequest.hpp"
 
-#include <iostream>
 #include <sstream>
+
+#include "logging/Logger.hpp"
 
 HttpRequest::HttpRequest() : method(HttpMethod::UNKNOWN), version(HttpVersion::UNKNOWN) {}
 
@@ -58,7 +59,7 @@ bool HttpRequest::parse(const std::string& request)
 
 	if (!std::getline(iss, line) || !parseRequestLine(line))
 	{
-		std::cout << "Bad request line: " << line << std::endl;
+		Logger::error("Bad request line: {}", line);
 		return false;
 	}
 
