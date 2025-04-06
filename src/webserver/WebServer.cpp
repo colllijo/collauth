@@ -2,6 +2,7 @@
 
 #include <csignal>
 #include <cstring>
+#include <memory>
 
 #include "http/HttpRequest.hpp"
 #include "http/HttpResponse.hpp"
@@ -21,7 +22,16 @@ WebServer::WebServer(const std::string& address, int port, std::unique_ptr<Event
 	middlewareManager.addMiddleware(loggingMiddleware);
 }
 
-WebServer::~WebServer() = default;
+WebServer::~WebServer()
+{
+	this->poller->remove(serverSocket.getFileDescriptor());
+	for (const auto& [fd, connection] : connections)
+	{
+		this->poller->remove(fd);
+		Socket::close(fd);
+	}
+	connections.clear();
+};
 
 void WebServer::run()
 {
@@ -33,9 +43,9 @@ void WebServer::run()
 		{
 			if (fd == serverSocket.getFileDescriptor())
 			{
-				int client = serverSocket.accept();
-				Socket::setNonBlocking(client);
-				poller->add(client);
+				int clientFd = serverSocket.accept();
+
+				addConnection(clientFd);
 			}
 			else
 			{
@@ -60,27 +70,44 @@ void WebServer::registerRoute(HttpMethod method, const std::string& path, RouteH
 	router.registerRoute(method, path, handler);
 }
 
+void WebServer::addConnection(int fd)
+{
+	connections[fd] = std::make_shared<Connection>(fd);
+	poller->add(fd);
+}
+
+void WebServer::removeConnection(int fd)
+{
+	connections.erase(fd);
+	poller->remove(fd);
+}
+
 void WebServer::handleClient(int client)
 {
-	std::string data = Socket::receive(client);
-
-	Logger::log("Received data: {}", data);
-
-	HttpRequest request;
-	if (request.parse(data))
+	if (!connections.contains(client))
 	{
+		Logger::debug("Client not found: {}", client);
+		return;
+	}
+
+	std::shared_ptr<Connection> connection = connections.at(client);
+	if (!connection->handleRead())
+	{
+		removeConnection(client);
+		return;
+	}
+
+	if (connection->isRequestReady())
+	{
+		HttpRequest request = connection->getRequest();
+
 		HttpResponse response(HttpStatus::OK);
 		response.headers["Server"] = "CollServer";
 		response.headers["Content-Type"] = "text/plain";
 
 		middlewareManager.execute(request, response, [&]() { router.handleRequest(request, response); });
 		Socket::send(client, response.build());
-	}
-	else
-	{
-		HttpResponse response(HttpStatus::BAD_REQUEST);
-		Socket::send(client, response.build());
-	}
 
-	Socket::close(client);
+		removeConnection(client);
+	}
 }

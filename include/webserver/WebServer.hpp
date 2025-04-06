@@ -3,11 +3,13 @@
 #include <atomic>
 #include <memory>
 #include <string>
+#include <unordered_map>
 
 #include "events/EventPoller.hpp"
+#include "networking/Socket.hpp"
+#include "webserver/Connection.hpp"
 #include "webserver/MiddlewareManager.hpp"
 #include "webserver/Router.hpp"
-#include "networking/Socket.hpp"
 
 class WebServer
 {
@@ -27,8 +29,13 @@ private:
 
 	std::atomic<bool> stopFlag;
 
+	std::unordered_map<int, std::shared_ptr<Connection>> connections;
+
 	Router router;
 	MiddlewareManager middlewareManager;
 
 	void handleClient(int client);
+
+	void addConnection(int fd);
+	void removeConnection(int fd);
 };

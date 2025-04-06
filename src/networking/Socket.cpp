@@ -22,6 +22,14 @@ Socket::Socket(int domain, int type, int protocol) : domain(domain)
 	}
 }
 
+Socket::Socket(int fileDescriptor) : domain(-1), sockfd(fileDescriptor)
+{
+	if (sockfd == -1)
+	{
+		throw std::runtime_error("Invalid file descriptor");
+	}
+}
+
 Socket::~Socket()
 {
 	close();

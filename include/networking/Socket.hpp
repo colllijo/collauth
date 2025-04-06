@@ -12,6 +12,7 @@ class Socket
 {
 public:
 	explicit Socket(int domain, int type, int protocol);
+	explicit Socket(int fileDescriptor);
 	~Socket();
 
 	static void setNonBlocking(int sockfd);

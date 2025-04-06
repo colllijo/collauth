@@ -18,9 +18,6 @@ public:
 
 	HttpRequest();
 
-	void reset();
-	bool parse(const std::string& request);
-
 	HttpMethod getMethod() const;
 
 	std::string getPath() const;
@@ -33,7 +30,4 @@ public:
 	std::string getBody() const;
 
 private:
-	bool parseRequestLine(const std::string& requestLine);
-	bool parseHeader(const std::string& header);
-	void parseBody(const std::string& body);
 };
