@@ -9,7 +9,7 @@
 
 #include "events/EventPoller.hpp"
 
-constexpr int MAX_EVENTS = 16;
+constexpr int MAX_EVENTS = 128;
 
 class EpollPoller : public EventPoller
 {
