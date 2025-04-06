@@ -62,26 +62,9 @@ void WebServer::registerRoute(HttpMethod method, const std::string& path, RouteH
 
 void WebServer::handleClient(int client)
 {
-	std::string data;
+	std::string data = Socket::receive(client);
 
-	std::array<char, BUFFER_SIZE> buffer{};
-	ssize_t bytesRead;
-
-	while ((bytesRead = Socket::recv(client, buffer)) > 0)
-	{
-		data.append(buffer.data(), bytesRead);
-	}
-
-	if (bytesRead == -1 && errno != EAGAIN)
-	{
-		Socket::close(client);
-		throw std::runtime_error("Failed to read from client: " + std::string(strerror(errno)));
-	}
-	else if (bytesRead == 0)
-	{
-		Socket::close(client);
-		return;
-	}
+	Logger::log("Received data: {}", data);
 
 	HttpRequest request;
 	if (request.parse(data))

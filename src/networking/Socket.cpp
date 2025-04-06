@@ -102,6 +102,44 @@ void Socket::send(const std::string& data)
 	send(sockfd, data);
 }
 
+std::string Socket::receive(int sockfd)
+{
+	std::string data;
+
+	char buffer[BUFFER_SIZE];
+
+	do
+	{
+		ssize_t bytesReceived = ::recv(sockfd, buffer, BUFFER_SIZE, 0);
+
+		if (bytesReceived == 0)
+		{
+			break;
+		}
+		else if (bytesReceived == -1)
+		{
+			if (errno == EAGAIN || errno == EWOULDBLOCK)
+			{
+				// No more data to read, return
+				break;
+			}
+			else
+			{
+				throw std::runtime_error("Failed to read from client: " + std::string(strerror(errno)));
+			}
+		}
+
+		data.append(buffer, bytesReceived);
+	} while (true);
+
+	return data;
+}
+
+std::string Socket::receive()
+{
+	return receive(sockfd);
+}
+
 ssize_t Socket::recv(int sockfd, std::array<char, BUFFER_SIZE>& buffer)
 {
 	return ::recv(sockfd, buffer.data(), buffer.size(), 0);

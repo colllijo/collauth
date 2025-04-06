@@ -27,6 +27,9 @@ public:
 
 	static void send(int sockfd, const std::string& data);
 	void send(const std::string& data);
+
+	static std::string receive(int sockfd);
+	std::string receive();
 	static ssize_t recv(int sockfd, std::array<char, BUFFER_SIZE>& buffer);
 	ssize_t recv(std::array<char, BUFFER_SIZE>& buffer);
 
