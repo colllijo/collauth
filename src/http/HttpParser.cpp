@@ -95,7 +95,7 @@ bool HttpParser::parseHeaders()
 		std::string value = line.substr(colon + 1);
 		value.erase(0, value.find_first_not_of(" \t"));
 
-		request.headers[key] = value;
+		request.setHeader(key, value);
 		buffer.erase(0, pos + 2);
 	}
 
@@ -104,9 +104,10 @@ bool HttpParser::parseHeaders()
 
 bool HttpParser::parseBody()
 {
-	if (request.headers.contains("Content-Length"))
+	auto contentLengthHeader = request.getHeader("Content-Length");
+	if (contentLengthHeader.has_value())
 	{
-		int contentLength = std::stoi(request.headers["Content-Length"]);
+		int contentLength = std::stoi(contentLengthHeader.value());
 		if (buffer.size() < static_cast<size_t>(contentLength)) return false;
 
 		request.body = buffer.substr(0, contentLength);

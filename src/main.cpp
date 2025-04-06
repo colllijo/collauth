@@ -37,9 +37,10 @@ int main()
 		server.registerRoute(HttpMethod::POST, "/echo",
 							 [](const HttpRequest& request, HttpResponse& response)
 							 {
-								 if (request.headers.contains("Content-Type"))
+								 auto contentType = request.getHeader("Content-Type");
+								 if (contentType.has_value())
 								 {
-									 response.headers["Content-Type"] = request.headers.at("Content-Type");
+									 response.headers["Content-Type"] = contentType.value();
 								 }
 								 response.body = request.body;
 							 });
