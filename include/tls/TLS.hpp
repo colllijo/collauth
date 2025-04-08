@@ -1,11 +1,10 @@
 #pragma once
 
 #include <cstdint>
-#include <map>
 #include <vector>
 
 #include "logging/Logger.hpp"
-#include "tls/ByteBuffer.hpp"
+#include "networking/ByteBuffer.hpp"
 
 // https://tls13.xargs.org/#client-hello/annotated
 // https://www.rfc-editor.org/rfc/rfc8446#section-4.1.2

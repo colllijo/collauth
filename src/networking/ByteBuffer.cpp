@@ -1,4 +1,4 @@
-#include "tls/ByteBuffer.hpp"
+#include "networking/ByteBuffer.hpp"
 
 #include <stdexcept>
 #include <vector>
