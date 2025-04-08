@@ -7,7 +7,7 @@ void MiddlewareManager::addMiddleware(MiddlewareFunc middleware)
 	middlewareChain.push_back(middleware);
 }
 
-void MiddlewareManager::execute(HttpRequest& request, HttpResponse& response, std::function<void()> handler) const
+void MiddlewareManager::execute(HTTPRequest& request, HTTPResponse& response, std::function<void()> handler) const
 {
 	size_t index = 0;
 

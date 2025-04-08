@@ -4,8 +4,8 @@
 #include <cstring>
 #include <memory>
 
-#include "http/HttpRequest.hpp"
-#include "http/HttpResponse.hpp"
+#include "http/HTTPRequest.hpp"
+#include "http/HTTPResponse.hpp"
 #include "logging/Logger.hpp"
 #include "networking/ConnectionFactory.hpp"
 #include "webserver/Middleware.hpp"
@@ -70,7 +70,7 @@ void WebServer::registerMiddleware(MiddlewareFunc middleware)
 	middlewareManager.addMiddleware(middleware);
 }
 
-void WebServer::registerRoute(HttpMethod method, const std::string& path, RouteHandler handler)
+void WebServer::registerRoute(HTTPMethod method, const std::string& path, RouteHandler handler)
 {
 	router.registerRoute(method, path, handler);
 }
@@ -104,9 +104,9 @@ void WebServer::handleClient(int client)
 
 	if (connection->isRequestReady())
 	{
-		HttpRequest request = std::get<HttpRequest>(connection->getRequest());
+		HTTPRequest request = std::get<HTTPRequest>(connection->getRequest());
 
-		HttpResponse response(HttpStatus::OK);
+		HTTPResponse response(HTTPStatus::OK);
 		response.headers["Server"] = "CollServer";
 		response.headers["Content-Type"] = "text/plain";
 

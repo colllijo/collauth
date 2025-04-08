@@ -1,12 +1,12 @@
-#include "networking/HttpsConnection.hpp"
+#include "networking/HTTPSConnection.hpp"
 
 #include "logging/Logger.hpp"
 #include "tls/TLS.hpp"
 
-HttpsConnection::HttpsConnection(int socketfd) : Connection(socketfd) {}
-HttpsConnection::~HttpsConnection() = default;
+HTTPSConnection::HTTPSConnection(int socketfd) : Connection(socketfd) {}
+HTTPSConnection::~HTTPSConnection() = default;
 
-bool HttpsConnection::handle()
+bool HTTPSConnection::handle()
 {
 	std::string data = socket.receive();
 
@@ -26,7 +26,7 @@ bool HttpsConnection::handle()
 	return false;
 }
 
-Request HttpsConnection::getRequest() const
+Request HTTPSConnection::getRequest() const
 {
 	return parser.getRequest();
 }

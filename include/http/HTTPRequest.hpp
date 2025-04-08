@@ -4,24 +4,24 @@
 #include <string>
 #include <unordered_map>
 
-#include "http/HttpMethod.hpp"
-#include "http/HttpVersion.hpp"
+#include "http/HTTPMethod.hpp"
+#include "http/HTTPVersion.hpp"
 
-class HttpRequest
+class HTTPRequest
 {
 public:
-	HttpMethod method;
+	HTTPMethod method;
 	std::string path;
-	HttpVersion version;
+	HTTPVersion version;
 	std::string body;
 
-	HttpRequest();
+	HTTPRequest();
 
-	HttpMethod getMethod() const;
+	HTTPMethod getMethod() const;
 
 	std::string getPath() const;
 
-	HttpVersion getVersion() const;
+	HTTPVersion getVersion() const;
 
 	std::unordered_map<std::string, std::string> getHeaders() const;
 

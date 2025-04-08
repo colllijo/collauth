@@ -2,7 +2,7 @@
 
 #include <string>
 
-enum class HttpVersion
+enum class HTTPVersion
 {
 	HTTP_1_0,
 	HTTP_1_1,
@@ -10,4 +10,4 @@ enum class HttpVersion
 	UNKNOWN
 };
 
-HttpVersion parseHttpVersion(const std::string& version);
+HTTPVersion parseHTTPVersion(const std::string& version);

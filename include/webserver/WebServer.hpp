@@ -22,7 +22,7 @@ public:
 	void stop();
 
 	void registerMiddleware(MiddlewareFunc middleware);
-	void registerRoute(HttpMethod method, const std::string& path, RouteHandler handler);
+	void registerRoute(HTTPMethod method, const std::string& path, RouteHandler handler);
 
 private:
 	std::unique_ptr<EventPoller> poller;

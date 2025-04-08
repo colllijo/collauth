@@ -1,20 +1,20 @@
-#include "http/HttpResponse.hpp"
-#include "http/HttpStatus.hpp"
+#include "http/HTTPResponse.hpp"
+#include "http/HTTPStatus.hpp"
 
-HttpResponse::HttpResponse(HttpStatus status) : status(status) {}
+HTTPResponse::HTTPResponse(HTTPStatus status) : status(status) {}
 
-HttpStatus HttpResponse::getStatusCode() const
+HTTPStatus HTTPResponse::getStatusCode() const
 {
 	return status;
 }
 
-HttpResponse& HttpResponse::setStatusCode(HttpStatus status)
+HTTPResponse& HTTPResponse::setStatusCode(HTTPStatus status)
 {
 	this->status = status;
 	return *this;
 }
 
-std::optional<std::string> HttpResponse::getHeader(const std::string& name) const
+std::optional<std::string> HTTPResponse::getHeader(const std::string& name) const
 {
 	if (headers.contains(name))
 	{
@@ -24,24 +24,24 @@ std::optional<std::string> HttpResponse::getHeader(const std::string& name) cons
 	return headers.at(name);
 }
 
-HttpResponse& HttpResponse::setHeader(const std::string& name, const std::string& value)
+HTTPResponse& HTTPResponse::setHeader(const std::string& name, const std::string& value)
 {
 	headers[name] = value;
 	return *this;
 }
 
-std::string HttpResponse::getBody() const
+std::string HTTPResponse::getBody() const
 {
 	return body;
 }
 
-HttpResponse& HttpResponse::setBody(const std::string& body)
+HTTPResponse& HTTPResponse::setBody(const std::string& body)
 {
 	this->body = body;
 	return *this;
 }
 
-std::string HttpResponse::build() const
+std::string HTTPResponse::build() const
 {
 	std::string response = "HTTP/1.1 " + statusToString(status) + "\r\n";
 	for (const auto& [key, value] : headers)

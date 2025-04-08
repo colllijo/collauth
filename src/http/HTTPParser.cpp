@@ -1,10 +1,10 @@
-#include "http/HttpParser.hpp"
+#include "http/HTTPParser.hpp"
 
 #include <sstream>
 
-HttpParser::HttpParser() : state(State::REQUEST_LINE), error(false) {}
+HTTPParser::HTTPParser() : state(State::REQUEST_LINE), error(false) {}
 
-bool HttpParser::parse(const std::string& data)
+bool HTTPParser::parse(const std::string& data)
 {
 	if (error) return false;
 
@@ -41,7 +41,7 @@ bool HttpParser::parse(const std::string& data)
 	return state == State::DONE;
 }
 
-bool HttpParser::parseRequestLine()
+bool HTTPParser::parseRequestLine()
 {
 	size_t pos = buffer.find("\r\n");
 	if (pos == std::string::npos) return false;
@@ -55,10 +55,10 @@ bool HttpParser::parseRequestLine()
 		return false;
 	}
 
-	request.method = parseHttpMethod(methodStr);
-	request.version = parseHttpVersion(versionStr);
+	request.method = parseHTTPMethod(methodStr);
+	request.version = parseHTTPVersion(versionStr);
 
-	if (request.method == HttpMethod::UNKNOWN || request.version == HttpVersion::UNKNOWN)
+	if (request.method == HTTPMethod::UNKNOWN || request.version == HTTPVersion::UNKNOWN)
 	{
 		error = true;
 		return false;
@@ -70,7 +70,7 @@ bool HttpParser::parseRequestLine()
 	return true;
 }
 
-bool HttpParser::parseHeaders()
+bool HTTPParser::parseHeaders()
 {
 	size_t pos;
 	while ((pos = buffer.find("\r\n")) != std::string::npos)
@@ -102,7 +102,7 @@ bool HttpParser::parseHeaders()
 	return false;
 }
 
-bool HttpParser::parseBody()
+bool HTTPParser::parseBody()
 {
 	auto contentLengthHeader = request.getHeader("Content-Length");
 	if (contentLengthHeader.has_value())
@@ -118,20 +118,20 @@ bool HttpParser::parseBody()
 	return true;
 }
 
-HttpRequest HttpParser::getRequest() const
+HTTPRequest HTTPParser::getRequest() const
 {
 	return request;
 }
 
-bool HttpParser::hasError() const
+bool HTTPParser::hasError() const
 {
 	return error;
 }
 
-void HttpParser::reset()
+void HTTPParser::reset()
 {
 	state = State::REQUEST_LINE;
 	buffer.clear();
-	request = HttpRequest();
+	request = HTTPRequest();
 	error = false;
 }

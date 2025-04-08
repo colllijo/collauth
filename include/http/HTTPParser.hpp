@@ -2,9 +2,9 @@
 
 #include <string>
 
-#include "http/HttpRequest.hpp"
+#include "http/HTTPRequest.hpp"
 
-class HttpParser
+class HTTPParser
 {
 public:
 	enum class State
@@ -15,18 +15,18 @@ public:
 		DONE
 	};
 
-	HttpParser();
+	HTTPParser();
 
 	bool parse(const std::string& data);
 	void reset();
 
 	bool hasError() const;
-	HttpRequest getRequest() const;
+	HTTPRequest getRequest() const;
 
 private:
 	State state;
 	std::string buffer;
-	HttpRequest request;
+	HTTPRequest request;
 	bool error;
 
 	bool parseRequestLine();

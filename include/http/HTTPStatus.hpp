@@ -2,7 +2,7 @@
 
 #include <string>
 
-enum class HttpStatus
+enum class HTTPStatus
 {
     CONTINUE = 100,
     SWITCHING_PROTOCOLS = 101,
@@ -72,4 +72,4 @@ enum class HttpStatus
     NETWORK_AUTHENTICATION_REQUIRED = 511
 };
 
-std::string statusToString(HttpStatus status);
+std::string statusToString(HTTPStatus status);

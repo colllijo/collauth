@@ -25,8 +25,8 @@ int main()
 		WebServer server("0.0.0.0", HTTP_PORT, std::move(poller));
 		signalHandler.bind(SIGINT, [&server](int) { server.stop(); });
 
-		server.registerRoute(HttpMethod::GET, "/",
-							 [](const HttpRequest&, HttpResponse& response)
+		server.registerRoute(HTTPMethod::GET, "/",
+							 [](const HTTPRequest&, HTTPResponse& response)
 							 {
 								 response.headers["Content-Type"] = "text/plain";
 								 response.body = "Hello, world!";
@@ -34,8 +34,8 @@ int main()
 								 return response;
 							 });
 
-		server.registerRoute(HttpMethod::POST, "/echo",
-							 [](const HttpRequest& request, HttpResponse& response)
+		server.registerRoute(HTTPMethod::POST, "/echo",
+							 [](const HTTPRequest& request, HTTPResponse& response)
 							 {
 								 auto contentType = request.getHeader("Content-Type");
 								 if (contentType.has_value())

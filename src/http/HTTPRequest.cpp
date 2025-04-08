@@ -1,28 +1,28 @@
-#include "http/HttpRequest.hpp"
+#include "http/HTTPRequest.hpp"
 
-HttpRequest::HttpRequest() : method(HttpMethod::UNKNOWN), version(HttpVersion::UNKNOWN) {}
+HTTPRequest::HTTPRequest() : method(HTTPMethod::UNKNOWN), version(HTTPVersion::UNKNOWN) {}
 
-HttpMethod HttpRequest::getMethod() const
+HTTPMethod HTTPRequest::getMethod() const
 {
 	return method;
 }
 
-std::string HttpRequest::getPath() const
+std::string HTTPRequest::getPath() const
 {
 	return path;
 }
 
-HttpVersion HttpRequest::getVersion() const
+HTTPVersion HTTPRequest::getVersion() const
 {
 	return version;
 }
 
-std::unordered_map<std::string, std::string> HttpRequest::getHeaders() const
+std::unordered_map<std::string, std::string> HTTPRequest::getHeaders() const
 {
 	return headers;
 }
 
-std::optional<std::string> HttpRequest::getHeader(const std::string& name) const
+std::optional<std::string> HTTPRequest::getHeader(const std::string& name) const
 {
 	if (!headers.contains(name))
 	{
@@ -32,12 +32,12 @@ std::optional<std::string> HttpRequest::getHeader(const std::string& name) const
 	return headers.at(name);
 }
 
-void HttpRequest::setHeader(const std::string& name, const std::string& value)
+void HTTPRequest::setHeader(const std::string& name, const std::string& value)
 {
 	headers[canonicalizeHeader(name)] = value;
 }
 
-std::string HttpRequest::getBody() const
+std::string HTTPRequest::getBody() const
 {
 	return body;
 }

@@ -2,10 +2,10 @@
 
 #include <variant>
 
-#include "http/HttpRequest.hpp"
+#include "http/HTTPRequest.hpp"
 #include "networking/Socket.hpp"
 
-using Request = std::variant<HttpRequest>;
+using Request = std::variant<HTTPRequest>;
 
 class Connection
 {
