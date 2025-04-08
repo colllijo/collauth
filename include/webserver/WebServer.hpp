@@ -7,7 +7,8 @@
 
 #include "events/EventPoller.hpp"
 #include "networking/Socket.hpp"
-#include "webserver/Connection.hpp"
+#include "networking/Connection.hpp"
+#include "networking/ConnectionFactory.hpp"
 #include "webserver/MiddlewareManager.hpp"
 #include "webserver/Router.hpp"
 
@@ -37,6 +38,6 @@ private:
 
 	void handleClient(int client);
 
-	void addConnection(int fd, bool tls = false);
+	void addConnection(int fd, Protocol protocol);
 	void removeConnection(int fd);
 };

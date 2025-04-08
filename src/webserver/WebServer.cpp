@@ -7,6 +7,7 @@
 #include "http/HttpRequest.hpp"
 #include "http/HttpResponse.hpp"
 #include "logging/Logger.hpp"
+#include "networking/ConnectionFactory.hpp"
 #include "webserver/Middleware.hpp"
 
 WebServer::WebServer(const std::string& address, int port, std::unique_ptr<EventPoller> poller)
@@ -50,21 +51,11 @@ void WebServer::run()
 		for (int fd : readyFds)
 		{
 			if (fd == httpSocket.getFileDescriptor())
-			{
-				int clientFd = httpSocket.accept();
-
-				addConnection(clientFd);
-			}
+				addConnection(httpSocket.accept(), Protocol::HTTP);
 			else if (fd == httpsSocket.getFileDescriptor())
-			{
-				int clientFd = httpsSocket.accept();
-
-				addConnection(clientFd, true);
-			}
+				addConnection(httpsSocket.accept(), Protocol::HTTPS);
 			else
-			{
 				handleClient(fd);
-			}
 		}
 	}
 }
@@ -84,9 +75,9 @@ void WebServer::registerRoute(HttpMethod method, const std::string& path, RouteH
 	router.registerRoute(method, path, handler);
 }
 
-void WebServer::addConnection(int fd, bool tls)
+void WebServer::addConnection(int fd, Protocol protocol)
 {
-	connections[fd] = std::make_shared<Connection>(fd, tls);
+	connections[fd] = ConnectionFactory::createConnection(fd, protocol);
 	poller->add(fd);
 }
 
@@ -105,7 +96,7 @@ void WebServer::handleClient(int client)
 	}
 
 	std::shared_ptr<Connection> connection = connections.at(client);
-	if (!connection->handleRead())
+	if (!connection->handle())
 	{
 		removeConnection(client);
 		return;
@@ -113,7 +104,7 @@ void WebServer::handleClient(int client)
 
 	if (connection->isRequestReady())
 	{
-		HttpRequest request = connection->getRequest();
+		HttpRequest request = std::get<HttpRequest>(connection->getRequest());
 
 		HttpResponse response(HttpStatus::OK);
 		response.headers["Server"] = "CollServer";
