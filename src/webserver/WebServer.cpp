@@ -9,14 +9,22 @@
 #include "logging/Logger.hpp"
 #include "webserver/Middleware.hpp"
 
-WebServer::WebServer(const std::string& address, int port, std::unique_ptr<EventPoller> poller) : poller(std::move(poller)), serverSocket(AF_INET, SOCK_STREAM, 0), stopFlag(false)
+WebServer::WebServer(const std::string& address, int port, std::unique_ptr<EventPoller> poller)
+	: poller(std::move(poller)), httpSocket(AF_INET, SOCK_STREAM, 0), httpsSocket(AF_INET, SOCK_STREAM, 0), stopFlag(false)
 {
-	serverSocket.setSocketOption(SO_REUSEADDR, true);
-	serverSocket.setNonBlocking();
-	serverSocket.bind(address, port);
-	serverSocket.listen();
+	httpSocket.setSocketOption(SO_REUSEADDR, true);
+	httpSocket.setNonBlocking();
+	httpSocket.bind(address, port);
+	httpSocket.listen();
 
-	this->poller->add(serverSocket.getFileDescriptor());
+	this->poller->add(httpSocket.getFileDescriptor());
+
+	httpsSocket.setSocketOption(SO_REUSEADDR, true);
+	httpsSocket.setNonBlocking();
+	httpsSocket.bind(address, 8443);
+	httpsSocket.listen();
+
+	this->poller->add(httpsSocket.getFileDescriptor());
 
 	middlewareManager.addMiddleware(errorHandlingMiddleware);
 	middlewareManager.addMiddleware(loggingMiddleware);
@@ -24,7 +32,7 @@ WebServer::WebServer(const std::string& address, int port, std::unique_ptr<Event
 
 WebServer::~WebServer()
 {
-	this->poller->remove(serverSocket.getFileDescriptor());
+	this->poller->remove(httpSocket.getFileDescriptor());
 	for (const auto& [fd, connection] : connections)
 	{
 		this->poller->remove(fd);
@@ -41,11 +49,17 @@ void WebServer::run()
 
 		for (int fd : readyFds)
 		{
-			if (fd == serverSocket.getFileDescriptor())
+			if (fd == httpSocket.getFileDescriptor())
 			{
-				int clientFd = serverSocket.accept();
+				int clientFd = httpSocket.accept();
 
 				addConnection(clientFd);
+			}
+			else if (fd == httpsSocket.getFileDescriptor())
+			{
+				int clientFd = httpsSocket.accept();
+
+				addConnection(clientFd, true);
 			}
 			else
 			{
@@ -70,9 +84,9 @@ void WebServer::registerRoute(HttpMethod method, const std::string& path, RouteH
 	router.registerRoute(method, path, handler);
 }
 
-void WebServer::addConnection(int fd)
+void WebServer::addConnection(int fd, bool tls)
 {
-	connections[fd] = std::make_shared<Connection>(fd);
+	connections[fd] = std::make_shared<Connection>(fd, tls);
 	poller->add(fd);
 }
 

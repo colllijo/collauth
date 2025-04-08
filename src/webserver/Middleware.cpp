@@ -6,7 +6,7 @@
 
 void loggingMiddleware(HttpRequest& request, HttpResponse&, std::function<void()> next)
 {
-	Logger::log("Received request: {} {}", httpMethodToString(request.getMethod()), request.getPath());
+	Logger::info("Received request: {} {}", httpMethodToString(request.getMethod()), request.getPath());
 
 	next();
 }

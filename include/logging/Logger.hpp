@@ -55,9 +55,9 @@ public:
 	debug(const std::string& message, Args&&...) -> debug<Args...>;
 
 	template <typename... Args>
-	struct log
+	struct info
 	{
-		log(const std::string& message, Args&&... args, const std::source_location& location = std::source_location::current())
+		info(const std::string& message, Args&&... args, const std::source_location& location = std::source_location::current())
 		{
 			std::lock_guard<std::mutex> lock(logMutex);
 
@@ -69,7 +69,7 @@ public:
 	};
 
 	template <typename... Args>
-	log(const std::string& message, Args&&...) -> log<Args...>;
+	info(const std::string& message, Args&&...) -> info<Args...>;
 
 	template <typename... Args>
 	struct warning

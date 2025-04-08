@@ -8,7 +8,7 @@
 #include "signal/SignalHandler.hpp"
 #include "webserver/WebServer.hpp"
 
-constexpr int PORT = 8080;
+constexpr int HTTP_PORT = 8080;
 
 int main()
 {
@@ -22,7 +22,7 @@ int main()
 		std::unique_ptr<EventPoller> poller = std::make_unique<SelectPoller>();
 #endif
 
-		WebServer server("0.0.0.0", PORT, std::move(poller));
+		WebServer server("0.0.0.0", HTTP_PORT, std::move(poller));
 		signalHandler.bind(SIGINT, [&server](int) { server.stop(); });
 
 		server.registerRoute(HttpMethod::GET, "/",

@@ -1,6 +1,9 @@
 #include "webserver/Connection.hpp"
 
-Connection::Connection(int socketfd) : socket(socketfd), requestReady(false)
+#include "logging/Logger.hpp"
+#include "tls/TLS.hpp"
+
+Connection::Connection(int socketfd, bool tls) : socket(socketfd), isTls(tls), requestReady(false)
 {
 	socket.setNonBlocking();
 }
@@ -13,6 +16,22 @@ bool Connection::handleRead()
 
 	if (data.empty())
 	{
+		return false;
+	}
+
+	if (isTls)
+	{
+		ClientHello clientHello;
+
+		if (parseClientHello(std::vector<uint8_t>(data.begin(), data.end()), clientHello))
+		{
+			Logger::info("Successfully parsed client hello.");
+		}
+		else
+		{
+			Logger::error("Error parsing client hello.");
+		}
+
 		return false;
 	}
 

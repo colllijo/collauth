@@ -7,7 +7,7 @@
 class Connection
 {
 public:
-	Connection(int socketfd);
+	Connection(int socketfd, bool tls);
 	~Connection();
 
 	bool handleRead();
@@ -19,6 +19,8 @@ public:
 
 private:
 	Socket socket;
+	bool isTls;
+
 	HttpParser parser;
 	bool requestReady;
 };

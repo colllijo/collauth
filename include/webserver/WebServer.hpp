@@ -25,7 +25,8 @@ public:
 
 private:
 	std::unique_ptr<EventPoller> poller;
-	Socket serverSocket;
+	Socket httpSocket;
+	Socket httpsSocket;
 
 	std::atomic<bool> stopFlag;
 
@@ -36,6 +37,6 @@ private:
 
 	void handleClient(int client);
 
-	void addConnection(int fd);
+	void addConnection(int fd, bool tls = false);
 	void removeConnection(int fd);
 };
