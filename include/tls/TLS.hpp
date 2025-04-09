@@ -1,83 +1,63 @@
 #pragma once
 
 #include <cstdint>
+#include <tuple>
+#include <unordered_map>
 #include <vector>
 
-#include "logging/Logger.hpp"
-#include "networking/ByteBuffer.hpp"
-
-// https://tls13.xargs.org/#client-hello/annotated
-// https://www.rfc-editor.org/rfc/rfc8446#section-4.1.2
-struct RecordHeader
+enum class TLSContentType : uint8_t
 {
-	uint8_t type;
-	uint16_t version;
-	uint16_t length;
+	HANDSHAKE = 0x16
 };
 
-struct HandshakeHeader
+enum class TLSHandshakeType : uint8_t
 {
-	uint8_t type;
+	CLIENT_HELLO = 0x01,
+	SERVER_HELLO = 0x02
+};
+
+struct TLSHandshakeHeader
+{
+	TLSHandshakeType handshakeType;
 	uint32_t length;
 };
 
-struct ClientHello
+enum class TLSExtensionType : uint16_t
 {
-	uint16_t version;
-	std::vector<uint8_t> random;
-	std::vector<uint8_t> sessionID;
-	std::vector<uint8_t> cipherSuites;
-	std::vector<uint8_t> compressionMethods;
-	std::vector<uint8_t> extensions;  // Extensions
+	SERVER_NAME = 0x0000,
+	MAX_FRAGMENT_LENGTH = 0x0001,
+	STATUS_REQUEST = 0x0005,
+	SUPPORTED_GROUPS = 0x000A,
+	SIGNATURE_ALGORITHMS = 0x000D,
+	USE_SRTP = 0x000E,
+	HEARTBEAT = 0x000F,
+	APPLICATION_LAYER_PROTOCOL_NEGOTIATION = 0x0010,
+	SIGNED_CERTIFICATE_TIMESTAMP = 0x0012,
+	CLIENT_CERTIFICATE_TYPE = 0x0013,
+	SERVER_CERTIFICATE_TYPE = 0x0014,
+	PADDING = 0x0015,
+	PRE_SHARED_KEY = 0x0029,
+	EARLY_DATA = 0x002A,
+	SUPPORTED_VERSIONS = 0x002B,
+	COOKIE = 0x002C,
+	PSK_KEY_EXCHANGE_MODES = 0x002D,
+	CERTIFICATE_AUTHORITIES = 0x002F,
+	OID_FILTERS = 0x0030,
+	POST_HANDSHAKE_AUTH = 0x0031,
+	SIGNATURE_ALGORITHMS_CERT = 0x0032,
+	KEY_SHARE = 0x0033
 };
 
-bool parseClientHello(const std::vector<uint8_t>& data, ClientHello clientHello)
+enum class TLSCipherSuite : uint16_t
 {
-	ByteBuffer buffer(data);
+	TLS_AES_128_GCM_SHA256 = 0x1301,
+	TLS_AES_256_GCM_SHA384 = 0x1302,
+	TLS_CHACHA20_POLY1305_SHA256 = 0x1303,
+	TLS_AES_128_CCM_SHA256 = 0x1304,
+	TLS_AES_128_CCM_8_SHA256 = 0x1305
+};
 
-	RecordHeader record;
-	record.type = buffer.readUint8();
-	record.version = buffer.readUint16();
-	record.length = buffer.readUint16();
+std::tuple<TLSHandshakeType, std::vector<uint8_t>> parseTLSHandshake(const std::vector<uint8_t>& data);
+std::vector<uint8_t> buildTLSHandshake(TLSHandshakeType handshakeType, const std::vector<uint8_t>& handshake);
 
-	Logger::info("RecordHeader:\n\tType: 0x{:02X}\n\tVersion: 0x{:04X}\n\tLength: 0x{:04X}", record.type, record.version, record.length);
-
-	HandshakeHeader handshake;
-	uint32_t value = buffer.readUint32();
-	handshake.type = value >> 24;
-	handshake.length = value & 0xFFFFFF;
-
-	Logger::info("HandshakeHeader:\n\tType: 0x{:02X}\n\tLength: 0x{:04X}", handshake.type, handshake.length);
-
-	clientHello.version = buffer.readUint16();
-
-	Logger::info("TLS version: 0x{:04X}", clientHello.version);
-
-	clientHello.random = buffer.readBytes(32);
-
-	uint8_t sessionIdLength = buffer.readUint8();
-	clientHello.sessionID = buffer.readBytes(sessionIdLength);
-
-	uint16_t cipherSuiteLength = buffer.readUint16();
-	clientHello.cipherSuites = buffer.readBytes(cipherSuiteLength);
-
-	Logger::info("Available cipher suites: 0x{:04X}", cipherSuiteLength);
-	for (size_t i = 0; i < (cipherSuiteLength / 2); i++)
-	{
-		Logger::info("\t0x{:04X}", clientHello.cipherSuites[i * 2] << 8 | clientHello.cipherSuites[i * 2 + 1]);
-	}
-
-	uint8_t compressionMethodLength = buffer.readUint8();
-	clientHello.compressionMethods = buffer.readBytes(compressionMethodLength);
-
-	Logger::info("Available compression methods: 0x{:04X}", compressionMethodLength);
-	for (size_t i = 0; i < compressionMethodLength; i++)
-	{
-		Logger::info("\t0x{:02X}", clientHello.compressionMethods[i]);
-	}
-
-	uint16_t extensionLength = buffer.readUint16();
-	clientHello.extensions = buffer.readBytes(extensionLength);
-
-	return true;
-}
+std::unordered_map<TLSExtensionType, std::vector<uint8_t>> parseTLSExtensions(const std::vector<uint8_t>& data);

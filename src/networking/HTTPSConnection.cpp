@@ -1,7 +1,6 @@
 #include "networking/HTTPSConnection.hpp"
 
 #include "logging/Logger.hpp"
-#include "tls/TLS.hpp"
 
 HTTPSConnection::HTTPSConnection(int socketfd) : Connection(socketfd) {}
 HTTPSConnection::~HTTPSConnection() = default;
@@ -12,16 +11,15 @@ bool HTTPSConnection::handle()
 
 	if (data.empty()) return false;
 
-	ClientHello clientHello;
+	if (!context.ready())
+	{
+		Logger::info("TLS handshake not complete.");
+		context.initialize(std::vector<uint8_t>(data.begin(), data.end()));
 
-	if (parseClientHello(std::vector<uint8_t>(data.begin(), data.end()), clientHello))
-	{
-		Logger::info("Successfully parsed client hello.");
+		return false;
 	}
-	else
-	{
-		Logger::error("Error parsing client hello.");
-	}
+
+	Logger::info("TLS handshake complete.");
 
 	return false;
 }

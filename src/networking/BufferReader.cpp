@@ -1,18 +1,18 @@
-#include "networking/ByteBuffer.hpp"
+#include "networking/BufferReader.hpp"
 
 #include <stdexcept>
 #include <vector>
 
-ByteBuffer::ByteBuffer(const std::vector<uint8_t>& data) : buffer(data), offset(0) {}
+BufferReader::BufferReader(const std::vector<uint8_t>& data) : buffer(data), offset(0) {}
 
-uint8_t ByteBuffer::readUint8()
+uint8_t BufferReader::readUint8()
 {
 	ensureAvailable(1);
 
 	return buffer[offset++];
 }
 
-uint16_t ByteBuffer::readUint16()
+uint16_t BufferReader::readUint16()
 {
 	ensureAvailable(2);
 
@@ -22,7 +22,7 @@ uint16_t ByteBuffer::readUint16()
 	return value;
 }
 
-uint32_t ByteBuffer::readUint32()
+uint32_t BufferReader::readUint32()
 {
 	ensureAvailable(4);
 
@@ -32,7 +32,7 @@ uint32_t ByteBuffer::readUint32()
 	return value;
 }
 
-std::vector<uint8_t> ByteBuffer::readBytes(size_t length)
+std::vector<uint8_t> BufferReader::readBytes(size_t length)
 {
 	ensureAvailable(length);
 
@@ -42,7 +42,12 @@ std::vector<uint8_t> ByteBuffer::readBytes(size_t length)
 	return bytes;
 }
 
-void ByteBuffer::ensureAvailable(size_t length)
+bool BufferReader::complete() const
+{
+	return offset == buffer.size();
+}
+
+void BufferReader::ensureAvailable(size_t length)
 {
 	if (offset + length > buffer.size())
 	{

@@ -3,6 +3,7 @@
 #include "http/HTTPParser.hpp"
 #include "http/HTTPRequest.hpp"
 #include "networking/Connection.hpp"
+#include "tls/TLSContext.hpp"
 
 class HTTPSConnection : public Connection
 {
@@ -14,6 +15,8 @@ public:
 	Request getRequest() const override;
 
 private:
+	TLSContext context;
+
 	HTTPParser parser;
 	HTTPRequest request;
 };
