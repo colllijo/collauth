@@ -22,10 +22,11 @@ std::string Logger::getFunctionName(const std::source_location& location)
 	std::regex functionNameRegex(R"((\w+::)*(\w+)\s*\()");
 
 	std::string signature = location.function_name();
-    std::smatch match;
-    if (std::regex_search(signature, match, functionNameRegex)) {
-        return match[2];
-    }
+	std::smatch match;
+	if (std::regex_search(signature, match, functionNameRegex))
+	{
+		return match[2];
+	}
 
 	return signature;
 }
@@ -97,4 +98,14 @@ std::string Logger::toString(Logger::Level level)
 		}
 	}
 	return "[UNKNOWN]";
+}
+
+std::string Logger::toHex(const std::vector<uint8_t>& data)
+{
+	std::ostringstream oss;
+	for (uint8_t byte : data)
+	{
+		oss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(byte);
+	}
+	return oss.str();
 }

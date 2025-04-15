@@ -110,6 +110,19 @@ void Socket::send(const std::string& data)
 	send(sockfd, data);
 }
 
+void Socket::send(int sockfd, const std::vector<uint8_t>& data)
+{
+	if (::send(sockfd, data.data(), data.size(), 0) < 0)
+	{
+		throw std::runtime_error("Failed to send data: " + std::string(strerror(errno)));
+	}
+}
+
+void Socket::send(const std::vector<uint8_t>& data)
+{
+	send(sockfd, data);
+}
+
 std::string Socket::receive(int sockfd)
 {
 	std::string data;

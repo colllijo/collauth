@@ -12,6 +12,10 @@ set(INCLUDE_DIR "include")
 
 set(SOURCES
   "${SOURCE_DIR}/main.cpp"
+  "${SOURCE_DIR}/cryptography/AES128.cpp"
+  "${SOURCE_DIR}/cryptography/Random.cpp"
+  "${SOURCE_DIR}/cryptography/SHA256.cpp"
+  "${SOURCE_DIR}/cryptography/X25519.cpp"
   "${SOURCE_DIR}/events/EpollPoller.cpp"
   "${SOURCE_DIR}/events/SelectPoller.cpp"
   "${SOURCE_DIR}/http/HTTPMethod.cpp"
@@ -33,7 +37,11 @@ set(SOURCES
   "${SOURCE_DIR}/tls/ServerHello.cpp"
   "${SOURCE_DIR}/tls/TLS.cpp"
   "${SOURCE_DIR}/tls/TLSContext.cpp"
+  "${SOURCE_DIR}/tls/TLSKeyShare.cpp"
   "${SOURCE_DIR}/tls/TLSPlaintext.cpp"
+  "${SOURCE_DIR}/tls/TLSServerName.cpp"
+  "${SOURCE_DIR}/tls/TLSSignature.cpp"
+  "${SOURCE_DIR}/tls/TLSVersion.cpp"
   "${SOURCE_DIR}/webserver/Middleware.cpp"
   "${SOURCE_DIR}/webserver/MiddlewareManager.cpp"
   "${SOURCE_DIR}/webserver/Router.cpp"
@@ -41,6 +49,10 @@ set(SOURCES
 )
 
 set(HEADERS
+  "${INCLUDE_DIR}/cryptography/AES128.hpp"
+  "${INCLUDE_DIR}/cryptography/Random.hpp"
+  "${INCLUDE_DIR}/cryptography/SHA256.hpp"
+  "${INCLUDE_DIR}/cryptography/X25519.hpp"
   "${INCLUDE_DIR}/events/EventPoller.hpp"
   "${INCLUDE_DIR}/events/EpollPoller.hpp"
   "${INCLUDE_DIR}/events/SelectPoller.hpp"
@@ -63,7 +75,11 @@ set(HEADERS
   "${INCLUDE_DIR}/tls/ServerHello.hpp"
   "${INCLUDE_DIR}/tls/TLS.hpp"
   "${INCLUDE_DIR}/tls/TLSContext.hpp"
+  "${INCLUDE_DIR}/tls/TLSKeyShare.hpp"
   "${INCLUDE_DIR}/tls/TLSPlaintext.hpp"
+  "${INCLUDE_DIR}/tls/TLSServerName.hpp"
+  "${INCLUDE_DIR}/tls/TLSSignature.hpp"
+  "${INCLUDE_DIR}/tls/TLSVersion.hpp"
   "${INCLUDE_DIR}/webserver/Middleware.hpp"
   "${INCLUDE_DIR}/webserver/MiddlewareManager.hpp"
   "${INCLUDE_DIR}/webserver/Router.hpp"

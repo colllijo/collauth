@@ -4,7 +4,9 @@
 #include <sys/socket.h>
 
 #include <array>
+#include <cstdint>
 #include <string>
+#include <vector>
 
 constexpr int BUFFER_SIZE = 1024;
 
@@ -28,6 +30,9 @@ public:
 
 	static void send(int sockfd, const std::string& data);
 	void send(const std::string& data);
+
+	static void send(int sockfd, const std::vector<uint8_t>& data);
+	void send(const std::vector<uint8_t>& data);
 
 	static std::string receive(int sockfd);
 	std::string receive();

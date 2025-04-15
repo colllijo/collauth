@@ -46,9 +46,7 @@ void WebServer::run()
 {
 	while (!stopFlag.load())
 	{
-		auto readyFds = poller->wait();
-
-		for (int fd : readyFds)
+		for (int fd : poller->wait())
 		{
 			if (fd == httpSocket.getFileDescriptor())
 				addConnection(httpSocket.accept(), Protocol::HTTP);
@@ -91,7 +89,6 @@ void WebServer::handleClient(int client)
 {
 	if (!connections.contains(client))
 	{
-		Logger::debug("Client not found: {}", client);
 		return;
 	}
 

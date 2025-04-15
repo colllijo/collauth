@@ -1,11 +1,11 @@
 #pragma once
 
 #include <format>
-#include <fstream>
 #include <iostream>
 #include <mutex>
 #include <source_location>
 #include <string>
+#include <vector>
 
 class Logger
 {
@@ -121,6 +121,8 @@ public:
 
 	template <typename... Args>
 	fatal(const std::string& message, Args&&...) -> fatal<Args...>;
+
+	static std::string toHex(const std::vector<uint8_t>& data);
 
 private:
 	static std::mutex logMutex;

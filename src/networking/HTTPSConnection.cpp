@@ -1,8 +1,9 @@
 #include "networking/HTTPSConnection.hpp"
 
 #include "logging/Logger.hpp"
+#include "tls/TLSContext.hpp"
 
-HTTPSConnection::HTTPSConnection(int socketfd) : Connection(socketfd) {}
+HTTPSConnection::HTTPSConnection(int socketfd) : Connection(socketfd), context(socket) {}
 HTTPSConnection::~HTTPSConnection() = default;
 
 bool HTTPSConnection::handle()
@@ -14,9 +15,7 @@ bool HTTPSConnection::handle()
 	if (!context.ready())
 	{
 		Logger::info("TLS handshake not complete.");
-		context.initialize(std::vector<uint8_t>(data.begin(), data.end()));
-
-		return false;
+		return context.initialize(std::vector<uint8_t>(data.begin(), data.end()));
 	}
 
 	Logger::info("TLS handshake complete.");

@@ -7,7 +7,9 @@
 
 enum class TLSContentType : uint8_t
 {
-	HANDSHAKE = 0x16
+	CHANGE_CIPHER_SPEC = 0x14,
+	HANDSHAKE = 0x16,
+	APPLICATION_DATA = 0x17,
 };
 
 enum class TLSHandshakeType : uint8_t

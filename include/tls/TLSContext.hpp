@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <vector>
 
+#include "networking/Socket.hpp"
+
 class TLSContext
 {
 public:
@@ -15,14 +17,16 @@ public:
 		CLOSED
 	};
 
-	TLSContext();
+	TLSContext(Socket& socket);
 
 	bool initialize(const std::vector<uint8_t>& data);
 
 	bool ready() const;
 
 private:
+	Socket& socket;
 	TLSState state;
 
+	bool exchangeHandshake(const std::vector<uint8_t>& data);
 	// CipherSuite selectedCipherSuite
 };
