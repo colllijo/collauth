@@ -1,6 +1,7 @@
 #pragma once
 
 #include <compare>
+#include <concepts>
 #include <cstdint>
 #include <format>
 #include <string>
@@ -10,25 +11,42 @@ class Number
 {
 public:
 	Number();
-	Number(std::string value);
+
+	template <std::integral T>
+	Number(T value)
+	{
+		fromIntegral(value);
+	}
+
+	explicit Number(std::string value);
+	explicit Number(const std::vector<uint32_t>& digits, bool negative = false);
+
+	constexpr static uint64_t MASK32 = (1ULL << 32) - 1;
 
 	Number operator+(const Number& other) const;
 	Number operator-(const Number& other) const;
 	Number operator*(const Number& other) const;
 	Number operator/(const Number& other) const;
+	Number operator%(const Number& other) const;
 
 	Number& operator+=(const Number& other);
 	Number& operator-=(const Number& other);
 	Number& operator*=(const Number& other);
 	Number& operator/=(const Number& other);
+	Number& operator%=(const Number& other);
 
 	bool operator==(const Number& other) const;
 	std::strong_ordering operator<=>(const Number& other) const;
 
 	std::strong_ordering compareAbs(const Number& other) const;
 
+	std::vector<uint32_t> getDigits() const;
+
 	static Number fromString(const std::string& str);
 	std::string toString() const;
+
+	template <std::integral T>
+	void fromIntegral(T number);
 
 	friend std::ostream& operator<<(std::ostream& os, const Number& number);
 	friend struct std::formatter<Number>;
@@ -37,15 +55,44 @@ private:
 	std::vector<uint32_t> digits;
 	bool negative;
 
-	constexpr static uint64_t MASK32 = (1ULL << 32) - 1;
-
 	std::vector<uint32_t> add(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
 	std::vector<uint32_t> sub(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
 	std::vector<uint32_t> mul(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
-	std::vector<uint32_t> div(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
+	std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> div(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
 
 	void trimLeadingZeros();
 };
+
+template <std::integral T>
+void Number::fromIntegral(T number)
+{
+	digits.clear();
+
+	if constexpr (std::is_signed_v<T>)
+	{
+		negative = number < 0;
+		uint64_t value = static_cast<uint64_t>(static_cast<std::make_unsigned_t<T>>(negative ? -(number + 1) + 1 : number));
+
+		do
+		{
+			digits.push_back(static_cast<uint32_t>(value & MASK32));
+			value >>= 32;
+		} while (value != 0);
+	}
+	else
+	{
+		negative = false;
+		uint64_t value = static_cast<uint64_t>(number);
+
+		do
+		{
+			digits.push_back(static_cast<uint32_t>(value & MASK32));
+			value >>= 32;
+		} while (value != 0);
+	}
+
+	trimLeadingZeros();
+}
 
 template <>
 struct std::formatter<Number> : std::formatter<std::string>

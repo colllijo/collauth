@@ -15,13 +15,11 @@ int main()
 {
 	SignalHandler& signalHandler = *SignalHandler::getInstance();
 
-	Logger::info("Hello0");
+	Number a("100");
+	Number b("30");
 
-	Number a("10");
-	Logger::info("Hello1");
-	Number b("-0");
-
-	Logger::info("{} * {} = {}", a, b, (a * b));
+	Logger::info("{} / {} = {}", a, b, (a / b));
+	Logger::info("{} % {} = {}", a, b, (a % b));
 
 	return 1;
 

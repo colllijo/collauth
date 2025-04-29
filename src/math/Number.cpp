@@ -5,17 +5,22 @@
 #include <stdexcept>
 #include <string>
 #include <tuple>
+#include "logging/Logger.hpp"
 
 namespace
 {
 	std::tuple<std::string, uint64_t> divideByBase(const std::string &value, uint64_t base);
-};
+
+	uint32_t estimateQuotientDigit(const std::vector<uint32_t> &remainder, const std::vector<uint32_t> &divisor);
+	void correctQuotientEstimate(std::vector<uint32_t> &remainder, const std::vector<uint32_t> &divisor, uint32_t &q_digit);
+};	// namespace
 
 Number::Number() : digits(), negative(false) {}
 Number::Number(std::string value)
 {
 	*this = fromString(value);
 }
+Number::Number(const std::vector<uint32_t>& digits, bool negative) : digits(std::move(digits)), negative(negative) {}
 
 Number Number::operator+(const Number &other) const
 {
@@ -48,6 +53,8 @@ Number &Number::operator+=(const Number &other)
 	{
 		digits = sub(digits, other.digits);
 	}
+
+	trimLeadingZeros();
 
 	return *this;
 }
@@ -85,6 +92,8 @@ Number &Number::operator-=(const Number &other)
 		digits = sub(digits, other.digits);
 	}
 
+	trimLeadingZeros();
+
 	return *this;
 }
 
@@ -107,6 +116,8 @@ Number &Number::operator*=(const Number &other)
 
 	negative = negative != other.negative;
 	digits = mul(digits, other.digits);
+
+	trimLeadingZeros();
 
 	return *this;
 }
@@ -132,7 +143,37 @@ Number &Number::operator/=(const Number &other)
 	}
 
 	negative = negative != other.negative;
-	digits = div(digits, other.digits);
+	digits = std::get<0>(div(digits, other.digits));
+
+	trimLeadingZeros();
+
+	return *this;
+}
+
+Number Number::operator%(const Number &other) const
+{
+	Number result = *this;
+	result %= other;
+
+	return result;
+}
+
+Number &Number::operator%=(const Number &other)
+{
+	if (other.digits.empty())
+	{
+		throw std::invalid_argument("Division by zero.");
+	}
+
+	if (digits.empty())
+	{
+		return *this;
+	}
+
+	negative = false;
+	digits = std::get<1>(div(digits, other.digits));
+
+	trimLeadingZeros();
 
 	return *this;
 }
@@ -196,6 +237,11 @@ std::strong_ordering Number::compareAbs(const Number &other) const
 	default:
 		return std::strong_ordering::equal;
 	}
+}
+
+std::vector<uint32_t> Number::getDigits() const
+{
+	return digits;
 }
 
 std::string Number::toString() const
@@ -321,7 +367,34 @@ std::vector<uint32_t> Number::mul(const std::vector<uint32_t> &a, const std::vec
 	return result;
 }
 
-std::vector<uint32_t> Number::div(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const {}
+std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> Number::div(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const
+{
+	if (b.empty()) throw std::invalid_argument("Division by zero.");
+
+	if (a.empty()) return {};
+
+	std::vector<uint32_t> quotient(a.size(), 0);
+	std::vector<uint32_t> remainder;
+	remainder.reserve(a.size() + 1);
+
+	for (size_t i = a.size(); i-- > 0;)
+	{
+		remainder.insert(remainder.begin(), a[i]);
+
+		while (!remainder.empty() && remainder.back() == 0) remainder.pop_back();
+
+		uint32_t q_digit = estimateQuotientDigit(remainder, b);
+
+		correctQuotientEstimate(remainder, b, q_digit);
+
+		quotient[i] = q_digit;
+	}
+
+	while (!quotient.empty() && quotient.back() == 0) quotient.pop_back();
+	while (!remainder.empty() && remainder.back() == 0) remainder.pop_back();
+
+	return {quotient, remainder};
+}
 
 void Number::trimLeadingZeros()
 {
@@ -349,5 +422,44 @@ namespace
 		while (!quotient.empty() && quotient.at(0) == '0') quotient = quotient.substr(1);
 
 		return {quotient, remainder};
+	}
+
+	uint32_t estimateQuotientDigit(const std::vector<uint32_t> &remainder, const std::vector<uint32_t> &divisor)
+	{
+		if (remainder.size() < divisor.size()) return 0;
+
+		size_t n = divisor.size();
+		size_t m = remainder.size();
+
+		uint64_t divisorHigh = divisor.at(n - 1);
+		uint64_t remainderHigh = remainder.at(m - 1);
+
+		if (m > n)
+		{
+			remainderHigh = remainderHigh << 32 | remainder.at(m - 2);
+		}
+
+		uint32_t q_digit = static_cast<uint32_t>((remainderHigh / divisorHigh) & Number::MASK32);
+
+		return q_digit;
+	}
+
+	void correctQuotientEstimate(std::vector<uint32_t> &remainder, const std::vector<uint32_t> &divisor, uint32_t &q_digit)
+	{
+		if (q_digit == 0) return;
+
+		Number div = Number(divisor);
+		Number rem = Number(remainder);
+
+		Number product = div * q_digit;
+		rem -= product;
+
+		if (rem < 0)
+		{
+			q_digit--;
+			rem += div;
+		}
+
+		remainder = rem.getDigits();
 	}
 };	// namespace
