@@ -5,6 +5,7 @@
 #include "events/EpollPoller.hpp"
 #include "events/SelectPoller.hpp"
 #include "logging/Logger.hpp"
+#include "math/Number.hpp"
 #include "signal/SignalHandler.hpp"
 #include "webserver/WebServer.hpp"
 
@@ -13,6 +14,16 @@ constexpr int HTTP_PORT = 8080;
 int main()
 {
 	SignalHandler& signalHandler = *SignalHandler::getInstance();
+
+	Logger::info("Hello0");
+
+	Number a("10");
+	Logger::info("Hello1");
+	Number b("-0");
+
+	Logger::info("{} * {} = {}", a, b, (a * b));
+
+	return 1;
 
 	try
 	{

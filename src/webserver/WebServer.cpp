@@ -44,6 +44,7 @@ WebServer::~WebServer()
 
 void WebServer::run()
 {
+	Logger::info("WebServer is running on {}:{}", "127.0.0.1", "8080");
 	while (!stopFlag.load())
 	{
 		for (int fd : poller->wait())
