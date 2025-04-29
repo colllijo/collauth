@@ -35,12 +35,27 @@ public:
 	Number& operator/=(const Number& other);
 	Number& operator%=(const Number& other);
 
+	Number operator<<(size_t count) const;
+	Number operator>>(size_t count) const;
+
+	Number& operator<<=(size_t count);
+	Number& operator>>=(size_t count);
+
 	bool operator==(const Number& other) const;
 	std::strong_ordering operator<=>(const Number& other) const;
+
+	Number& pow(const Number& exponent);
+
+	void rightShift(size_t count);
+	void leftShift(size_t count);
+	void rightShiftDigit(size_t count);
+	void leftShiftDigit(size_t count);
 
 	std::strong_ordering compareAbs(const Number& other) const;
 
 	std::vector<uint32_t> getDigits() const;
+
+	static Number pow(const Number& base, const Number& exponent);
 
 	static Number fromString(const std::string& str);
 	std::string toString() const;
@@ -59,6 +74,11 @@ private:
 	std::vector<uint32_t> sub(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
 	std::vector<uint32_t> mul(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
 	std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> div(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
+
+	std::vector<uint32_t> bitShiftRight(const std::vector<uint32_t>& digits, size_t count) const;
+	std::vector<uint32_t> bitShiftLeft(const std::vector<uint32_t>& digits, size_t count) const;
+	std::vector<uint32_t> digitShiftRight(const std::vector<uint32_t>& digits, size_t count) const;
+	std::vector<uint32_t> digitShiftLeft(const std::vector<uint32_t>& digits, size_t count) const;
 
 	void trimLeadingZeros();
 };

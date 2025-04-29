@@ -5,7 +5,6 @@
 #include <stdexcept>
 #include <string>
 #include <tuple>
-#include "logging/Logger.hpp"
 
 namespace
 {
@@ -20,7 +19,7 @@ Number::Number(std::string value)
 {
 	*this = fromString(value);
 }
-Number::Number(const std::vector<uint32_t>& digits, bool negative) : digits(std::move(digits)), negative(negative) {}
+Number::Number(const std::vector<uint32_t> &digits, bool negative) : digits(std::move(digits)), negative(negative) {}
 
 Number Number::operator+(const Number &other) const
 {
@@ -178,6 +177,40 @@ Number &Number::operator%=(const Number &other)
 	return *this;
 }
 
+Number Number::operator<<(size_t count) const
+{
+	Number result = *this;
+	result <<= count;
+
+	return result;
+}
+
+Number Number::operator>>(size_t count) const
+{
+	Number result = *this;
+	result >>= count;
+
+	return *this;
+}
+
+Number &Number::operator<<=(size_t count)
+{
+	if (count == 0) return *this;
+
+	digits = bitShiftLeft(digits, count);
+
+	return *this;
+}
+
+Number &Number::operator>>=(size_t count)
+{
+	if (count == 0) return *this;
+
+	digits = bitShiftRight(digits, count);
+
+	return *this;
+}
+
 bool Number::operator==(const Number &other) const
 {
 	if (negative != other.negative) return false;
@@ -205,6 +238,33 @@ std::strong_ordering Number::operator<=>(const Number &other) const
 	}
 
 	return cmp;
+}
+
+Number &Number::pow(const Number& exponent)
+{
+	*this = pow(*this, exponent);
+
+	return *this;
+}
+
+void Number::rightShift(size_t count)
+{
+	bitShiftRight(digits, count);
+}
+
+void Number::leftShift(size_t count)
+{
+	bitShiftLeft(digits, count);
+}
+
+void Number::rightShiftDigit(size_t count)
+{
+	digitShiftRight(digits, count);
+}
+
+void Number::leftShiftDigit(size_t count)
+{
+	digitShiftLeft(digits, count);
 }
 
 std::strong_ordering Number::compareAbs(const Number &other) const
@@ -367,7 +427,7 @@ std::vector<uint32_t> Number::mul(const std::vector<uint32_t> &a, const std::vec
 	return result;
 }
 
-std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> Number::div(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const
+std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> Number::div(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const
 {
 	if (b.empty()) throw std::invalid_argument("Division by zero.");
 
@@ -394,6 +454,68 @@ std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> Number::div(const std::
 	while (!remainder.empty() && remainder.back() == 0) remainder.pop_back();
 
 	return {quotient, remainder};
+}
+
+std::vector<uint32_t> Number::bitShiftRight(const std::vector<uint32_t> &digits, size_t count) const
+{
+	if (digits.empty() || count == 0) return digits;
+
+	size_t shift = count / 32;
+	size_t bitShift = count % 32;
+
+	if (shift >= digits.size()) return {};
+
+	std::vector<uint32_t> result(digits.begin() + shift, digits.end());
+
+	uint32_t carry = 0;
+	for (size_t i = result.size(); i-- > 0;)
+	{
+		uint64_t temp = (static_cast<uint64_t>(carry) << 32) | result.at(i);
+		result[i] = (temp >> bitShift) & MASK32;
+		carry = digits.at(i + shift);
+	}
+
+	while (!result.empty() && result.back() == 0) result.pop_back();
+
+	return result;
+}
+
+std::vector<uint32_t> Number::bitShiftLeft(const std::vector<uint32_t> &digits, size_t count) const
+{
+	size_t shift = count / 32;
+	size_t bitShift = count % 32;
+
+	std::vector<uint32_t> result = digitShiftLeft(digits, shift);
+
+	uint32_t carry = 0;
+	for (size_t i = 0; i < result.size(); ++i)
+	{
+		uint64_t temp = (static_cast<uint64_t>(result[i]) << bitShift) | carry;
+		result[i] = temp & MASK32;
+		carry = temp >> 32;
+	}
+	if (carry) result.push_back(carry);
+
+	return result;
+}
+
+std::vector<uint32_t> Number::digitShiftRight(const std::vector<uint32_t> &digits, size_t count) const
+{
+	if (count >= digits.size()) return {};
+
+	std::vector<uint32_t> result(digits.begin() + count, digits.end());
+
+	while (!result.empty() && result.back() == 0) result.pop_back();
+
+	return result;
+}
+
+std::vector<uint32_t> Number::digitShiftLeft(const std::vector<uint32_t> &digits, size_t count) const
+{
+	std::vector<uint32_t> result(count, 0);
+	result.insert(result.end(), digits.begin(), digits.end());
+
+	return result;
 }
 
 void Number::trimLeadingZeros()
