@@ -73,7 +73,7 @@ public:
 	void fromIntegral(T number);
 
 	template <std::integral T>
-	operator T() const;
+	explicit operator T() const;
 
 	friend std::ostream& operator<<(std::ostream& os, const Number& number);
 	friend struct std::formatter<Number>;
@@ -131,40 +131,18 @@ void Number::fromIntegral(T number)
 template <std::integral T>
 Number::operator T() const
 {
-	uint64_t uval = 0;
-	if (digits.size() > 0) uval = digits.at(0);
-	if (digits.size() > 1) uval = uval << 32 | digits.at(1);
+	if (digits.empty()) return 0;
 
-	if constexpr (std::is_signed_v<T>)
+	uint64_t value = digits.at(0);
+	if (digits.size() > 1) value = value << 32 | digits.at(1);
+
+	if (std::is_signed_v<T> && negative)
 	{
-		if (negative)
-		{
-			if (uval > static_cast<uint64_t>(std::numeric_limits<T>::max()) + 1)
-			{
-				throw std::overflow_error("Negative value out of range for signed target type");
-			}
-			return static_cast<T>(-static_cast<int64_t>(uval));
-		}
-		else
-		{
-			if (uval > static_cast<uint64_t>(std::numeric_limits<T>::max()))
-			{
-				throw std::overflow_error("Value out of range for signed target type");
-			}
-			return static_cast<T>(uval);
-		}
+		return static_cast<T>(-static_cast<std::make_signed_t<uint64_t>>(value));
 	}
 	else
 	{
-		if (negative)
-		{
-			throw std::overflow_error("Cannot cast negative Number to unsigned type");
-		}
-		if (uval > static_cast<uint64_t>(std::numeric_limits<T>::max()))
-		{
-			throw std::overflow_error("Value out of range for unsigned target type");
-		}
-		return static_cast<T>(uval);
+		return static_cast<T>(value);
 	}
 }
 
