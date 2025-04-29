@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <format>
 #include <string>
+#include <tuple>
 #include <vector>
 
 class Number
@@ -45,6 +46,10 @@ public:
 	std::strong_ordering operator<=>(const Number& other) const;
 
 	Number& pow(const Number& exponent);
+	Number& modPow(const Number& exponent, const Number& modulus);
+
+	Number gcd(const Number& other) const;
+	Number modInverse(const Number& modulus) const;
 
 	void rightShift(size_t count);
 	void leftShift(size_t count);
@@ -55,7 +60,11 @@ public:
 
 	std::vector<uint32_t> getDigits() const;
 
-	static Number pow(const Number& base, const Number& exponent);
+	static Number pow(Number base, Number exponent);
+	static Number modPow(Number base, Number exponent, const Number& modulus);
+
+	static Number gcd(Number a, Number b);
+	static Number modInverse(Number a, Number modulus);
 
 	static Number fromString(const std::string& str);
 	std::string toString() const;
@@ -79,6 +88,8 @@ private:
 	std::vector<uint32_t> bitShiftLeft(const std::vector<uint32_t>& digits, size_t count) const;
 	std::vector<uint32_t> digitShiftRight(const std::vector<uint32_t>& digits, size_t count) const;
 	std::vector<uint32_t> digitShiftLeft(const std::vector<uint32_t>& digits, size_t count) const;
+
+	static std::tuple<Number, Number, Number> extendedGCD(Number a, Number b);
 
 	void trimLeadingZeros();
 };

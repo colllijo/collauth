@@ -240,9 +240,16 @@ std::strong_ordering Number::operator<=>(const Number &other) const
 	return cmp;
 }
 
-Number &Number::pow(const Number& exponent)
+Number &Number::pow(const Number &exponent)
 {
 	*this = pow(*this, exponent);
+
+	return *this;
+}
+
+Number &Number::modPow(const Number &exponent, const Number &modulus)
+{
+	*this = modPow(*this, exponent, modulus);
 
 	return *this;
 }
@@ -302,6 +309,65 @@ std::strong_ordering Number::compareAbs(const Number &other) const
 std::vector<uint32_t> Number::getDigits() const
 {
 	return digits;
+}
+
+Number Number::pow(Number base, Number exponent)
+{
+	Number result = 1;
+
+	while (exponent != 0)
+	{
+		if (exponent % 2 != 0)
+		{
+			result *= base;
+		}
+
+		base *= base;
+		exponent >>= 1;
+	}
+
+	return result;
+}
+
+Number Number::modPow(Number base, Number exponent, const Number &modulus)
+{
+	Number result = 1;
+	base %= modulus;
+
+	while (exponent != 0)
+	{
+		if (exponent % 2 != 0)
+		{
+			result = (result * base) % modulus;
+		}
+
+		base = (base * base) % modulus;
+		exponent >>= 1;
+	}
+
+	return result;
+}
+
+Number Number::gcd(Number a, Number b)
+{
+	return std::get<0>(extendedGCD(a, b));
+}
+
+Number Number::modInverse(Number a, Number modulus)
+{
+	auto [gcd, x, y] = extendedGCD(a, modulus);
+
+	if (gcd != 1)
+	{
+		throw std::invalid_argument("Modular inverse does not exist.");
+	}
+
+	if (x < 0)
+	{
+		x += modulus;
+	}
+
+	return x % modulus;
 }
 
 std::string Number::toString() const
@@ -522,6 +588,30 @@ void Number::trimLeadingZeros()
 {
 	while (!digits.empty() && digits.back() == 0) digits.pop_back();
 	if (digits.empty()) negative = false;
+}
+
+std::tuple<Number, Number, Number> Number::extendedGCD(Number a, Number b)
+{
+	Number x0 = 1, y0 = 0, x1 = 0, y1 = 1; 
+
+	while (b != 0)
+	{
+		Number q = a / b;
+		Number r = a % b;
+
+		a = b;
+		b = r;
+
+		Number x_temp = x0 - q * x1;
+		x0 = x1;
+		x1 = x_temp;
+
+		Number y_temp = y0 - q * y1;
+		y0 = y1;
+		y1 = y_temp;
+	}
+
+	return {a, x0, y0};
 }
 
 namespace

@@ -3,9 +3,11 @@
 #include <cstdlib>
 
 #include "events/EpollPoller.hpp"
+#ifndef USE_EPOLL
 #include "events/SelectPoller.hpp"
+#endif
+
 #include "logging/Logger.hpp"
-#include "math/Number.hpp"
 #include "signal/SignalHandler.hpp"
 #include "webserver/WebServer.hpp"
 
@@ -14,12 +16,6 @@ constexpr int HTTP_PORT = 8080;
 int main()
 {
 	SignalHandler& signalHandler = *SignalHandler::getInstance();
-
-	Number a("100");
-	Number b("30");
-
-	Logger::info("{} / {} = {}", a, b, (a / b));
-	Logger::info("{} % {} = {}", a, b, (a % b));
 
 	return 1;
 
