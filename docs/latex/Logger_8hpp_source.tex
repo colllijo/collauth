@@ -1,0 +1,140 @@
+\doxysection{Logger.\+hpp}
+\hypertarget{Logger_8hpp_source}{}\label{Logger_8hpp_source}\index{include/logging/Logger.hpp@{include/logging/Logger.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <format>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <mutex>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <source\_location>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classLogger}{Logger}}}
+\DoxyCodeLine{00011\ \{}
+\DoxyCodeLine{00012\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keyword}{enum\ class}\ Level}
+\DoxyCodeLine{00014\ \ \ \ \ \{}
+\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ TRACE,}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ DEBUG,}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ INFO,}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ WARNING,}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ ERROR,}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ FATAL}
+\DoxyCodeLine{00021\ \ \ \ \ \};}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keyword}{struct\ }trace}
+\DoxyCodeLine{00025\ \ \ \ \ \{}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ trace(\textcolor{keyword}{const}\ std::string\&\ message,\ Args\&\&...\ args,\ \textcolor{keyword}{const}\ std::source\_location\&\ location\ =\ std::source\_location::current())}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \ \ \ \ std::lock\_guard<std::mutex>\ lock(logMutex);}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ logMessage\ =\ std::format(\textcolor{stringliteral}{"{}[\{\}]\ [\{\}]\ [\{\}:\{\}\ (\{\})]:\ \{\}"{}},\ getCurrentTime(),\ toString(Level::TRACE),\ getRelativePath(location.file\_name()),\ location.line(),}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ getFunctionName(location),\ std::vformat(message,\ std::make\_format\_args(args...)));}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ logMessage\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00035\ \ \ \ \ \};}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00038\ \ \ \ \ \mbox{\hyperlink{structLogger_1_1trace}{trace}}(\textcolor{keyword}{const}\ std::string\&\ message,\ Args\&\&...)\ -\/>\ \mbox{\hyperlink{structLogger_1_1trace}{trace}}<Args...>;}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keyword}{struct\ }debug}
+\DoxyCodeLine{00042\ \ \ \ \ \{}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ debug(\textcolor{keyword}{const}\ std::string\&\ message,\ Args\&\&...\ args,\ \textcolor{keyword}{const}\ std::source\_location\&\ location\ =\ std::source\_location::current())}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ std::lock\_guard<std::mutex>\ lock(logMutex);}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ logMessage\ =\ std::format(\textcolor{stringliteral}{"{}[\{\}]\ [\{\}]\ [\{\}:\{\}\ (\{\})]:\ \{\}"{}},\ getCurrentTime(),\ toString(Level::DEBUG),\ getRelativePath(location.file\_name()),\ location.line(),}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ getFunctionName(location),\ std::vformat(message,\ std::make\_format\_args(args...)));}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ logMessage\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00052\ \ \ \ \ \};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00055\ \ \ \ \ \mbox{\hyperlink{structLogger_1_1debug}{debug}}(\textcolor{keyword}{const}\ std::string\&\ message,\ Args\&\&...)\ -\/>\ \mbox{\hyperlink{structLogger_1_1debug}{debug}}<Args...>;}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keyword}{struct\ }info}
+\DoxyCodeLine{00059\ \ \ \ \ \{}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ info(\textcolor{keyword}{const}\ std::string\&\ message,\ Args\&\&...\ args,\ \textcolor{keyword}{const}\ std::source\_location\&\ location\ =\ std::source\_location::current())}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ std::lock\_guard<std::mutex>\ lock(logMutex);}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ logMessage\ =\ std::format(\textcolor{stringliteral}{"{}[\{\}]\ [\{\}]\ [\{\}:\{\}\ (\{\})]:\ \{\}"{}},\ getCurrentTime(),\ toString(Level::INFO),\ getRelativePath(location.file\_name()),\ location.line(),}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ getFunctionName(location),\ std::vformat(message,\ std::make\_format\_args(args...)));}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ logMessage\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00069\ \ \ \ \ \};}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00072\ \ \ \ \ \mbox{\hyperlink{structLogger_1_1info}{info}}(\textcolor{keyword}{const}\ std::string\&\ message,\ Args\&\&...)\ -\/>\ \mbox{\hyperlink{structLogger_1_1info}{info}}<Args...>;}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keyword}{struct\ }warning}
+\DoxyCodeLine{00076\ \ \ \ \ \{}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ warning(\textcolor{keyword}{const}\ std::string\&\ message,\ Args\&\&...\ args,\ \textcolor{keyword}{const}\ std::source\_location\&\ location\ =\ std::source\_location::current())}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ \ \ std::lock\_guard<std::mutex>\ lock(logMutex);}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ logMessage\ =\ std::format(\textcolor{stringliteral}{"{}[\{\}]\ [\{\}]\ [\{\}:\{\}\ (\{\})]:\ \{\}"{}},\ getCurrentTime(),\ toString(Level::WARNING),\ getRelativePath(location.file\_name()),\ location.line(),}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ getFunctionName(location),\ std::vformat(message,\ std::make\_format\_args(args...)));}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \ \ \ std::cerr\ <<\ logMessage\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00086\ \ \ \ \ \};}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00089\ \ \ \ \ \mbox{\hyperlink{structLogger_1_1warning}{warning}}(\textcolor{keyword}{const}\ std::string\&\ message,\ Args\&\&...)\ -\/>\ \mbox{\hyperlink{structLogger_1_1warning}{warning}}<Args...>;}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keyword}{struct\ }error}
+\DoxyCodeLine{00093\ \ \ \ \ \{}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ error(\textcolor{keyword}{const}\ std::string\&\ message,\ Args\&\&...\ args,\ \textcolor{keyword}{const}\ std::source\_location\&\ location\ =\ std::source\_location::current())}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ std::lock\_guard<std::mutex>\ lock(logMutex);}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ logMessage\ =\ std::format(\textcolor{stringliteral}{"{}[\{\}]\ [\{\}]\ [\{\}:\{\}\ (\{\})]:\ \{\}"{}},\ getCurrentTime(),\ toString(Level::ERROR),\ getRelativePath(location.file\_name()),\ location.line(),}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ getFunctionName(location),\ std::vformat(message,\ std::make\_format\_args(args...)));}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ std::cerr\ <<\ logMessage\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00103\ \ \ \ \ \};}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00106\ \ \ \ \ \mbox{\hyperlink{structLogger_1_1error}{error}}(\textcolor{keyword}{const}\ std::string\&\ message,\ Args\&\&...)\ -\/>\ \mbox{\hyperlink{structLogger_1_1error}{error}}<Args...>;}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{keyword}{struct\ }fatal}
+\DoxyCodeLine{00110\ \ \ \ \ \{}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ fatal(\textcolor{keyword}{const}\ std::string\&\ message,\ Args\&\&...\ args,\ \textcolor{keyword}{const}\ std::source\_location\&\ location\ =\ std::source\_location::current())}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ std::lock\_guard<std::mutex>\ lock(logMutex);}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ logMessage\ =\ std::format(\textcolor{stringliteral}{"{}[\{\}]\ [\{\}]\ [\{\}:\{\}\ (\{\})]:\ \{\}"{}},\ getCurrentTime(),\ toString(Level::FATAL),\ getRelativePath(location.file\_name()),\ location.line(),}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ getFunctionName(location),\ std::vformat(message,\ std::make\_format\_args(args...)));}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ std::cerr\ <<\ logMessage\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00120\ \ \ \ \ \};}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00123\ \ \ \ \ \mbox{\hyperlink{structLogger_1_1fatal}{fatal}}(\textcolor{keyword}{const}\ std::string\&\ message,\ Args\&\&...)\ -\/>\ \mbox{\hyperlink{structLogger_1_1fatal}{fatal}}<Args...>;}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \ \ \ \ \textcolor{keyword}{static}\ std::string\ toHex(\textcolor{keyword}{const}\ std::vector<uint8\_t>\&\ data);}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keyword}{static}\ std::mutex\ logMutex;}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \ \ \ \ \textcolor{keyword}{static}\ std::string\ getFunctionName(\textcolor{keyword}{const}\ std::source\_location\&\ location);}
+\DoxyCodeLine{00131\ \ \ \ \ \textcolor{keyword}{static}\ std::string\ getRelativePath(\textcolor{keyword}{const}\ std::string\&\ path);}
+\DoxyCodeLine{00132\ \ \ \ \ \textcolor{keyword}{static}\ std::string\ getCurrentTime();}
+\DoxyCodeLine{00133\ \ \ \ \ \textcolor{keyword}{static}\ std::string\ toString(Level\ level);}
+\DoxyCodeLine{00134\ \};}
+
+\end{DoxyCode}

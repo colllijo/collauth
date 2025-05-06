@@ -1,0 +1,20 @@
+\doxysection{Event\+Poller.\+hpp}
+\hypertarget{EventPoller_8hpp_source}{}\label{EventPoller_8hpp_source}\index{include/events/EventPoller.hpp@{include/events/EventPoller.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classEventPoller}{EventPoller}}}
+\DoxyCodeLine{00006\ \{}
+\DoxyCodeLine{00007\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00008\ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{classEventPoller}{\string~EventPoller}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ add(\textcolor{keywordtype}{int}\ fd)\ =\ 0;}
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ remove(\textcolor{keywordtype}{int}\ fd)\ =\ 0;}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keyword}{virtual}\ std::vector<int>\ wait()\ \textcolor{keyword}{const}\ =\ 0;}
+\DoxyCodeLine{00014\ \};}
+
+\end{DoxyCode}

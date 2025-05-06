@@ -1,0 +1,43 @@
+\doxysection{TLSSignature.\+hpp}
+\hypertarget{TLSSignature_8hpp_source}{}\label{TLSSignature_8hpp_source}\index{include/tls/TLSSignature.hpp@{include/tls/TLSSignature.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{enum\ class}\ TLSSignatureScheme\ :\ uint16\_t}
+\DoxyCodeLine{00007\ \{}
+\DoxyCodeLine{00008\ \ \ \ \ \textcolor{comment}{/*\ RSASSA-\/PKCS1-\/v1\_5\ algorithms\ */}}
+\DoxyCodeLine{00009\ \ \ \ \ RSA\_PKCS1\_SHA256\ =\ 0x0401,}
+\DoxyCodeLine{00010\ \ \ \ \ RSA\_PKCS1\_SHA384\ =\ 0x0501,}
+\DoxyCodeLine{00011\ \ \ \ \ RSA\_PKCS1\_SHA512\ =\ 0x0601,}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{comment}{/*\ ECDSA\ algorithms\ */}}
+\DoxyCodeLine{00014\ \ \ \ \ ECDSA\_SECP256R1\_SHA256\ =\ 0x0403,}
+\DoxyCodeLine{00015\ \ \ \ \ ECDSA\_SECP384R1\_SHA384\ =\ 0x0503,}
+\DoxyCodeLine{00016\ \ \ \ \ ECDSA\_SECP521R1\_SHA512\ =\ 0x0603,}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{comment}{/*\ RSASSA-\/PSS\ algorithms\ with\ public\ key\ OID\ rsaEncryption\ */}}
+\DoxyCodeLine{00019\ \ \ \ \ RSA\_PSS\_RSAE\_SHA256\ =\ 0x0804,}
+\DoxyCodeLine{00020\ \ \ \ \ RSA\_PSS\_RSAE\_SHA384\ =\ 0x0805,}
+\DoxyCodeLine{00021\ \ \ \ \ RSA\_PSS\_RSAE\_SHA512\ =\ 0x0806,}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{comment}{/*\ EdDSA\ algorithms\ */}}
+\DoxyCodeLine{00024\ \ \ \ \ ED25519\ =\ 0x0807,}
+\DoxyCodeLine{00025\ \ \ \ \ ED448\ =\ 0x0808,}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{comment}{/*\ RSASSA-\/PSS\ algorithms\ with\ public\ key\ OID\ RSASSA-\/PSS\ */}}
+\DoxyCodeLine{00028\ \ \ \ \ RSA\_PSS\_PSS\_SHA256\ =\ 0x0809,}
+\DoxyCodeLine{00029\ \ \ \ \ RSA\_PSS\_PSS\_SHA384\ =\ 0x080a,}
+\DoxyCodeLine{00030\ \ \ \ \ RSA\_PSS\_PSS\_SHA512\ =\ 0x080b,}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{comment}{/*\ Legacy\ algorithms\ */}}
+\DoxyCodeLine{00033\ \ \ \ \ RSA\_PKCS1\_SHA1\ =\ 0x0201,}
+\DoxyCodeLine{00034\ \ \ \ \ ECDSA\_SHA1\ =\ 0x0203}
+\DoxyCodeLine{00035\ \};}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ std::vector<TLSSignatureScheme>\ parseTLSSignatureSchemes(\textcolor{keyword}{const}\ std::vector<uint8\_t>\&\ data);}
+
+\end{DoxyCode}

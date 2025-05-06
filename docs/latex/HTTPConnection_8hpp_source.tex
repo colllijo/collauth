@@ -1,0 +1,25 @@
+\doxysection{HTTPConnection.\+hpp}
+\hypertarget{HTTPConnection_8hpp_source}{}\label{HTTPConnection_8hpp_source}\index{include/networking/HTTPConnection.hpp@{include/networking/HTTPConnection.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}http/HTTPParser.hpp"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}http/HTTPRequest.hpp"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}networking/Connection.hpp"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{keyword}{class\ }HTTPConnection\ :\ \textcolor{keyword}{public}\ Connection}
+\DoxyCodeLine{00008\ \{}
+\DoxyCodeLine{00009\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00010\ \ \ \ \ HTTPConnection(\textcolor{keywordtype}{int}\ socketfd);}
+\DoxyCodeLine{00011\ \ \ \ \ \string~HTTPConnection();}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keywordtype}{bool}\ handle()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00014\ \ \ \ \ Request\ getRequest()\ \textcolor{keyword}{const\ override};}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00017\ \ \ \ \ \mbox{\hyperlink{classHTTPParser}{HTTPParser}}\ parser;}
+\DoxyCodeLine{00018\ \ \ \ \ \mbox{\hyperlink{classHTTPRequest}{HTTPRequest}}\ request;}
+\DoxyCodeLine{00019\ \};}
+
+\end{DoxyCode}

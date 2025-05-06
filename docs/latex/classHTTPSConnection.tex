@@ -1,0 +1,64 @@
+\doxysection{HTTPSConnection Class Reference}
+\hypertarget{classHTTPSConnection}{}\label{classHTTPSConnection}\index{HTTPSConnection@{HTTPSConnection}}
+Inheritance diagram for HTTPSConnection\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classHTTPSConnection}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classHTTPSConnection_acbe4feb5b26ad462e0724ab8c8ff122d}\label{classHTTPSConnection_acbe4feb5b26ad462e0724ab8c8ff122d} 
+{\bfseries HTTPSConnection} (int socketfd)
+\item 
+bool \mbox{\hyperlink{classHTTPSConnection_a1b5a9b6dd3f64f140f60ee030c92c125}{handle}} () override
+\item 
+Request \mbox{\hyperlink{classHTTPSConnection_a7a3fd19e485bf1fb4744a4f6d634ece6}{get\+Request}} () const override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classConnection}{Connection}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Connection} (int socketfd)
+\item 
+bool {\bfseries is\+Request\+Ready} () const
+\item 
+int {\bfseries get\+Socket\+Fd} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{classConnection}{Connection}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classSocket}{Socket}} {\bfseries socket}
+\item 
+bool {\bfseries request\+Ready}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classHTTPSConnection_a7a3fd19e485bf1fb4744a4f6d634ece6}\index{HTTPSConnection@{HTTPSConnection}!getRequest@{getRequest}}
+\index{getRequest@{getRequest}!HTTPSConnection@{HTTPSConnection}}
+\doxysubsubsection{\texorpdfstring{getRequest()}{getRequest()}}
+{\footnotesize\ttfamily \label{classHTTPSConnection_a7a3fd19e485bf1fb4744a4f6d634ece6} 
+Request HTTPSConnection\+::get\+Request (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classConnection}{Connection}}.
+
+\Hypertarget{classHTTPSConnection_a1b5a9b6dd3f64f140f60ee030c92c125}\index{HTTPSConnection@{HTTPSConnection}!handle@{handle}}
+\index{handle@{handle}!HTTPSConnection@{HTTPSConnection}}
+\doxysubsubsection{\texorpdfstring{handle()}{handle()}}
+{\footnotesize\ttfamily \label{classHTTPSConnection_a1b5a9b6dd3f64f140f60ee030c92c125} 
+bool HTTPSConnection\+::handle (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classConnection}{Connection}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/networking/HTTPSConnection.\+hpp\item 
+src/networking/HTTPSConnection.\+cpp\end{DoxyCompactItemize}

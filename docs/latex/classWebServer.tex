@@ -1,0 +1,26 @@
+\doxysection{Web\+Server Class Reference}
+\hypertarget{classWebServer}{}\label{classWebServer}\index{WebServer@{WebServer}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classWebServer_a251da5e2add2c46c81deb80fc3663f23}\label{classWebServer_a251da5e2add2c46c81deb80fc3663f23} 
+{\bfseries Web\+Server} (const std\+::string \&address, int port, std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{classEventPoller}{Event\+Poller}} $>$ poller)
+\item 
+\Hypertarget{classWebServer_a0879d889c9d1071060e868b9149a20c6}\label{classWebServer_a0879d889c9d1071060e868b9149a20c6} 
+void {\bfseries run} ()
+\item 
+\Hypertarget{classWebServer_ab432937d4b1c5d665653319e545292ab}\label{classWebServer_ab432937d4b1c5d665653319e545292ab} 
+void {\bfseries stop} ()
+\item 
+\Hypertarget{classWebServer_a32d24cb5acb0a4fcfe0418e72c2495db}\label{classWebServer_a32d24cb5acb0a4fcfe0418e72c2495db} 
+void {\bfseries register\+Middleware} (Middleware\+Func middleware)
+\item 
+\Hypertarget{classWebServer_ae12e774a762aed6bf3bff5996b03706f}\label{classWebServer_ae12e774a762aed6bf3bff5996b03706f} 
+void {\bfseries register\+Route} (HTTPMethod method, const std\+::string \&path, Route\+Handler handler)
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/webserver/Web\+Server.\+hpp\item 
+src/webserver/Web\+Server.\+cpp\end{DoxyCompactItemize}

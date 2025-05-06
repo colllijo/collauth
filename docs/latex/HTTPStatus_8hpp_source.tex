@@ -1,0 +1,81 @@
+\doxysection{HTTPStatus.\+hpp}
+\hypertarget{HTTPStatus_8hpp_source}{}\label{HTTPStatus_8hpp_source}\index{include/http/HTTPStatus.hpp@{include/http/HTTPStatus.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{keyword}{enum\ class}\ HTTPStatus}
+\DoxyCodeLine{00006\ \{}
+\DoxyCodeLine{00007\ \ \ \ \ CONTINUE\ =\ 100,}
+\DoxyCodeLine{00008\ \ \ \ \ SWITCHING\_PROTOCOLS\ =\ 101,}
+\DoxyCodeLine{00009\ \ \ \ \ PROCESSING\ =\ 102,}
+\DoxyCodeLine{00010\ \ \ \ \ EARLY\_HINTS\ =\ 103,}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \ \ \ \ OK\ =\ 200,}
+\DoxyCodeLine{00013\ \ \ \ \ CREATED\ =\ 201,}
+\DoxyCodeLine{00014\ \ \ \ \ ACCEPTED\ =\ 202,}
+\DoxyCodeLine{00015\ \ \ \ \ NON\_AUTHORITATIVE\_INFORMATION\ =\ 203,}
+\DoxyCodeLine{00016\ \ \ \ \ NO\_CONTENT\ =\ 204,}
+\DoxyCodeLine{00017\ \ \ \ \ RESET\_CONTENT\ =\ 205,}
+\DoxyCodeLine{00018\ \ \ \ \ PARTIAL\_CONTENT\ =\ 206,}
+\DoxyCodeLine{00019\ \ \ \ \ MULTI\_STATUS\ =\ 207,}
+\DoxyCodeLine{00020\ \ \ \ \ ALREADY\_REPORTED\ =\ 208,}
+\DoxyCodeLine{00021\ \ \ \ \ IM\_USED\ =\ 226,}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ MULTIPLE\_CHOICES\ =\ 300,}
+\DoxyCodeLine{00024\ \ \ \ \ MOVED\_PERMANENTLY\ =\ 301,}
+\DoxyCodeLine{00025\ \ \ \ \ FOUND\ =\ 302,}
+\DoxyCodeLine{00026\ \ \ \ \ SEE\_OTHER\ =\ 303,}
+\DoxyCodeLine{00027\ \ \ \ \ NOT\_MODIFIED\ =\ 304,}
+\DoxyCodeLine{00028\ \ \ \ \ USE\_PROXY\ =\ 305,}
+\DoxyCodeLine{00029\ \ \ \ \ TEMPORARY\_REDIRECT\ =\ 307,}
+\DoxyCodeLine{00030\ \ \ \ \ PERMANENT\_REDIRECT\ =\ 308,}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ BAD\_REQUEST\ =\ 400,}
+\DoxyCodeLine{00033\ \ \ \ \ UNAUTHORIZED\ =\ 401,}
+\DoxyCodeLine{00034\ \ \ \ \ PAYMENT\_REQUIRED\ =\ 402,}
+\DoxyCodeLine{00035\ \ \ \ \ FORBIDDEN\ =\ 403,}
+\DoxyCodeLine{00036\ \ \ \ \ NOT\_FOUND\ =\ 404,}
+\DoxyCodeLine{00037\ \ \ \ \ METHOD\_NOT\_ALLOWED\ =\ 405,}
+\DoxyCodeLine{00038\ \ \ \ \ NOT\_ACCEPTABLE\ =\ 406,}
+\DoxyCodeLine{00039\ \ \ \ \ PROXY\_AUTHENTICATION\_REQUIRED\ =\ 407,}
+\DoxyCodeLine{00040\ \ \ \ \ REQUEST\_TIMEOUT\ =\ 408,}
+\DoxyCodeLine{00041\ \ \ \ \ CONFLICT\ =\ 409,}
+\DoxyCodeLine{00042\ \ \ \ \ GONE\ =\ 410,}
+\DoxyCodeLine{00043\ \ \ \ \ LENGTH\_REQUIRED\ =\ 411,}
+\DoxyCodeLine{00044\ \ \ \ \ PRECONDITION\_FAILED\ =\ 412,}
+\DoxyCodeLine{00045\ \ \ \ \ PAYLOAD\_TOO\_LARGE\ =\ 413,}
+\DoxyCodeLine{00046\ \ \ \ \ URI\_TOO\_LONG\ =\ 414,}
+\DoxyCodeLine{00047\ \ \ \ \ UNSUPPORTED\_MEDIA\_TYPE\ =\ 415,}
+\DoxyCodeLine{00048\ \ \ \ \ RANGE\_NOT\_SATISFIABLE\ =\ 416,}
+\DoxyCodeLine{00049\ \ \ \ \ EXPECTATION\_FAILED\ =\ 417,}
+\DoxyCodeLine{00050\ \ \ \ \ IM\_A\_TEAPOT\ =\ 418,}
+\DoxyCodeLine{00051\ \ \ \ \ MISDIRECTED\_REQUEST\ =\ 421,}
+\DoxyCodeLine{00052\ \ \ \ \ UNPROCESSABLE\_ENTITY\ =\ 422,}
+\DoxyCodeLine{00053\ \ \ \ \ LOCKED\ =\ 423,}
+\DoxyCodeLine{00054\ \ \ \ \ FAILED\_DEPENDENCY\ =\ 424,}
+\DoxyCodeLine{00055\ \ \ \ \ TOO\_EARLY\ =\ 425,}
+\DoxyCodeLine{00056\ \ \ \ \ UPGRADE\_REQUIRED\ =\ 426,}
+\DoxyCodeLine{00057\ \ \ \ \ PRECONDITION\_REQUIRED\ =\ 428,}
+\DoxyCodeLine{00058\ \ \ \ \ TOO\_MANY\_REQUESTS\ =\ 429,}
+\DoxyCodeLine{00059\ \ \ \ \ REQUEST\_HEADER\_FIELDS\_TOO\_LARGE\ =\ 431,}
+\DoxyCodeLine{00060\ \ \ \ \ UNAVAILABLE\_FOR\_LEGAL\_REASONS\ =\ 451,}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ INTERNAL\_SERVER\_ERROR\ =\ 500,}
+\DoxyCodeLine{00063\ \ \ \ \ NOT\_IMPLEMENTED\ =\ 501,}
+\DoxyCodeLine{00064\ \ \ \ \ BAD\_GATEWAY\ =\ 502,}
+\DoxyCodeLine{00065\ \ \ \ \ SERVICE\_UNAVAILABLE\ =\ 503,}
+\DoxyCodeLine{00066\ \ \ \ \ GATEWAY\_TIMEOUT\ =\ 504,}
+\DoxyCodeLine{00067\ \ \ \ \ HTTP\_VERSION\_NOT\_SUPPORTED\ =\ 505,}
+\DoxyCodeLine{00068\ \ \ \ \ VARIANT\_ALSO\_NEGOTIATES\ =\ 506,}
+\DoxyCodeLine{00069\ \ \ \ \ INSUFFICIENT\_STORAGE\ =\ 507,}
+\DoxyCodeLine{00070\ \ \ \ \ LOOP\_DETECTED\ =\ 508,}
+\DoxyCodeLine{00071\ \ \ \ \ NOT\_EXTENDED\ =\ 510,}
+\DoxyCodeLine{00072\ \ \ \ \ NETWORK\_AUTHENTICATION\_REQUIRED\ =\ 511}
+\DoxyCodeLine{00073\ \};}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ std::string\ statusToString(HTTPStatus\ status);}
+
+\end{DoxyCode}

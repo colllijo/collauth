@@ -1,0 +1,33 @@
+\doxysection{TLSContext Class Reference}
+\hypertarget{classTLSContext}{}\label{classTLSContext}\index{TLSContext@{TLSContext}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classTLSContext_ab1872357fd56201f8d4d04be28564da1}\label{classTLSContext_ab1872357fd56201f8d4d04be28564da1} 
+enum class {\bfseries TLSState} \{ \newline
+{\bfseries INITIAL}
+, {\bfseries NEGOTIATING}
+, {\bfseries HANDSHAKE\+\_\+\+COMPLETE}
+, {\bfseries APPLICATION\+\_\+\+DATA}
+, \newline
+{\bfseries CLOSED}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classTLSContext_ab45a561d7e0307546093b754e0ce3c7b}\label{classTLSContext_ab45a561d7e0307546093b754e0ce3c7b} 
+{\bfseries TLSContext} (\mbox{\hyperlink{classSocket}{Socket}} \&socket)
+\item 
+\Hypertarget{classTLSContext_af24b0501c43502e810e5f4c5344dd9f8}\label{classTLSContext_af24b0501c43502e810e5f4c5344dd9f8} 
+bool {\bfseries initialize} (const std\+::vector$<$ uint8\+\_\+t $>$ \&data)
+\item 
+\Hypertarget{classTLSContext_a5776b677f8db4d6eb8a8b09cbf8ce9d0}\label{classTLSContext_a5776b677f8db4d6eb8a8b09cbf8ce9d0} 
+bool {\bfseries ready} () const
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/tls/TLSContext.\+hpp\item 
+src/tls/TLSContext.\+cpp\end{DoxyCompactItemize}

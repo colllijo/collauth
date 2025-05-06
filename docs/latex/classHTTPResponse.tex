@@ -1,0 +1,47 @@
+\doxysection{HTTPResponse Class Reference}
+\hypertarget{classHTTPResponse}{}\label{classHTTPResponse}\index{HTTPResponse@{HTTPResponse}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classHTTPResponse_aa08edfe4226067b926a7c07f29e0a729}\label{classHTTPResponse_aa08edfe4226067b926a7c07f29e0a729} 
+{\bfseries HTTPResponse} (HTTPStatus status=HTTPStatus\+::\+OK)
+\item 
+\Hypertarget{classHTTPResponse_a247fc1c33744d13b1c0c4eec778c45ee}\label{classHTTPResponse_a247fc1c33744d13b1c0c4eec778c45ee} 
+HTTPStatus {\bfseries get\+Status\+Code} () const
+\item 
+\Hypertarget{classHTTPResponse_a5582e32bf572b9adf84d13f0f702d588}\label{classHTTPResponse_a5582e32bf572b9adf84d13f0f702d588} 
+\mbox{\hyperlink{classHTTPResponse}{HTTPResponse}} \& {\bfseries set\+Status\+Code} (HTTPStatus status)
+\item 
+\Hypertarget{classHTTPResponse_aef2ea8fb759a9e5da51d258fe0749343}\label{classHTTPResponse_aef2ea8fb759a9e5da51d258fe0749343} 
+std\+::optional$<$ std\+::string $>$ {\bfseries get\+Header} (const std\+::string \&name) const
+\item 
+\Hypertarget{classHTTPResponse_a66b1154f29cac03b291130779f56bca2}\label{classHTTPResponse_a66b1154f29cac03b291130779f56bca2} 
+\mbox{\hyperlink{classHTTPResponse}{HTTPResponse}} \& {\bfseries set\+Header} (const std\+::string \&name, const std\+::string \&value)
+\item 
+\Hypertarget{classHTTPResponse_a67c05de26641fea70a14d1e8a95c0138}\label{classHTTPResponse_a67c05de26641fea70a14d1e8a95c0138} 
+std\+::string {\bfseries get\+Body} () const
+\item 
+\Hypertarget{classHTTPResponse_a53bab048a07e404f7e7f22f16175a80a}\label{classHTTPResponse_a53bab048a07e404f7e7f22f16175a80a} 
+\mbox{\hyperlink{classHTTPResponse}{HTTPResponse}} \& {\bfseries set\+Body} (const std\+::string \&body)
+\item 
+\Hypertarget{classHTTPResponse_a31b5a0b6009f7d8ec096f2a98b91fbef}\label{classHTTPResponse_a31b5a0b6009f7d8ec096f2a98b91fbef} 
+std\+::string {\bfseries build} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classHTTPResponse_a2083c6f5c5d4f1eebb519e36be5d352d}\label{classHTTPResponse_a2083c6f5c5d4f1eebb519e36be5d352d} 
+HTTPStatus {\bfseries status}
+\item 
+\Hypertarget{classHTTPResponse_a0fb43260a827b44fade06f7ee1b34e88}\label{classHTTPResponse_a0fb43260a827b44fade06f7ee1b34e88} 
+std\+::unordered\+\_\+map$<$ std\+::string, std\+::string $>$ {\bfseries headers}
+\item 
+\Hypertarget{classHTTPResponse_a64a9aad0bf4cc1b2b5f7bbc8b3cb1867}\label{classHTTPResponse_a64a9aad0bf4cc1b2b5f7bbc8b3cb1867} 
+std\+::string {\bfseries body}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/http/HTTPResponse.\+hpp\item 
+src/http/HTTPResponse.\+cpp\end{DoxyCompactItemize}

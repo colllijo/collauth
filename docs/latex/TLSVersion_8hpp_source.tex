@@ -1,0 +1,20 @@
+\doxysection{TLSVersion.\+hpp}
+\hypertarget{TLSVersion_8hpp_source}{}\label{TLSVersion_8hpp_source}\index{include/tls/TLSVersion.hpp@{include/tls/TLSVersion.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{enum\ class}\ TLSVersion\ :\ uint16\_t}
+\DoxyCodeLine{00007\ \{}
+\DoxyCodeLine{00008\ \ \ \ \ TLS\_1\_0\ =\ 0x0301,}
+\DoxyCodeLine{00009\ \ \ \ \ TLS\_1\_1\ =\ 0x0302,}
+\DoxyCodeLine{00010\ \ \ \ \ TLS\_1\_2\ =\ 0x0303,}
+\DoxyCodeLine{00011\ \ \ \ \ TLS\_1\_3\ =\ 0x0304}
+\DoxyCodeLine{00012\ \};}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ std::vector<TLSVersion>\ parseTLSVersion(\textcolor{keyword}{const}\ std::vector<uint8\_t>\&\ data);}
+
+\end{DoxyCode}

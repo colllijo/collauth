@@ -1,0 +1,24 @@
+\doxysection{HTTPMethod.\+hpp}
+\hypertarget{HTTPMethod_8hpp_source}{}\label{HTTPMethod_8hpp_source}\index{include/http/HTTPMethod.hpp@{include/http/HTTPMethod.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{keyword}{enum\ class}\ HTTPMethod}
+\DoxyCodeLine{00006\ \{}
+\DoxyCodeLine{00007\ \ \ \ \ GET,}
+\DoxyCodeLine{00008\ \ \ \ \ POST,}
+\DoxyCodeLine{00009\ \ \ \ \ PUT,}
+\DoxyCodeLine{00010\ \ \ \ \ DELETE,}
+\DoxyCodeLine{00011\ \ \ \ \ HEAD,}
+\DoxyCodeLine{00012\ \ \ \ \ OPTIONS,}
+\DoxyCodeLine{00013\ \ \ \ \ PATCH,}
+\DoxyCodeLine{00014\ \ \ \ \ UNKNOWN}
+\DoxyCodeLine{00015\ \};}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ HTTPMethod\ parseHTTPMethod(\textcolor{keyword}{const}\ std::string\&\ method);}
+\DoxyCodeLine{00018\ std::string\ httpMethodToString(HTTPMethod\ method);}
+
+\end{DoxyCode}

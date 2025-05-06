@@ -1,0 +1,19 @@
+\doxysection{TLSServer\+Name.\+hpp}
+\hypertarget{TLSServerName_8hpp_source}{}\label{TLSServerName_8hpp_source}\index{include/tls/TLSServerName.hpp@{include/tls/TLSServerName.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <unordered\_map>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{enum\ class}\ TLSServerNameType\ :\ uint8\_t}
+\DoxyCodeLine{00009\ \{}
+\DoxyCodeLine{00010\ \ \ \ \ HOST\_NAME\ =\ 0x00,}
+\DoxyCodeLine{00011\ \};}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ std::unordered\_map<TLSServerNameType,\ std::string>\ parseTLSServerName(\textcolor{keyword}{const}\ std::vector<uint8\_t>\&\ data);}
+
+\end{DoxyCode}
