@@ -36,6 +36,8 @@ public:
 	Number& operator/=(const Number& other);
 	Number& operator%=(const Number& other);
 
+	Number operator-() const;
+
 	Number operator<<(size_t count) const;
 	Number operator>>(size_t count) const;
 
@@ -68,6 +70,7 @@ public:
 
 	static Number fromString(const std::string& str);
 	std::string toString() const;
+	std::string toBinaryString() const;
 
 	template <std::integral T>
 	void fromIntegral(T number);

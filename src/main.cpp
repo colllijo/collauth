@@ -1,8 +1,10 @@
-#include <cerrno>
+#include <cassert>
 #include <csignal>
 #include <cstdlib>
 
 #include "events/EpollPoller.hpp"
+#include "math/EllipticCurve.hpp"
+#include "math/Point.hpp"
 #ifndef USE_EPOLL
 #include "events/SelectPoller.hpp"
 #endif
@@ -16,6 +18,15 @@ constexpr int HTTP_PORT = 8080;
 int main()
 {
 	SignalHandler& signalHandler = *SignalHandler::getInstance();
+
+	EllipticCurve curve(2, 2, 17);
+	Point p(5, 1);
+
+	Point p3 = curve.multiply(p, 3);
+
+	Logger::info("Point: ({}, {})", p.x, p.y);
+	Logger::info("Point 3: ({}, {})", p3.x, p3.y);
+	Logger::info("Is on curve: {}", curve.isOnCurve(p3) ? "true" : "false");
 
 	return 1;
 

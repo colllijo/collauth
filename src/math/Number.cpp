@@ -1,6 +1,7 @@
 #include "math/Number.hpp"
 
 #include <algorithm>
+#include <bitset>
 #include <compare>
 #include <stdexcept>
 #include <string>
@@ -34,6 +35,9 @@ Number &Number::operator+=(const Number &other)
 	if (negative == other.negative)
 	{
 		digits = add(digits, other.digits);
+
+		trimLeadingZeros();
+
 		return *this;
 	}
 
@@ -71,6 +75,9 @@ Number &Number::operator-=(const Number &other)
 	if (negative != other.negative)
 	{
 		digits = add(digits, other.digits);
+
+		trimLeadingZeros();
+
 		return *this;
 	}
 
@@ -177,6 +184,14 @@ Number &Number::operator%=(const Number &other)
 	return *this;
 }
 
+Number Number::operator-() const
+{
+	Number result = *this;
+	result.negative = !result.negative;
+
+	return result;
+}
+
 Number Number::operator<<(size_t count) const
 {
 	Number result = *this;
@@ -252,6 +267,16 @@ Number &Number::modPow(const Number &exponent, const Number &modulus)
 	*this = modPow(*this, exponent, modulus);
 
 	return *this;
+}
+
+Number Number::gcd(const Number &other) const
+{
+	return gcd(*this, other);
+}
+
+Number Number::modInverse(const Number &modulus) const
+{
+	return modInverse(*this, modulus);
 }
 
 void Number::rightShift(size_t count)
@@ -399,6 +424,25 @@ std::string Number::toString() const
 	return result;
 }
 
+std::string Number::toBinaryString() const
+{
+	if (digits.empty()) return "0";
+
+	std::string result;
+
+	for (auto it = digits.rbegin(); it != digits.rend(); ++it)
+	{
+		result += std::bitset<32>(*it).to_string();
+	}
+
+	auto firstOne = result.find('1');
+	if (firstOne != std::string::npos)
+	{
+		return result.substr(firstOne);
+	}
+	return "0";
+}
+
 Number Number::fromString(const std::string &str)
 {
 	const uint64_t base = 1ULL << 32;
@@ -459,7 +503,7 @@ std::vector<uint32_t> Number::add(const std::vector<uint32_t> &a, const std::vec
 
 std::vector<uint32_t> Number::sub(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const
 {
-	std::vector<uint32_t> result(a.size());
+	std::vector<uint32_t> result(std::max(a.size(), 1UL));
 
 	uint64_t borrow = 0;
 	for (size_t i = 0; i < a.size() || i < b.size(); ++i)
@@ -592,7 +636,7 @@ void Number::trimLeadingZeros()
 
 std::tuple<Number, Number, Number> Number::extendedGCD(Number a, Number b)
 {
-	Number x0 = 1, y0 = 0, x1 = 0, y1 = 1; 
+	Number x0 = 1, y0 = 0, x1 = 0, y1 = 1;
 
 	while (b != 0)
 	{
