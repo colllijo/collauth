@@ -2,7 +2,7 @@
 
 void Router::registerRoute(HTTPMethod method, const std::string& path, RouteHandler handler)
 {
-	routes[std::make_pair(method, path)] = handler;
+	routes[std::make_pair(method, path)] = std::move(handler);
 }
 
 void Router::handleRequest(const HTTPRequest& request, HTTPResponse& response) const

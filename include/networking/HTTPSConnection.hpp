@@ -8,8 +8,8 @@
 class HTTPSConnection : public Connection
 {
 public:
-	HTTPSConnection(int socketfd);
-	~HTTPSConnection();
+	explicit HTTPSConnection(int socketfd);
+	~HTTPSConnection() override;
 
 	bool handle() override;
 	Request getRequest() const override;

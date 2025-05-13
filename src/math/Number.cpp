@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <string>
 #include <tuple>
+#include <utility>
 
 namespace
 {
@@ -15,12 +16,26 @@ namespace
 	void correctQuotientEstimate(std::vector<uint32_t> &remainder, const std::vector<uint32_t> &divisor, uint32_t &q_digit);
 };	// namespace
 
-Number::Number() : digits(), negative(false) {}
-Number::Number(std::string value)
+constexpr Number::Number() : digits(), negative(false) {}
+Number::Number(const std::string &value, uint32_t base)
 {
-	*this = fromString(value);
+	switch (base)
+	{
+	case 2:
+		fromBinary(value);
+		break;
+	case 10:
+		fromDecimal(value);
+		break;
+	case 16:
+		fromHex(value);
+		break;
+	default:
+		throw std::invalid_argument("Base not supported.");
+	}
 }
-Number::Number(const std::vector<uint32_t> &digits, bool negative) : digits(std::move(digits)), negative(negative) {}
+
+Number::Number(const std::vector<uint32_t> &digits, bool negative) : digits(digits), negative(negative) {}
 
 Number Number::operator+(const Number &other) const
 {
@@ -176,8 +191,13 @@ Number &Number::operator%=(const Number &other)
 		return *this;
 	}
 
-	negative = false;
 	digits = std::get<1>(div(digits, other.digits));
+
+	if (negative)
+	{
+		*this += other;
+		negative = false;
+	}
 
 	trimLeadingZeros();
 
@@ -210,7 +230,10 @@ Number Number::operator>>(size_t count) const
 
 Number &Number::operator<<=(size_t count)
 {
-	if (count == 0) return *this;
+	if (count == 0)
+	{
+		return *this;
+	}
 
 	digits = bitShiftLeft(digits, count);
 
@@ -219,7 +242,10 @@ Number &Number::operator<<=(size_t count)
 
 Number &Number::operator>>=(size_t count)
 {
-	if (count == 0) return *this;
+	if (count == 0)
+	{
+		return *this;
+	}
 
 	digits = bitShiftRight(digits, count);
 
@@ -228,12 +254,21 @@ Number &Number::operator>>=(size_t count)
 
 bool Number::operator==(const Number &other) const
 {
-	if (negative != other.negative) return false;
-	if (digits.size() != other.digits.size()) return false;
+	if (negative != other.negative)
+	{
+		return false;
+	}
+	if (digits.size() != other.digits.size())
+	{
+		return false;
+	}
 
 	for (size_t i = 0; i < digits.size(); ++i)
 	{
-		if (digits[i] != other.digits[i]) return false;
+		if (digits[i] != other.digits[i])
+		{
+			return false;
+		}
 	}
 
 	return true;
@@ -241,32 +276,42 @@ bool Number::operator==(const Number &other) const
 
 std::strong_ordering Number::operator<=>(const Number &other) const
 {
-	if (*this == other) return std::strong_ordering::equal;
-	if (negative != other.negative) return negative ? std::strong_ordering::less : std::strong_ordering::greater;
+	if (*this == other)
+	{
+		return std::strong_ordering::equal;
+	}
+	if (negative != other.negative)
+	{
+		return negative ? std::strong_ordering::less : std::strong_ordering::greater;
+	}
 
 	auto cmp = compareAbs(other);
 
 	if (negative)
 	{
-		if (cmp == std::strong_ordering::less) return std::strong_ordering::greater;
-		if (cmp == std::strong_ordering::greater) return std::strong_ordering::less;
+		if (cmp == std::strong_ordering::less)
+		{
+			return std::strong_ordering::greater;
+		}
+		if (cmp == std::strong_ordering::greater)
+		{
+			return std::strong_ordering::less;
+		}
 	}
 
 	return cmp;
 }
 
-Number &Number::pow(const Number &exponent)
+Number Number::pow(const Number &exponent) const
 {
-	*this = pow(*this, exponent);
-
-	return *this;
+	Number result = pow(*this, exponent);
+	return result;
 }
 
-Number &Number::modPow(const Number &exponent, const Number &modulus)
+Number Number::modPow(const Number &exponent, const Number &modulus) const
 {
-	*this = modPow(*this, exponent, modulus);
-
-	return *this;
+	Number result = modPow(*this, exponent, modulus);
+	return result;
 }
 
 Number Number::gcd(const Number &other) const
@@ -301,7 +346,10 @@ void Number::leftShiftDigit(size_t count)
 
 std::strong_ordering Number::compareAbs(const Number &other) const
 {
-	if (*this == other) return std::strong_ordering::equal;
+	if (*this == other)
+	{
+		return std::strong_ordering::equal;
+	}
 
 	int cmp = 0;
 	if (digits.size() != other.digits.size())
@@ -375,12 +423,12 @@ Number Number::modPow(Number base, Number exponent, const Number &modulus)
 
 Number Number::gcd(Number a, Number b)
 {
-	return std::get<0>(extendedGCD(a, b));
+	return std::get<0>(extendedGCD(std::move(a), std::move(b)));
 }
 
-Number Number::modInverse(Number a, Number modulus)
+Number Number::modInverse(Number a, const Number &modulus)
 {
-	auto [gcd, x, y] = extendedGCD(a, modulus);
+	auto [gcd, x, y] = extendedGCD(std::move(a), modulus);
 
 	if (gcd != 1)
 	{
@@ -397,7 +445,10 @@ Number Number::modInverse(Number a, Number modulus)
 
 std::string Number::toString() const
 {
-	if (digits.empty()) return "0";
+	if (digits.empty())
+	{
+		return "0";
+	}
 
 	std::string result;
 	Number tmp = *this;
@@ -415,10 +466,16 @@ std::string Number::toString() const
 
 		result += static_cast<char>(carry + '0');
 
-		while (!tmp.digits.empty() && tmp.digits.back() == 0) tmp.digits.pop_back();
+		while (!tmp.digits.empty() && tmp.digits.back() == 0)
+		{
+			tmp.digits.pop_back();
+		}
 	} while (!tmp.digits.empty());
 
-	if (negative) result += '-';
+	if (negative)
+	{
+		result += '-';
+	}
 	std::reverse(result.begin(), result.end());
 
 	return result;
@@ -426,7 +483,10 @@ std::string Number::toString() const
 
 std::string Number::toBinaryString() const
 {
-	if (digits.empty()) return "0";
+	if (digits.empty())
+	{
+		return "0";
+	}
 
 	std::string result;
 
@@ -443,22 +503,69 @@ std::string Number::toBinaryString() const
 	return "0";
 }
 
-Number Number::fromString(const std::string &str)
+Number Number::fromString(const std::string &str, uint32_t base)
+{
+	switch (base)
+	{
+	case 2:
+		return Number(str, 2);
+	case 10:
+		return Number(str, 10);
+	case 16:
+		return Number(str, 16);
+	default:
+		throw std::invalid_argument("Base not supported.");
+	}
+}
+
+void Number::fromBinary(const std::string &binaryString)
+{
+	if (binaryString.empty())
+	{
+		throw std::invalid_argument("Value is required to create a number.");
+	}
+
+	// Initialize the digits vector with one element to avoid out-of-bounds access.
+	digits.push_back(0);
+
+	for (char bit : binaryString)
+	{
+		if (bit != '0' && bit != '1')
+		{
+			throw std::invalid_argument("Invalid character in binary string.");
+		}
+
+		digits = bitShiftLeft(digits, 1);
+		if (bit == '1')
+		{
+			digits[0] |= 1;
+		}
+	}
+
+	trimLeadingZeros();
+}
+
+void Number::fromDecimal(const std::string &decimalString)
 {
 	const uint64_t base = 1ULL << 32;
 
-	if (str.empty()) throw std::invalid_argument("Value is required to create a number.");
+	if (decimalString.empty())
+	{
+		throw std::invalid_argument("Value is required to create a number.");
+	}
 
-	std::string representation = str;
-	Number result;
+	std::string representation = decimalString;
 
 	if (representation[0] == '-' || representation[0] == '+')
 	{
-		result.negative = representation[0] == '-';
+		negative = representation[0] == '-';
 		representation = representation.substr(1);
 
 		// Check that there actually is a number not just a sign.
-		if (representation.empty()) throw std::invalid_argument("Value is required to create a number.");
+		if (representation.empty())
+		{
+			throw std::invalid_argument("Value is required to create a number.");
+		}
 	}
 
 	do
@@ -466,11 +573,46 @@ Number Number::fromString(const std::string &str)
 		auto [quotient, remainder] = divideByBase(representation, base);
 
 		representation = quotient;
-		result.digits.push_back(static_cast<uint32_t>(remainder & MASK32));
+		digits.push_back(static_cast<uint32_t>(remainder & MASK32));
 	} while (!representation.empty());
 
-	result.trimLeadingZeros();
-	return result;
+	trimLeadingZeros();
+}
+
+void Number::fromHex(const std::string &hexString)
+{
+	if (hexString.empty())
+	{
+		throw std::invalid_argument("Value is required to create a number.");
+	}
+
+	// Initialize the digits vector with one element to avoid out-of-bounds access.
+	digits.push_back(0);
+
+	for (char digit : hexString)
+	{
+		if (digit >= '0' && digit <= '9')
+		{
+			digit -= '0';
+		}
+		else if (digit >= 'A' && digit <= 'F')
+		{
+			digit -= 'A' - 10;
+		}
+		else if (digit >= 'a' && digit <= 'f')
+		{
+			digit -= 'a' - 10;
+		}
+		else
+		{
+			throw std::invalid_argument("Invalid character in binary string.");
+		}
+
+		digits = bitShiftLeft(digits, 4);
+		digits[0] |= digit;
+	}
+
+	trimLeadingZeros();
 }
 
 std::ostream &operator<<(std::ostream &os, const Number &number)
@@ -486,8 +628,14 @@ std::vector<uint32_t> Number::add(const std::vector<uint32_t> &a, const std::vec
 	uint64_t carry = 0;
 	for (size_t i = 0; i < result.size(); ++i)
 	{
-		if (i < a.size()) carry += a[i];
-		if (i < b.size()) carry += b[i];
+		if (i < a.size())
+		{
+			carry += a[i];
+		}
+		if (i < b.size())
+		{
+			carry += b[i];
+		}
 
 		result[i] = static_cast<uint32_t>(carry & MASK32);
 		carry >>= 32;
@@ -508,8 +656,14 @@ std::vector<uint32_t> Number::sub(const std::vector<uint32_t> &a, const std::vec
 	uint64_t borrow = 0;
 	for (size_t i = 0; i < a.size() || i < b.size(); ++i)
 	{
-		if (i < a.size()) borrow += a[i];
-		if (i < b.size()) borrow -= b[i];
+		if (i < a.size())
+		{
+			borrow += a[i];
+		}
+		if (i < b.size())
+		{
+			borrow -= b[i];
+		}
 
 		result[i] = static_cast<uint32_t>(borrow & MASK32);
 		borrow >>= 32;
@@ -539,9 +693,15 @@ std::vector<uint32_t> Number::mul(const std::vector<uint32_t> &a, const std::vec
 
 std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> Number::div(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const
 {
-	if (b.empty()) throw std::invalid_argument("Division by zero.");
+	if (b.empty())
+	{
+		throw std::invalid_argument("Division by zero.");
+	}
 
-	if (a.empty()) return {};
+	if (a.empty())
+	{
+		return {};
+	}
 
 	std::vector<uint32_t> quotient(a.size(), 0);
 	std::vector<uint32_t> remainder;
@@ -551,7 +711,10 @@ std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> Number::div(const std::
 	{
 		remainder.insert(remainder.begin(), a[i]);
 
-		while (!remainder.empty() && remainder.back() == 0) remainder.pop_back();
+		while (!remainder.empty() && remainder.back() == 0)
+		{
+			remainder.pop_back();
+		}
 
 		uint32_t q_digit = estimateQuotientDigit(remainder, b);
 
@@ -560,20 +723,32 @@ std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> Number::div(const std::
 		quotient[i] = q_digit;
 	}
 
-	while (!quotient.empty() && quotient.back() == 0) quotient.pop_back();
-	while (!remainder.empty() && remainder.back() == 0) remainder.pop_back();
+	while (!quotient.empty() && quotient.back() == 0)
+	{
+		quotient.pop_back();
+	}
+	while (!remainder.empty() && remainder.back() == 0)
+	{
+		remainder.pop_back();
+	}
 
 	return {quotient, remainder};
 }
 
 std::vector<uint32_t> Number::bitShiftRight(const std::vector<uint32_t> &digits, size_t count) const
 {
-	if (digits.empty() || count == 0) return digits;
+	if (digits.empty() || count == 0)
+	{
+		return digits;
+	}
 
 	size_t shift = count / 32;
 	size_t bitShift = count % 32;
 
-	if (shift >= digits.size()) return {};
+	if (shift >= digits.size())
+	{
+		return {};
+	}
 
 	std::vector<uint32_t> result(digits.begin() + shift, digits.end());
 
@@ -585,7 +760,10 @@ std::vector<uint32_t> Number::bitShiftRight(const std::vector<uint32_t> &digits,
 		carry = digits.at(i + shift);
 	}
 
-	while (!result.empty() && result.back() == 0) result.pop_back();
+	while (!result.empty() && result.back() == 0)
+	{
+		result.pop_back();
+	}
 
 	return result;
 }
@@ -604,18 +782,27 @@ std::vector<uint32_t> Number::bitShiftLeft(const std::vector<uint32_t> &digits, 
 		result[i] = temp & MASK32;
 		carry = temp >> 32;
 	}
-	if (carry) result.push_back(carry);
+	if (carry)
+	{
+		result.push_back(carry);
+	}
 
 	return result;
 }
 
 std::vector<uint32_t> Number::digitShiftRight(const std::vector<uint32_t> &digits, size_t count) const
 {
-	if (count >= digits.size()) return {};
+	if (count >= digits.size())
+	{
+		return {};
+	}
 
 	std::vector<uint32_t> result(digits.begin() + count, digits.end());
 
-	while (!result.empty() && result.back() == 0) result.pop_back();
+	while (!result.empty() && result.back() == 0)
+	{
+		result.pop_back();
+	}
 
 	return result;
 }
@@ -630,8 +817,14 @@ std::vector<uint32_t> Number::digitShiftLeft(const std::vector<uint32_t> &digits
 
 void Number::trimLeadingZeros()
 {
-	while (!digits.empty() && digits.back() == 0) digits.pop_back();
-	if (digits.empty()) negative = false;
+	while (!digits.empty() && digits.back() == 0)
+	{
+		digits.pop_back();
+	}
+	if (digits.empty())
+	{
+		negative = false;
+	}
 }
 
 std::tuple<Number, Number, Number> Number::extendedGCD(Number a, Number b)
@@ -667,7 +860,10 @@ namespace
 
 		for (size_t i = 0; i < value.size(); ++i)
 		{
-			if (value.at(i) < '0' || value.at(i) > '9') throw std::invalid_argument("Invalid character in number string.");
+			if (value.at(i) < '0' || value.at(i) > '9')
+			{
+				throw std::invalid_argument("Invalid character in number string.");
+			}
 
 			remainder = remainder * 10 + value.at(i) - '0';
 
@@ -675,14 +871,20 @@ namespace
 			remainder %= base;
 		}
 
-		while (!quotient.empty() && quotient.at(0) == '0') quotient = quotient.substr(1);
+		while (!quotient.empty() && quotient.at(0) == '0')
+		{
+			quotient = quotient.substr(1);
+		}
 
 		return {quotient, remainder};
 	}
 
 	uint32_t estimateQuotientDigit(const std::vector<uint32_t> &remainder, const std::vector<uint32_t> &divisor)
 	{
-		if (remainder.size() < divisor.size()) return 0;
+		if (remainder.size() < divisor.size())
+		{
+			return 0;
+		}
 
 		size_t n = divisor.size();
 		size_t m = remainder.size();
@@ -695,14 +897,17 @@ namespace
 			remainderHigh = remainderHigh << 32 | remainder.at(m - 2);
 		}
 
-		uint32_t q_digit = static_cast<uint32_t>((remainderHigh / divisorHigh) & Number::MASK32);
+		auto q_digit = static_cast<uint32_t>((remainderHigh / divisorHigh) & Number::MASK32);
 
 		return q_digit;
 	}
 
 	void correctQuotientEstimate(std::vector<uint32_t> &remainder, const std::vector<uint32_t> &divisor, uint32_t &q_digit)
 	{
-		if (q_digit == 0) return;
+		if (q_digit == 0)
+		{
+			return;
+		}
 
 		Number div = Number(divisor);
 		Number rem = Number(remainder);

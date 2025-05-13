@@ -7,14 +7,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(SOURCE_DIR "src")
-set(INCLUDE_DIR "include")
+set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/src")
+set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
 
 set(SOURCES
   "${SOURCE_DIR}/main.cpp"
-  "${SOURCE_DIR}/cryptography/AES128.cpp"
   "${SOURCE_DIR}/cryptography/Random.cpp"
   "${SOURCE_DIR}/cryptography/SHA256.cpp"
+  "${SOURCE_DIR}/cryptography/ecc/EllipticCurve.cpp"
+  "${SOURCE_DIR}/cryptography/ecc/Point.cpp"
+  "${SOURCE_DIR}/cryptography/ecc/WeierstrassCurve.cpp"
   "${SOURCE_DIR}/events/EpollPoller.cpp"
   "${SOURCE_DIR}/events/SelectPoller.cpp"
   "${SOURCE_DIR}/http/HTTPMethod.cpp"
@@ -24,10 +26,7 @@ set(SOURCES
   "${SOURCE_DIR}/http/HTTPRequest.cpp"
   "${SOURCE_DIR}/http/HTTPVersion.cpp"
   "${SOURCE_DIR}/logging/Logger.cpp"
-  "${SOURCE_DIR}/math/EllipticCurve.cpp"
-  "${SOURCE_DIR}/math/FiniteField.cpp"
   "${SOURCE_DIR}/math/Number.cpp"
-  "${SOURCE_DIR}/math/Point.cpp"
   "${SOURCE_DIR}/networking/BufferReader.cpp"
   "${SOURCE_DIR}/networking/BufferWriter.cpp"
   "${SOURCE_DIR}/networking/Connection.cpp"
@@ -52,9 +51,11 @@ set(SOURCES
 )
 
 set(HEADERS
-  "${INCLUDE_DIR}/cryptography/AES128.hpp"
   "${INCLUDE_DIR}/cryptography/Random.hpp"
   "${INCLUDE_DIR}/cryptography/SHA256.hpp"
+  "${INCLUDE_DIR}/cryptography/ecc/EllipticCurve.hpp"
+  "${INCLUDE_DIR}/cryptography/ecc/Point.hpp"
+  "${INCLUDE_DIR}/cryptography/ecc/WeierstrassCurve.hpp"
   "${INCLUDE_DIR}/events/EventPoller.hpp"
   "${INCLUDE_DIR}/events/EpollPoller.hpp"
   "${INCLUDE_DIR}/events/SelectPoller.hpp"
@@ -64,10 +65,7 @@ set(HEADERS
   "${INCLUDE_DIR}/http/HTTPResponse.hpp"
   "${INCLUDE_DIR}/http/HTTPRequest.hpp"
   "${INCLUDE_DIR}/http/HTTPVersion.hpp"
-  "${INCLUDE_DIR}/math/EllipticCurve.hpp"
-  "${INCLUDE_DIR}/math/FiniteField.hpp"
   "${INCLUDE_DIR}/math/Number.hpp"
-  "${INCLUDE_DIR}/math/Point.hpp"
   "${INCLUDE_DIR}/logging/Logger.hpp"
   "${INCLUDE_DIR}/networking/BufferReader.hpp"
   "${INCLUDE_DIR}/networking/BufferWriter.hpp"
@@ -93,6 +91,28 @@ set(HEADERS
 )
 
 include_directories(${INCLUDE_DIR})
+
+add_custom_target(format
+    COMMAND clang-format -i -Werror ${SOURCES} ${HEADERS}
+    COMMENT "Formatting source files with clang-format"
+)
+
+add_custom_target(format-check
+    COMMAND clang-format --dry-run -Werror ${SOURCES} ${HEADERS}
+    COMMENT "Checking source files with clang-format"
+)
+
+add_custom_target(tidy
+    COMMAND clang-tidy -p=${CMAKE_BINARY_DIR} ${SOURCES} ${HEADERS}
+            --format-style=file
+    COMMENT "Running clang-tidy without fixing"
+)
+
+add_custom_target(tidy-fix
+    COMMAND clang-tidy -p=${CMAKE_BINARY_DIR} ${SOURCES} ${HEADERS}
+            --fix --format-style=file
+    COMMENT "Running clang-tidy with fixes"
+)
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 

@@ -14,7 +14,7 @@ std::unordered_map<TLSServerNameType, std::string> parseTLSServerName(const std:
 
 	while (!reader.complete())
 	{
-		TLSServerNameType type = static_cast<TLSServerNameType>(reader.readUint8());
+		auto type = static_cast<TLSServerNameType>(reader.readUint8());
 
 		uint16_t length = reader.readUint16();
 		std::vector<uint8_t> content = reader.readBytes(length);

@@ -3,9 +3,7 @@
 #include <cstring>
 #include <stdexcept>
 
-SelectPoller::SelectPoller(): masterSet(), maxFd(0)
-{
-}
+SelectPoller::SelectPoller() : masterSet(), maxFd(0) {}
 
 void SelectPoller::add(int fd)
 {

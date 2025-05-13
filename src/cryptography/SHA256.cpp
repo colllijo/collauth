@@ -4,7 +4,7 @@
 #include <format>
 #include <string>
 
-SHA256::SHA256()
+SHA256::SHA256() : h()
 {
 	reset();
 }
@@ -25,7 +25,7 @@ std::string SHA256::digest()
 
 SHA256::Word SHA256::rotr(Word x, Word n)
 {
-	return std::rotr(x, n);
+	return std::rotr(x, static_cast<int>(n));
 }
 
 void SHA256::reset()
@@ -45,9 +45,9 @@ void SHA256::pad()
 		buffer.push_back(0x00);
 	}
 
-	for (int i = 7; i >= 0; --i)
+	for (size_t i = 7; i-- > 0;)
 	{
-		buffer.push_back(static_cast<Byte>((length >> (i * 8)) & 0xFF));
+		buffer.push_back(static_cast<Byte>((length >> (i * 8)) & 0xFFULL));
 	}
 }
 
@@ -55,17 +55,18 @@ void SHA256::processChunks()
 {
 	for (size_t i = 0; i < buffer.size(); i += 64)
 	{
-		std::array<Word, 64> w;
+		std::array<Word, 64> w{};
 
 		for (size_t j = 0; j < 16; ++j)
 		{
-			w[j] = (buffer[i + j * 4] << 24) | (buffer[i + j * 4 + 1] << 16) | (buffer[i + j * 4 + 2] << 8) | buffer[i + j * 4 + 3];
+			w[j] = static_cast<uint32_t>(buffer[i + j * 4] << 24ULL) | static_cast<uint32_t>(buffer[i + j * 4 + 1] << 16ULL) |
+				   static_cast<uint32_t>(buffer[i + j * 4 + 2] << 8ULL) | buffer[i + j * 4 + 3];
 		}
 
 		for (size_t j = 16; j < 64; ++j)
 		{
-			Word s0 = rotr(w[j - 15], 7) ^ rotr(w[j - 15], 18) ^ (w[j - 15] >> 3);
-			Word s1 = rotr(w[j - 2], 17) ^ rotr(w[j - 2], 19) ^ (w[j - 2] >> 10);
+			Word s0 = rotr(w[j - 15], 7) ^ rotr(w[j - 15], 18) ^ (w[j - 15] >> 3ULL);
+			Word s1 = rotr(w[j - 2], 17) ^ rotr(w[j - 2], 19) ^ (w[j - 2] >> 10ULL);
 
 			w[j] = w[j - 16] + s0 + w[j - 7] + s1;
 		}

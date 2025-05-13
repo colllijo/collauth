@@ -10,7 +10,10 @@ bool HTTPSConnection::handle()
 {
 	std::string data = socket.receive();
 
-	if (data.empty()) return false;
+	if (data.empty())
+	{
+		return false;
+	}
 
 	if (!context.ready())
 	{

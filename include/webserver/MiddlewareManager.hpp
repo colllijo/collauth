@@ -11,7 +11,7 @@ using MiddlewareFunc = std::function<void(HTTPRequest&, HTTPResponse&, std::func
 class MiddlewareManager
 {
 public:
-	void addMiddleware(MiddlewareFunc middleware);
+	void addMiddleware(const MiddlewareFunc& middleware);
 
 	void execute(HTTPRequest& request, HTTPResponse& response, std::function<void()> handler) const;
 

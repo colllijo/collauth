@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <format>
 #include <iostream>
 #include <mutex>
@@ -10,7 +11,7 @@
 class Logger
 {
 public:
-	enum class Level
+	enum class Level : uint8_t
 	{
 		TRACE,
 		DEBUG,
@@ -23,7 +24,7 @@ public:
 	template <typename... Args>
 	struct trace
 	{
-		trace(const std::string& message, Args&&... args, const std::source_location& location = std::source_location::current())
+		explicit trace(const std::string& message, Args&&... args, const std::source_location& location = std::source_location::current())
 		{
 			std::lock_guard<std::mutex> lock(logMutex);
 
@@ -40,7 +41,7 @@ public:
 	template <typename... Args>
 	struct debug
 	{
-		debug(const std::string& message, Args&&... args, const std::source_location& location = std::source_location::current())
+		explicit debug(const std::string& message, Args&&... args, const std::source_location& location = std::source_location::current())
 		{
 			std::lock_guard<std::mutex> lock(logMutex);
 
@@ -57,7 +58,7 @@ public:
 	template <typename... Args>
 	struct info
 	{
-		info(const std::string& message, Args&&... args, const std::source_location& location = std::source_location::current())
+		explicit info(const std::string& message, Args&&... args, const std::source_location& location = std::source_location::current())
 		{
 			std::lock_guard<std::mutex> lock(logMutex);
 
@@ -74,7 +75,7 @@ public:
 	template <typename... Args>
 	struct warning
 	{
-		warning(const std::string& message, Args&&... args, const std::source_location& location = std::source_location::current())
+		explicit warning(const std::string& message, Args&&... args, const std::source_location& location = std::source_location::current())
 		{
 			std::lock_guard<std::mutex> lock(logMutex);
 
@@ -91,7 +92,7 @@ public:
 	template <typename... Args>
 	struct error
 	{
-		error(const std::string& message, Args&&... args, const std::source_location& location = std::source_location::current())
+		explicit error(const std::string& message, Args&&... args, const std::source_location& location = std::source_location::current())
 		{
 			std::lock_guard<std::mutex> lock(logMutex);
 
@@ -108,7 +109,7 @@ public:
 	template <typename... Args>
 	struct fatal
 	{
-		fatal(const std::string& message, Args&&... args, const std::source_location& location = std::source_location::current())
+		explicit fatal(const std::string& message, Args&&... args, const std::source_location& location = std::source_location::current())
 		{
 			std::lock_guard<std::mutex> lock(logMutex);
 

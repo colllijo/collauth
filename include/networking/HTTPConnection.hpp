@@ -7,8 +7,8 @@
 class HTTPConnection : public Connection
 {
 public:
-	HTTPConnection(int socketfd);
-	~HTTPConnection();
+	explicit HTTPConnection(int socketfd);
+	~HTTPConnection() override;
 
 	bool handle() override;
 	Request getRequest() const override;

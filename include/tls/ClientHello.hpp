@@ -8,7 +8,7 @@
 
 struct ClientHello
 {
-	uint16_t legacyVersion;
+	uint16_t legacyVersion{};
 	std::vector<uint8_t> random;
 	std::vector<uint8_t> sessionId;
 	std::vector<TLSCipherSuite> cipherSuites;

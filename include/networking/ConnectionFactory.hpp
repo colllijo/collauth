@@ -1,10 +1,11 @@
 #pragma once
 
+#include <cstdint>
 #include <memory>
 
 #include "networking/Connection.hpp"
 
-enum class Protocol
+enum class Protocol : uint8_t
 {
 	HTTP,
 	HTTPS

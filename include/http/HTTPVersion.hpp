@@ -1,8 +1,9 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 
-enum class HTTPVersion
+enum class HTTPVersion : uint8_t
 {
 	HTTP_1_0,
 	HTTP_1_1,

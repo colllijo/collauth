@@ -6,7 +6,10 @@ HTTPParser::HTTPParser() : state(State::REQUEST_LINE), error(false) {}
 
 bool HTTPParser::parse(const std::string& data)
 {
-	if (error) return false;
+	if (error)
+	{
+		return false;
+	}
 
 	buffer += data;
 
@@ -25,12 +28,18 @@ bool HTTPParser::parse(const std::string& data)
 		}
 		case State::HEADERS:
 		{
-			if (!parseHeaders()) return false;
+			if (!parseHeaders())
+			{
+				return false;
+			}
 			break;
 		}
 		case State::BODY:
 		{
-			if (!parseBody()) return false;
+			if (!parseBody())
+			{
+				return false;
+			}
 			break;
 		}
 		case State::DONE:
@@ -44,7 +53,10 @@ bool HTTPParser::parse(const std::string& data)
 bool HTTPParser::parseRequestLine()
 {
 	size_t pos = buffer.find("\r\n");
-	if (pos == std::string::npos) return false;
+	if (pos == std::string::npos)
+	{
+		return false;
+	}
 
 	std::string line = buffer.substr(0, pos), methodStr, versionStr;
 	std::istringstream stream(line);
@@ -108,7 +120,10 @@ bool HTTPParser::parseBody()
 	if (contentLengthHeader.has_value())
 	{
 		int contentLength = std::stoi(contentLengthHeader.value());
-		if (buffer.size() < static_cast<size_t>(contentLength)) return false;
+		if (buffer.size() < static_cast<size_t>(contentLength))
+		{
+			return false;
+		}
 
 		request.body = buffer.substr(0, contentLength);
 		buffer.erase(0, contentLength);

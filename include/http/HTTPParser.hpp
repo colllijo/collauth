@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 
 #include "http/HTTPRequest.hpp"
@@ -7,7 +8,7 @@
 class HTTPParser
 {
 public:
-	enum class State
+	enum class State : uint8_t
 	{
 		REQUEST_LINE,
 		HEADERS,

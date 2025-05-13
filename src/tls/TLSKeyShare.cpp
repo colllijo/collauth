@@ -12,7 +12,7 @@ std::vector<TLSKeyShareType> parseTLSSupportedGroupes(const std::vector<uint8_t>
 
 	while (!reader.complete())
 	{
-		TLSKeyShareType type = static_cast<TLSKeyShareType>(reader.readUint16());
+		auto type = static_cast<TLSKeyShareType>(reader.readUint16());
 		groups.push_back(type);
 	}
 
@@ -29,7 +29,7 @@ std::unordered_map<TLSKeyShareType, std::vector<uint8_t>> parseTLSKeyShares(cons
 
 	while (!reader.complete())
 	{
-		TLSKeyShareType type = static_cast<TLSKeyShareType>(reader.readUint16());
+		auto type = static_cast<TLSKeyShareType>(reader.readUint16());
 
 		uint16_t length = reader.readUint16();
 		keyShares[type] = reader.readBytes(length);

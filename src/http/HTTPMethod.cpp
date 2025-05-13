@@ -1,4 +1,5 @@
 #include "http/HTTPMethod.hpp"
+
 #include <unordered_map>
 
 HTTPMethod parseHTTPMethod(const std::string& method)
@@ -37,17 +38,11 @@ HTTPMethod parseHTTPMethod(const std::string& method)
 	}
 }
 
-std::unordered_map<HTTPMethod, std::string> methodToStringMap = {
-	{ HTTPMethod::GET, "GET" },
-	{ HTTPMethod::POST, "POST" },
-	{ HTTPMethod::PUT, "PUT" },
-	{ HTTPMethod::DELETE, "DELETE" },
-	{ HTTPMethod::HEAD, "HEAD" },
-	{ HTTPMethod::OPTIONS, "OPTIONS" },
-	{ HTTPMethod::PATCH, "PATCH" },
-	{ HTTPMethod::UNKNOWN, "UNKNOWN" }
-};
+std::unordered_map<HTTPMethod, std::string> methodToStringMap = {{HTTPMethod::GET, "GET"},		 {HTTPMethod::POST, "POST"},	  {HTTPMethod::PUT, "PUT"},
+																 {HTTPMethod::DELETE, "DELETE"}, {HTTPMethod::HEAD, "HEAD"},	  {HTTPMethod::OPTIONS, "OPTIONS"},
+																 {HTTPMethod::PATCH, "PATCH"},	 {HTTPMethod::UNKNOWN, "UNKNOWN"}};
 
-std::string httpMethodToString(HTTPMethod method) {
+std::string httpMethodToString(HTTPMethod method)
+{
 	return methodToStringMap[method];
 }

@@ -4,14 +4,14 @@
 #include "http/HTTPStatus.hpp"
 #include "logging/Logger.hpp"
 
-void loggingMiddleware(HTTPRequest& request, HTTPResponse&, std::function<void()> next)
+void loggingMiddleware(HTTPRequest& request, HTTPResponse&, const std::function<void()>& next)
 {
 	Logger::info("Received request: {} {}", httpMethodToString(request.getMethod()), request.getPath());
 
 	next();
 }
 
-void errorHandlingMiddleware(HTTPRequest&, HTTPResponse& response, std::function<void()> next)
+void errorHandlingMiddleware(HTTPRequest&, HTTPResponse& response, const std::function<void()>& next)
 {
 	try
 	{

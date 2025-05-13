@@ -11,7 +11,6 @@ std::string statusToString(HTTPStatus status)
 	case HTTPStatus::NOT_FOUND:
 		return "404 Not Found";
 	case HTTPStatus::INTERNAL_SERVER_ERROR:
-		return "500 Internal Server Error";
 	default:
 		return "500 Internal Server Error";
 	}

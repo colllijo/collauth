@@ -8,6 +8,8 @@
 #include <cstring>
 #include <stdexcept>
 
+#include "logging/Logger.hpp"
+
 Socket::Socket(int domain, int type, int protocol) : domain(domain)
 {
 	if (((AF_INET | AF_INET6) & domain) == 0)
@@ -32,7 +34,14 @@ Socket::Socket(int fileDescriptor) : domain(-1), sockfd(fileDescriptor)
 
 Socket::~Socket()
 {
-	close();
+	try
+	{
+		close();
+	}
+	catch (const std::exception& e)
+	{
+		Logger::error(std::string(e.what()));
+	}
 }
 
 void Socket::setSocketOption(int sockfd, int option, int value)
@@ -73,6 +82,8 @@ void Socket::bind(const std::string& address, int port)
 	case AF_INET6:
 		bindIPv6(address, port);
 		break;
+	default:
+		throw std::runtime_error("Invalid domain");
 	}
 }
 
@@ -127,11 +138,11 @@ std::string Socket::receive(int sockfd)
 {
 	std::string data;
 
-	char buffer[BUFFER_SIZE];
+	std::array<char, BUFFER_SIZE> buffer{};
 
 	do
 	{
-		ssize_t bytesReceived = ::recv(sockfd, buffer, BUFFER_SIZE, 0);
+		ssize_t bytesReceived = ::recv(sockfd, buffer.data(), BUFFER_SIZE, 0);
 
 		if (bytesReceived == 0)
 		{
@@ -150,7 +161,7 @@ std::string Socket::receive(int sockfd)
 			}
 		}
 
-		data.append(buffer, bytesReceived);
+		data.append(buffer.data(), bytesReceived);
 	} while (true);
 
 	return data;

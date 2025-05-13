@@ -11,7 +11,7 @@
 class Number
 {
 public:
-	Number();
+	constexpr Number();
 
 	template <std::integral T>
 	Number(T value)
@@ -19,10 +19,10 @@ public:
 		fromIntegral(value);
 	}
 
-	explicit Number(std::string value);
+	explicit Number(const std::string& value, uint32_t base = 10);
 	explicit Number(const std::vector<uint32_t>& digits, bool negative = false);
 
-	constexpr static uint64_t MASK32 = (1ULL << 32) - 1;
+	constexpr static uint64_t MASK32 = (1ULL << 32ULL) - 1;
 
 	Number operator+(const Number& other) const;
 	Number operator-(const Number& other) const;
@@ -47,8 +47,8 @@ public:
 	bool operator==(const Number& other) const;
 	std::strong_ordering operator<=>(const Number& other) const;
 
-	Number& pow(const Number& exponent);
-	Number& modPow(const Number& exponent, const Number& modulus);
+	Number pow(const Number& exponent) const;
+	Number modPow(const Number& exponent, const Number& modulus) const;
 
 	Number gcd(const Number& other) const;
 	Number modInverse(const Number& modulus) const;
@@ -66,9 +66,9 @@ public:
 	static Number modPow(Number base, Number exponent, const Number& modulus);
 
 	static Number gcd(Number a, Number b);
-	static Number modInverse(Number a, Number modulus);
+	static Number modInverse(Number a, const Number& modulus);
 
-	static Number fromString(const std::string& str);
+	static Number fromString(const std::string& str, uint32_t base = 10);
 	std::string toString() const;
 	std::string toBinaryString() const;
 
@@ -83,7 +83,7 @@ public:
 
 private:
 	std::vector<uint32_t> digits;
-	bool negative;
+	bool negative{};
 
 	std::vector<uint32_t> add(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
 	std::vector<uint32_t> sub(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
@@ -97,6 +97,10 @@ private:
 
 	static std::tuple<Number, Number, Number> extendedGCD(Number a, Number b);
 
+	void fromBinary(const std::string& binaryString);
+	void fromDecimal(const std::string& decimalString);
+	void fromHex(const std::string& hexString);
+
 	void trimLeadingZeros();
 };
 
@@ -108,7 +112,7 @@ void Number::fromIntegral(T number)
 	if constexpr (std::is_signed_v<T>)
 	{
 		negative = number < 0;
-		uint64_t value = static_cast<uint64_t>(static_cast<std::make_unsigned_t<T>>(negative ? -(number + 1) + 1 : number));
+		auto value = static_cast<uint64_t>(static_cast<std::make_unsigned_t<T>>(negative ? -(number + 1) + 1 : number));
 
 		do
 		{
@@ -119,7 +123,7 @@ void Number::fromIntegral(T number)
 	else
 	{
 		negative = false;
-		uint64_t value = static_cast<uint64_t>(number);
+		auto value = static_cast<uint64_t>(number);
 
 		do
 		{
@@ -134,10 +138,16 @@ void Number::fromIntegral(T number)
 template <std::integral T>
 Number::operator T() const
 {
-	if (digits.empty()) return 0;
+	if (digits.empty())
+	{
+		return 0;
+	}
 
 	uint64_t value = digits.at(0);
-	if (digits.size() > 1) value = value << 32 | digits.at(1);
+	if (digits.size() > 1)
+	{
+		value = value << 32 | digits.at(1);
+	}
 
 	if (std::is_signed_v<T> && negative)
 	{

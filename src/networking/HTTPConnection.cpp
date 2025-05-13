@@ -7,7 +7,10 @@ bool HTTPConnection::handle()
 {
 	std::string data = socket.receive();
 
-	if (data.empty()) return false;
+	if (data.empty())
+	{
+		return false;
+	}
 
 	if (parser.parse(data))
 	{

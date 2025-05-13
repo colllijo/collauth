@@ -1,10 +1,9 @@
 #pragma once
 
-#include <cstdio>
 #include <functional>
 
 #include "http/HTTPRequest.hpp"
 #include "http/HTTPResponse.hpp"
 
-void loggingMiddleware(HTTPRequest& request, HTTPResponse&, std::function<void()> next);
-void errorHandlingMiddleware(HTTPRequest& request, HTTPResponse& response, std::function<void()> next);
+void loggingMiddleware(HTTPRequest& request, HTTPResponse& /*_*/, const std::function<void()>& next);
+void errorHandlingMiddleware(HTTPRequest& request, HTTPResponse& response, const std::function<void()>& next);

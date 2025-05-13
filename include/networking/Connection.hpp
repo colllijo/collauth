@@ -10,7 +10,7 @@ using Request = std::variant<HTTPRequest>;
 class Connection
 {
 public:
-	Connection(int socketfd);
+	explicit Connection(int socketfd);
 	virtual ~Connection() = default;
 
 	virtual bool handle() = 0;

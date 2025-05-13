@@ -17,6 +17,12 @@ public:
 	EpollPoller();
 	~EpollPoller() override;
 
+	EpollPoller(const EpollPoller&) = delete;
+	EpollPoller& operator=(const EpollPoller&) = delete;
+
+	EpollPoller(EpollPoller&&) = delete;
+	EpollPoller& operator=(EpollPoller&&) = delete;
+
 	void add(int fd) override;
 	void remove(int fd) override;
 

@@ -17,7 +17,7 @@ public:
 		CLOSED
 	};
 
-	TLSContext(Socket& socket);
+	explicit TLSContext(Socket& socket);
 
 	bool initialize(const std::vector<uint8_t>& data);
 

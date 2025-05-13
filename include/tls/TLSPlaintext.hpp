@@ -8,7 +8,7 @@
 struct TLSPlaintext
 {
 	TLSContentType type;
-	uint16_t version;
+	uint16_t version{};
 	std::vector<uint8_t> fragment;
 
 	std::vector<uint8_t> serialize() const;

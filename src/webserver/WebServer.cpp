@@ -1,7 +1,5 @@
 #include "webserver/WebServer.hpp"
 
-#include <csignal>
-#include <cstring>
 #include <memory>
 
 #include "http/HTTPRequest.hpp"
@@ -50,11 +48,17 @@ void WebServer::run()
 		for (int fd : poller->wait())
 		{
 			if (fd == httpSocket.getFileDescriptor())
+			{
 				addConnection(httpSocket.accept(), Protocol::HTTP);
+			}
 			else if (fd == httpsSocket.getFileDescriptor())
+			{
 				addConnection(httpsSocket.accept(), Protocol::HTTPS);
+			}
 			else
+			{
 				handleClient(fd);
+			}
 		}
 	}
 }
@@ -64,12 +68,12 @@ void WebServer::stop()
 	stopFlag.store(true);
 }
 
-void WebServer::registerMiddleware(MiddlewareFunc middleware)
+void WebServer::registerMiddleware(const MiddlewareFunc& middleware)
 {
 	middlewareManager.addMiddleware(middleware);
 }
 
-void WebServer::registerRoute(HTTPMethod method, const std::string& path, RouteHandler handler)
+void WebServer::registerRoute(HTTPMethod method, const std::string& path, const RouteHandler& handler)
 {
 	router.registerRoute(method, path, handler);
 }

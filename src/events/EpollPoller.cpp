@@ -3,8 +3,9 @@
 #include <cerrno>
 #include <cstring>
 #include <stdexcept>
+#include "events/EventPoller.hpp"
 
-EpollPoller::EpollPoller()
+EpollPoller::EpollPoller() : EventPoller()
 {
 	epollfd = epoll_create1(0);
 	if (epollfd == -1)
@@ -56,7 +57,7 @@ std::vector<int> EpollPoller::wait() const
 		throw std::runtime_error("Failed to wait for events: " + std::string(strerror(errno)));
 	}
 
-	std::vector<int> readyEvents;
+	std::vector<int> readyEvents(eventCount);
 	for (int i = 0; i < eventCount; ++i)
 	{
 		readyEvents.push_back(events[i].data.fd);

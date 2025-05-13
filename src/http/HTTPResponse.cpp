@@ -1,4 +1,6 @@
 #include "http/HTTPResponse.hpp"
+#include <format>
+
 #include "http/HTTPStatus.hpp"
 
 HTTPResponse::HTTPResponse(HTTPStatus status) : status(status) {}
@@ -46,7 +48,7 @@ std::string HTTPResponse::build() const
 	std::string response = "HTTP/1.1 " + statusToString(status) + "\r\n";
 	for (const auto& [key, value] : headers)
 	{
-		response += key + ": " + value + "\r\n";
+		response += std::format("{}: {}\r\n", key, value);
 	}
 
 	response += "Content-Length: " + std::to_string(body.size()) + "\r\n";

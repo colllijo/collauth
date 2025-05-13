@@ -1,8 +1,9 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 
-enum class HTTPMethod
+enum class HTTPMethod : uint8_t
 {
 	GET,
 	POST,

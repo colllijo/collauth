@@ -8,11 +8,11 @@
 std::tuple<TLSHandshakeType, std::vector<uint8_t>> parseTLSHandshake(const std::vector<uint8_t>& data)
 {
 	BufferReader buffer(data);
-	TLSHandshakeHeader header;
+	TLSHandshakeHeader header{};
 	std::vector<uint8_t> handshake;
 
 	header.handshakeType = static_cast<TLSHandshakeType>(buffer.readUint8());
-	header.length = (buffer.readUint8() << 16) | (buffer.readUint8() << 8) | buffer.readUint8();
+	header.length = static_cast<uint32_t>(buffer.readUint8() << 16ULL) | static_cast<uint32_t>(buffer.readUint8() << 8ULL) | buffer.readUint8();
 
 	handshake = buffer.readBytes(header.length);
 
@@ -37,7 +37,7 @@ std::unordered_map<TLSExtensionType, std::vector<uint8_t>> parseTLSExtensions(co
 
 	while (!buffer.complete())
 	{
-		TLSExtensionType type = static_cast<TLSExtensionType>(buffer.readUint16());
+		auto type = static_cast<TLSExtensionType>(buffer.readUint16());
 
 		uint16_t length = buffer.readUint16();
 		extensions[type] = buffer.readBytes(length);

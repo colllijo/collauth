@@ -2,7 +2,7 @@
 
 #include <functional>
 
-void MiddlewareManager::addMiddleware(MiddlewareFunc middleware)
+void MiddlewareManager::addMiddleware(const MiddlewareFunc& middleware)
 {
 	middlewareChain.push_back(middleware);
 }

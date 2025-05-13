@@ -19,7 +19,10 @@ std::vector<uint8_t> generateRandomBytes(size_t length)
 		}
 		else if (bytesGenerated == -1)
 		{
-			if (errno == EINTR || errno == EAGAIN) continue;
+			if (errno == EINTR || errno == EAGAIN)
+			{
+				continue;
+			}
 
 			throw std::runtime_error("Failed to generate random bytes");
 		}

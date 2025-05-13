@@ -13,7 +13,7 @@ public:
 	std::unordered_map<std::string, std::string> headers;
 	std::string body;
 
-	HTTPResponse(HTTPStatus status = HTTPStatus::OK);
+	explicit HTTPResponse(HTTPStatus status = HTTPStatus::OK);
 
 	HTTPStatus getStatusCode() const;
 	HTTPResponse& setStatusCode(HTTPStatus status);
