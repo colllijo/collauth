@@ -9,11 +9,11 @@
 \DoxyCodeLine{00005\ }
 \DoxyCodeLine{00006\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structServerHello}{ServerHello}}}
 \DoxyCodeLine{00007\ \{}
-\DoxyCodeLine{00008\ \ \ \ \ uint16\_t\ legacyVersion;}
+\DoxyCodeLine{00008\ \ \ \ \ uint16\_t\ legacyVersion\{\};}
 \DoxyCodeLine{00009\ \ \ \ \ std::vector<uint8\_t>\ random;}
 \DoxyCodeLine{00010\ \ \ \ \ std::vector<uint8\_t>\ sessionId;}
 \DoxyCodeLine{00011\ \ \ \ \ TLSCipherSuite\ cipherSuite;}
-\DoxyCodeLine{00012\ \ \ \ \ uint8\_t\ compressionMethod;}
+\DoxyCodeLine{00012\ \ \ \ \ uint8\_t\ compressionMethod\{\};}
 \DoxyCodeLine{00013\ \ \ \ \ std::unordered\_map<TLSExtensionType,\ std::vector<uint8\_t>>\ extensions;}
 \DoxyCodeLine{00014\ }
 \DoxyCodeLine{00015\ \ \ \ \ std::vector<uint8\_t>\ serialize()\ \textcolor{keyword}{const};}

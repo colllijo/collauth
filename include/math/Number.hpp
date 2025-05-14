@@ -58,6 +58,8 @@ public:
 	void rightShiftDigit(size_t count);
 	void leftShiftDigit(size_t count);
 
+	size_t bitLength() const;
+
 	std::strong_ordering compareAbs(const Number& other) const;
 
 	std::vector<uint32_t> getDigits() const;

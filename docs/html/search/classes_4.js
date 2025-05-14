@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['ellipticcurve_0',['EllipticCurve',['../classEllipticCurve.html',1,'']]],
-  ['error_1',['error',['../structLogger_1_1error.html',1,'Logger']]],
-  ['eventpoller_2',['EventPoller',['../classEventPoller.html',1,'']]]
+  ['fatal_0',['fatal',['../structLogger_1_1fatal.html',1,'Logger']]],
+  ['formatter_3c_20number_20_3e_1',['formatter&lt; Number &gt;',['../structstd_1_1formatter_3_01Number_01_4.html',1,'std']]]
 ];

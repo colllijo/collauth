@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['middlewaremanager_0',['MiddlewareManager',['../classMiddlewareManager.html',1,'']]]
+  ['number_0',['Number',['../classNumber.html',1,'']]]
 ];

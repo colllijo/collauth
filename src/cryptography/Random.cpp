@@ -2,7 +2,13 @@
 
 #include <sys/random.h>
 
+#include <cstdlib>
 #include <stdexcept>
+
+namespace
+{
+	std::vector<uint32_t> bytesToDigits(const std::vector<uint8_t>& bytes);
+}
 
 std::vector<uint8_t> generateRandomBytes(size_t length)
 {
@@ -30,3 +36,37 @@ std::vector<uint8_t> generateRandomBytes(size_t length)
 
 	return bytes;
 }
+
+Number generateRandomNumber(const Number& max)
+{
+	if (max <= 0)
+	{
+		throw std::invalid_argument("Max must be greater than 0");
+	}
+
+	size_t byteLength = (max.bitLength() + 7) / 8;
+	std::vector<uint8_t> randomBytes = generateRandomBytes(byteLength);
+
+	// Ensure the generated number is less than max
+	Number randomNumber(bytesToDigits(randomBytes));
+	while (randomNumber >= max)
+	{
+		randomBytes = generateRandomBytes(byteLength);
+		randomNumber = Number(bytesToDigits(randomBytes));
+	}
+
+	return randomNumber;
+}
+
+namespace
+{
+	std::vector<uint32_t> bytesToDigits(const std::vector<uint8_t>& bytes)
+	{
+		std::vector<uint32_t> digits((bytes.size() + 3) / 4);
+		for (size_t i = 0; i < bytes.size(); ++i)
+		{
+			digits[i / 4] |= static_cast<uint32_t>(bytes[i]) << ((i % 4) * 8);
+		}
+		return digits;
+	}
+}  // namespace

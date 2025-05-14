@@ -21,15 +21,21 @@
 \DoxyCodeLine{00017\ \ \ \ \ EpollPoller();}
 \DoxyCodeLine{00018\ \ \ \ \ \string~EpollPoller()\ \textcolor{keyword}{override};}
 \DoxyCodeLine{00019\ }
-\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordtype}{void}\ add(\textcolor{keywordtype}{int}\ fd)\ \textcolor{keyword}{override};}
-\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keywordtype}{void}\ remove(\textcolor{keywordtype}{int}\ fd)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00020\ \ \ \ \ EpollPoller(\textcolor{keyword}{const}\ EpollPoller\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00021\ \ \ \ \ EpollPoller\&\ operator=(\textcolor{keyword}{const}\ EpollPoller\&)\ =\ \textcolor{keyword}{delete};}
 \DoxyCodeLine{00022\ }
-\DoxyCodeLine{00023\ \ \ \ \ std::vector<int>\ wait()\ \textcolor{keyword}{const\ override};}
-\DoxyCodeLine{00024\ }
-\DoxyCodeLine{00025\ \textcolor{keyword}{private}:}
-\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{int}\ epollfd;}
-\DoxyCodeLine{00027\ \};}
+\DoxyCodeLine{00023\ \ \ \ \ EpollPoller(EpollPoller\&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00024\ \ \ \ \ EpollPoller\&\ operator=(EpollPoller\&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{void}\ add(\textcolor{keywordtype}{int}\ fd)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keywordtype}{void}\ remove(\textcolor{keywordtype}{int}\ fd)\ \textcolor{keyword}{override};}
 \DoxyCodeLine{00028\ }
-\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00029\ \ \ \ \ std::vector<int>\ wait()\ \textcolor{keyword}{const\ override};}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keywordtype}{int}\ epollfd;}
+\DoxyCodeLine{00033\ \};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#endif}}
 
 \end{DoxyCode}

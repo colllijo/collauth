@@ -4,13 +4,12 @@
 \begin{DoxyCode}{0}
 \DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
 \DoxyCodeLine{00002\ }
-\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <cstdio>}}
-\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <functional>}}
-\DoxyCodeLine{00005\ }
-\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}http/HTTPRequest.hpp"{}}}
-\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}http/HTTPResponse.hpp"{}}}
-\DoxyCodeLine{00008\ }
-\DoxyCodeLine{00009\ \textcolor{keywordtype}{void}\ loggingMiddleware(\mbox{\hyperlink{classHTTPRequest}{HTTPRequest}}\&\ request,\ \mbox{\hyperlink{classHTTPResponse}{HTTPResponse}}\&,\ std::function<\textcolor{keywordtype}{void}()>\ next);}
-\DoxyCodeLine{00010\ \textcolor{keywordtype}{void}\ errorHandlingMiddleware(\mbox{\hyperlink{classHTTPRequest}{HTTPRequest}}\&\ request,\ \mbox{\hyperlink{classHTTPResponse}{HTTPResponse}}\&\ response,\ std::function<\textcolor{keywordtype}{void}()>\ next);}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}http/HTTPRequest.hpp"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}http/HTTPResponse.hpp"{}}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keywordtype}{void}\ loggingMiddleware(\mbox{\hyperlink{classHTTPRequest}{HTTPRequest}}\&\ request,\ \mbox{\hyperlink{classHTTPResponse}{HTTPResponse}}\&\ \textcolor{comment}{/*\_*/},\ \textcolor{keyword}{const}\ std::function<\textcolor{keywordtype}{void}()>\&\ next);}
+\DoxyCodeLine{00009\ \textcolor{keywordtype}{void}\ errorHandlingMiddleware(\mbox{\hyperlink{classHTTPRequest}{HTTPRequest}}\&\ request,\ \mbox{\hyperlink{classHTTPResponse}{HTTPResponse}}\&\ response,\ \textcolor{keyword}{const}\ std::function<\textcolor{keywordtype}{void}()>\&\ next);}
 
 \end{DoxyCode}

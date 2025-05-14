@@ -124,8 +124,8 @@ $(function(){initNavTree('HTTPConnection_8hpp_source.html',''); initResizable(tr
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno"><a class="line" href="classHTTPConnection.html">    7</a></span><span class="keyword">class </span>HTTPConnection : <span class="keyword">public</span> Connection</div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>{</div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>    HTTPConnection(<span class="keywordtype">int</span> socketfd);</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    ~HTTPConnection();</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>    <span class="keyword">explicit</span> HTTPConnection(<span class="keywordtype">int</span> socketfd);</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    ~HTTPConnection() <span class="keyword">override</span>;</div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    <span class="keywordtype">bool</span> handle() <span class="keyword">override</span>;</div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    Request getRequest() <span class="keyword">const override</span>;</div>
@@ -135,7 +135,7 @@ $(function(){initNavTree('HTTPConnection_8hpp_source.html',''); initResizable(tr
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <a class="code hl_class" href="classHTTPRequest.html">HTTPRequest</a> request;</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>};</div>
 </div>
-<div class="ttc" id="aclassHTTPParser_html"><div class="ttname"><a href="classHTTPParser.html">HTTPParser</a></div><div class="ttdef"><b>Definition</b> HTTPParser.hpp:8</div></div>
+<div class="ttc" id="aclassHTTPParser_html"><div class="ttname"><a href="classHTTPParser.html">HTTPParser</a></div><div class="ttdef"><b>Definition</b> HTTPParser.hpp:9</div></div>
 <div class="ttc" id="aclassHTTPRequest_html"><div class="ttname"><a href="classHTTPRequest.html">HTTPRequest</a></div><div class="ttdef"><b>Definition</b> HTTPRequest.hpp:11</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

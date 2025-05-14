@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['logger_0',['Logger',['../classLogger.html',1,'']]]
+  ['middlewaremanager_0',['MiddlewareManager',['../classMiddlewareManager.html',1,'']]]
 ];

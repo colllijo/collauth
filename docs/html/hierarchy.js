@@ -1,6 +1,5 @@
 var hierarchy =
 [
-    [ "AES128", "classAES128.html", null ],
     [ "BufferReader", "classBufferReader.html", null ],
     [ "BufferWriter", "classBufferWriter.html", null ],
     [ "ClientHello", "structClientHello.html", null ],
@@ -11,7 +10,9 @@ var hierarchy =
     ] ],
     [ "ConnectionFactory", "classConnectionFactory.html", null ],
     [ "Logger::debug< Args >", "structLogger_1_1debug.html", null ],
-    [ "EllipticCurve", "classEllipticCurve.html", null ],
+    [ "EllipticCurve", "classEllipticCurve.html", [
+      [ "WeierstrassCurve", "classWeierstrassCurve.html", null ]
+    ] ],
     [ "Logger::error< Args >", "structLogger_1_1error.html", null ],
     [ "EventPoller", "classEventPoller.html", [
       [ "SelectPoller", "classSelectPoller.html", null ]
@@ -27,6 +28,7 @@ var hierarchy =
     [ "Logger", "classLogger.html", null ],
     [ "MiddlewareManager", "classMiddlewareManager.html", null ],
     [ "Number", "classNumber.html", null ],
+    [ "Point", "structPoint.html", null ],
     [ "Router", "classRouter.html", null ],
     [ "ServerHello", "structServerHello.html", null ],
     [ "SHA256", "classSHA256.html", null ],

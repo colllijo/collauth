@@ -6,8 +6,8 @@
 \Hypertarget{classNumber_a794a86a277908a7360b1387ed8ddf50a}\label{classNumber_a794a86a277908a7360b1387ed8ddf50a} 
 {\footnotesize template$<$std\+::integral T$>$ }\\{\bfseries Number} (T value)
 \item 
-\Hypertarget{classNumber_a1eea8b85df9c187d2456f180a0278a0e}\label{classNumber_a1eea8b85df9c187d2456f180a0278a0e} 
-{\bfseries Number} (std\+::string value)
+\Hypertarget{classNumber_a9854f3e06c0d3d98c70130d653b6aaf8}\label{classNumber_a9854f3e06c0d3d98c70130d653b6aaf8} 
+{\bfseries Number} (const std\+::string \&value, uint32\+\_\+t base=10)
 \item 
 \Hypertarget{classNumber_ad48029ae536ad08a377aafc3e5d823fe}\label{classNumber_ad48029ae536ad08a377aafc3e5d823fe} 
 {\bfseries Number} (const std\+::vector$<$ uint32\+\_\+t $>$ \&digits, bool negative=false)
@@ -63,11 +63,11 @@ bool {\bfseries operator==} (const \mbox{\hyperlink{classNumber}{Number}} \&othe
 \Hypertarget{classNumber_a1649380dee6f116826209903758e307d}\label{classNumber_a1649380dee6f116826209903758e307d} 
 std\+::strong\+\_\+ordering {\bfseries operator$<$=$>$} (const \mbox{\hyperlink{classNumber}{Number}} \&other) const
 \item 
-\Hypertarget{classNumber_ab7dc74d7067df653cd4f3c7ab7b9755b}\label{classNumber_ab7dc74d7067df653cd4f3c7ab7b9755b} 
-\mbox{\hyperlink{classNumber}{Number}} \& {\bfseries pow} (const \mbox{\hyperlink{classNumber}{Number}} \&exponent)
+\Hypertarget{classNumber_a17371dfa99352928fb8b22d4a2393595}\label{classNumber_a17371dfa99352928fb8b22d4a2393595} 
+\mbox{\hyperlink{classNumber}{Number}} {\bfseries pow} (const \mbox{\hyperlink{classNumber}{Number}} \&exponent) const
 \item 
-\Hypertarget{classNumber_a73b5f13db6d417012218bdb20ce321d9}\label{classNumber_a73b5f13db6d417012218bdb20ce321d9} 
-\mbox{\hyperlink{classNumber}{Number}} \& {\bfseries mod\+Pow} (const \mbox{\hyperlink{classNumber}{Number}} \&exponent, const \mbox{\hyperlink{classNumber}{Number}} \&modulus)
+\Hypertarget{classNumber_a7796005d674da082164e1bbfff5c997c}\label{classNumber_a7796005d674da082164e1bbfff5c997c} 
+\mbox{\hyperlink{classNumber}{Number}} {\bfseries mod\+Pow} (const \mbox{\hyperlink{classNumber}{Number}} \&exponent, const \mbox{\hyperlink{classNumber}{Number}} \&modulus) const
 \item 
 \Hypertarget{classNumber_af7b8af531fbdbe5ae6daf1fd1ad88184}\label{classNumber_af7b8af531fbdbe5ae6daf1fd1ad88184} 
 \mbox{\hyperlink{classNumber}{Number}} {\bfseries gcd} (const \mbox{\hyperlink{classNumber}{Number}} \&other) const
@@ -117,17 +117,17 @@ static \mbox{\hyperlink{classNumber}{Number}} {\bfseries mod\+Pow} (\mbox{\hyper
 \Hypertarget{classNumber_a8d8e6c76dfbdffe2416c9a26a373d157}\label{classNumber_a8d8e6c76dfbdffe2416c9a26a373d157} 
 static \mbox{\hyperlink{classNumber}{Number}} {\bfseries gcd} (\mbox{\hyperlink{classNumber}{Number}} a, \mbox{\hyperlink{classNumber}{Number}} b)
 \item 
-\Hypertarget{classNumber_a53eb961c77af93df99430b5397f5d492}\label{classNumber_a53eb961c77af93df99430b5397f5d492} 
-static \mbox{\hyperlink{classNumber}{Number}} {\bfseries mod\+Inverse} (\mbox{\hyperlink{classNumber}{Number}} a, \mbox{\hyperlink{classNumber}{Number}} modulus)
+\Hypertarget{classNumber_a690da4579ef9d9554c0b1662727ef717}\label{classNumber_a690da4579ef9d9554c0b1662727ef717} 
+static \mbox{\hyperlink{classNumber}{Number}} {\bfseries mod\+Inverse} (\mbox{\hyperlink{classNumber}{Number}} a, const \mbox{\hyperlink{classNumber}{Number}} \&modulus)
 \item 
-\Hypertarget{classNumber_a3b3cb3b8cfb9647259e576439a204083}\label{classNumber_a3b3cb3b8cfb9647259e576439a204083} 
-static \mbox{\hyperlink{classNumber}{Number}} {\bfseries from\+String} (const std\+::string \&str)
+\Hypertarget{classNumber_a04e59ecfd56e86f0abbf85047ad866fc}\label{classNumber_a04e59ecfd56e86f0abbf85047ad866fc} 
+static \mbox{\hyperlink{classNumber}{Number}} {\bfseries from\+String} (const std\+::string \&str, uint32\+\_\+t base=10)
 \end{DoxyCompactItemize}
 \doxysubsubsection*{Static Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
 \Hypertarget{classNumber_a97996626bcd479709925f5e0ecef7c3c}\label{classNumber_a97996626bcd479709925f5e0ecef7c3c} 
-static constexpr uint64\+\_\+t {\bfseries MASK32} = (1ULL $<$$<$ 32) -\/ 1
+static constexpr uint64\+\_\+t {\bfseries MASK32} = (1ULL $<$$<$ 32ULL) -\/ 1
 \end{DoxyCompactItemize}
 \doxysubsubsection*{Friends}
 \begin{DoxyCompactItemize}

@@ -1,0 +1,24 @@
+\doxysection{Weierstrass\+Curve.\+hpp}
+\hypertarget{WeierstrassCurve_8hpp_source}{}\label{WeierstrassCurve_8hpp_source}\index{include/cryptography/ecc/WeierstrassCurve.hpp@{include/cryptography/ecc/WeierstrassCurve.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}cryptography/ecc/EllipticCurve.hpp"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}math/Number.hpp"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{class\ }WeierstrassCurve\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classEllipticCurve_ab167906c4cdf3dc6c1deaed98941ab21}{EllipticCurve}}}
+\DoxyCodeLine{00007\ \{}
+\DoxyCodeLine{00008\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00009\ \ \ \ \ \textcolor{keyword}{explicit}\ WeierstrassCurve(\textcolor{keyword}{const}\ \mbox{\hyperlink{classNumber}{Number}}\&\ \mbox{\hyperlink{classEllipticCurve_acef6dc4b78be33f2786b472d095f22fb}{a}},\ \textcolor{keyword}{const}\ \mbox{\hyperlink{classNumber}{Number}}\&\ \mbox{\hyperlink{classEllipticCurve_a3bf9cf0a4548fb6aae7c5c4819c2b4cf}{b}},\ \textcolor{keyword}{const}\ \mbox{\hyperlink{classNumber}{Number}}\&\ \mbox{\hyperlink{classEllipticCurve_aa93f259884a0cf68735ac303303e218f}{p}});}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \ \ \ \ \mbox{\hyperlink{structPoint}{Point}}\ \mbox{\hyperlink{classWeierstrassCurve_a67cd13c21270eb31b864cc0b323a7dea}{multiply}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structPoint}{Point}}\&\ point,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{classNumber}{Number}}\&\ scalar)\ \textcolor{keyword}{const\ override};}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \ \ \ \ \mbox{\hyperlink{structPoint}{Point}}\ \mbox{\hyperlink{classWeierstrassCurve_a06acefb31591c36ddfb605272416d978}{addPoints}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structPoint}{Point}}\&\ p1,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structPoint}{Point}}\&\ p2)\ \textcolor{keyword}{const\ override};}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \ \ \ \ \mbox{\hyperlink{structPoint}{Point}}\ \mbox{\hyperlink{classWeierstrassCurve_ad094122a38934266b97b250210f739cd}{doublePoint}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structPoint}{Point}}\&\ point)\ \textcolor{keyword}{const\ override};}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classWeierstrassCurve_a9e2f9481316e87800e285269bc915f6c}{isOnCurve}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structPoint}{Point}}\&\ point)\ \textcolor{keyword}{const\ override};}
+\DoxyCodeLine{00018\ \};}
+
+\end{DoxyCode}

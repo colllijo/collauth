@@ -123,18 +123,30 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a251da5e2add2c46c81deb80fc3663f23" id="r_a251da5e2add2c46c81deb80fc3663f23"><td class="memItemLeft" align="right" valign="top"><a id="a251da5e2add2c46c81deb80fc3663f23" name="a251da5e2add2c46c81deb80fc3663f23"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>WebServer</b> (const std::string &amp;address, int port, std::unique_ptr&lt; <a class="el" href="classEventPoller.html">EventPoller</a> &gt; poller)</td></tr>
 <tr class="separator:a251da5e2add2c46c81deb80fc3663f23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afbf336e16c97e4ef71b89930af295b53" id="r_afbf336e16c97e4ef71b89930af295b53"><td class="memItemLeft" align="right" valign="top"><a id="afbf336e16c97e4ef71b89930af295b53" name="afbf336e16c97e4ef71b89930af295b53"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>WebServer</b> (const <a class="el" href="classWebServer.html">WebServer</a> &amp;)=delete</td></tr>
+<tr class="separator:afbf336e16c97e4ef71b89930af295b53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd7c8e5967cdaf141d3f8b53e4340dd1" id="r_afd7c8e5967cdaf141d3f8b53e4340dd1"><td class="memItemLeft" align="right" valign="top"><a id="afd7c8e5967cdaf141d3f8b53e4340dd1" name="afd7c8e5967cdaf141d3f8b53e4340dd1"></a>
+<a class="el" href="classWebServer.html">WebServer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="classWebServer.html">WebServer</a> &amp;)=delete</td></tr>
+<tr class="separator:afd7c8e5967cdaf141d3f8b53e4340dd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4076b652f2fa30b4e12abcd1631ffac6" id="r_a4076b652f2fa30b4e12abcd1631ffac6"><td class="memItemLeft" align="right" valign="top"><a id="a4076b652f2fa30b4e12abcd1631ffac6" name="a4076b652f2fa30b4e12abcd1631ffac6"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>WebServer</b> (<a class="el" href="classWebServer.html">WebServer</a> &amp;&amp;) noexcept=delete</td></tr>
+<tr class="separator:a4076b652f2fa30b4e12abcd1631ffac6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7542cc8198e66cd6c94bedc872dd3bf0" id="r_a7542cc8198e66cd6c94bedc872dd3bf0"><td class="memItemLeft" align="right" valign="top"><a id="a7542cc8198e66cd6c94bedc872dd3bf0" name="a7542cc8198e66cd6c94bedc872dd3bf0"></a>
+<a class="el" href="classWebServer.html">WebServer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="classWebServer.html">WebServer</a> &amp;&amp;) noexcept=delete</td></tr>
+<tr class="separator:a7542cc8198e66cd6c94bedc872dd3bf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0879d889c9d1071060e868b9149a20c6" id="r_a0879d889c9d1071060e868b9149a20c6"><td class="memItemLeft" align="right" valign="top"><a id="a0879d889c9d1071060e868b9149a20c6" name="a0879d889c9d1071060e868b9149a20c6"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>run</b> ()</td></tr>
 <tr class="separator:a0879d889c9d1071060e868b9149a20c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab432937d4b1c5d665653319e545292ab" id="r_ab432937d4b1c5d665653319e545292ab"><td class="memItemLeft" align="right" valign="top"><a id="ab432937d4b1c5d665653319e545292ab" name="ab432937d4b1c5d665653319e545292ab"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>stop</b> ()</td></tr>
 <tr class="separator:ab432937d4b1c5d665653319e545292ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a32d24cb5acb0a4fcfe0418e72c2495db" id="r_a32d24cb5acb0a4fcfe0418e72c2495db"><td class="memItemLeft" align="right" valign="top"><a id="a32d24cb5acb0a4fcfe0418e72c2495db" name="a32d24cb5acb0a4fcfe0418e72c2495db"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>registerMiddleware</b> (MiddlewareFunc middleware)</td></tr>
-<tr class="separator:a32d24cb5acb0a4fcfe0418e72c2495db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae12e774a762aed6bf3bff5996b03706f" id="r_ae12e774a762aed6bf3bff5996b03706f"><td class="memItemLeft" align="right" valign="top"><a id="ae12e774a762aed6bf3bff5996b03706f" name="ae12e774a762aed6bf3bff5996b03706f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>registerRoute</b> (HTTPMethod method, const std::string &amp;path, RouteHandler handler)</td></tr>
-<tr class="separator:ae12e774a762aed6bf3bff5996b03706f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a360b93e221cc366af87ba1790adba5c7" id="r_a360b93e221cc366af87ba1790adba5c7"><td class="memItemLeft" align="right" valign="top"><a id="a360b93e221cc366af87ba1790adba5c7" name="a360b93e221cc366af87ba1790adba5c7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>registerMiddleware</b> (const MiddlewareFunc &amp;middleware)</td></tr>
+<tr class="separator:a360b93e221cc366af87ba1790adba5c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c9e9ea4aeecefa7fe583b8fbbdcd949" id="r_a4c9e9ea4aeecefa7fe583b8fbbdcd949"><td class="memItemLeft" align="right" valign="top"><a id="a4c9e9ea4aeecefa7fe583b8fbbdcd949" name="a4c9e9ea4aeecefa7fe583b8fbbdcd949"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>registerRoute</b> (HTTPMethod method, const std::string &amp;path, const RouteHandler &amp;handler)</td></tr>
+<tr class="separator:a4c9e9ea4aeecefa7fe583b8fbbdcd949"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>include/webserver/<a class="el" href="WebServer_8hpp_source.html">WebServer.hpp</a></li>

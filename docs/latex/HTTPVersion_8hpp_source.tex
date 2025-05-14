@@ -4,16 +4,17 @@
 \begin{DoxyCode}{0}
 \DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
 \DoxyCodeLine{00002\ }
-\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <string>}}
-\DoxyCodeLine{00004\ }
-\DoxyCodeLine{00005\ \textcolor{keyword}{enum\ class}\ HTTPVersion}
-\DoxyCodeLine{00006\ \{}
-\DoxyCodeLine{00007\ \ \ \ \ HTTP\_1\_0,}
-\DoxyCodeLine{00008\ \ \ \ \ HTTP\_1\_1,}
-\DoxyCodeLine{00009\ \ \ \ \ HTTP\_2\_0,}
-\DoxyCodeLine{00010\ \ \ \ \ UNKNOWN}
-\DoxyCodeLine{00011\ \};}
-\DoxyCodeLine{00012\ }
-\DoxyCodeLine{00013\ HTTPVersion\ parseHTTPVersion(\textcolor{keyword}{const}\ std::string\&\ version);}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{enum\ class}\ HTTPVersion\ :\ uint8\_t}
+\DoxyCodeLine{00007\ \{}
+\DoxyCodeLine{00008\ \ \ \ \ HTTP\_1\_0,}
+\DoxyCodeLine{00009\ \ \ \ \ HTTP\_1\_1,}
+\DoxyCodeLine{00010\ \ \ \ \ HTTP\_2\_0,}
+\DoxyCodeLine{00011\ \ \ \ \ UNKNOWN}
+\DoxyCodeLine{00012\ \};}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ HTTPVersion\ parseHTTPVersion(\textcolor{keyword}{const}\ std::string\&\ version);}
 
 \end{DoxyCode}

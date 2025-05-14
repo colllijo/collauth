@@ -344,6 +344,23 @@ void Number::leftShiftDigit(size_t count)
 	digitShiftLeft(digits, count);
 }
 
+size_t Number::bitLength() const
+{
+	if (digits.empty())
+	{
+		return 0;
+	}
+
+	size_t length = digits.size() * 32;
+
+	if (digits.back() != 0)
+	{
+		length -= __builtin_clz(digits.back());
+	}
+
+	return length;
+}
+
 std::strong_ordering Number::compareAbs(const Number &other) const
 {
 	if (*this == other)

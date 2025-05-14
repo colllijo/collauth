@@ -2,20 +2,208 @@
 \hypertarget{classEllipticCurve}{}\label{classEllipticCurve}\index{EllipticCurve@{EllipticCurve}}
 
 
-Represents an elliptic curve defined by the equation ( y\texorpdfstring{$^\wedge$}{\string^}2 = x\texorpdfstring{$^\wedge$}{\string^}3 + ax + b ).  
+Abstract base class for elliptic curve cryptography.  
 
 
 
 
 {\ttfamily \#include $<$Elliptic\+Curve.\+hpp$>$}
 
+Inheritance diagram for Elliptic\+Curve\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classEllipticCurve}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classEllipticCurve_ab167906c4cdf3dc6c1deaed98941ab21}{Elliptic\+Curve}} (const \mbox{\hyperlink{classNumber}{Number}} \&\mbox{\hyperlink{classEllipticCurve_acef6dc4b78be33f2786b472d095f22fb}{a}}, const \mbox{\hyperlink{classNumber}{Number}} \&\mbox{\hyperlink{classEllipticCurve_a3bf9cf0a4548fb6aae7c5c4819c2b4cf}{b}}, const \mbox{\hyperlink{classNumber}{Number}} \&\mbox{\hyperlink{classEllipticCurve_aa93f259884a0cf68735ac303303e218f}{p}})
+\begin{DoxyCompactList}\small\item\em Constructs an elliptic curve with given parameters. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classEllipticCurve_a4798b0e32a8bd4a45e10515a1d82a468}{\texorpdfstring{$\sim$}{\string~}\+Elliptic\+Curve}} ()
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+\Hypertarget{classEllipticCurve_a8bb274db3f6614cb138710fda0e22fdd}\label{classEllipticCurve_a8bb274db3f6614cb138710fda0e22fdd} 
+{\bfseries Elliptic\+Curve} (const \mbox{\hyperlink{classEllipticCurve}{Elliptic\+Curve}} \&)=delete
+\begin{DoxyCompactList}\small\item\em Deleted copy constructor. \end{DoxyCompactList}\item 
+\Hypertarget{classEllipticCurve_abd722a454f1d0988ee6b39dc461a3f27}\label{classEllipticCurve_abd722a454f1d0988ee6b39dc461a3f27} 
+\mbox{\hyperlink{classEllipticCurve}{Elliptic\+Curve}} \& {\bfseries operator=} (const \mbox{\hyperlink{classEllipticCurve}{Elliptic\+Curve}} \&)=delete
+\begin{DoxyCompactList}\small\item\em Deleted copy assignment operator. \end{DoxyCompactList}\item 
+\Hypertarget{classEllipticCurve_ab099c2140fb7fe63bf120fe92e2bcfcc}\label{classEllipticCurve_ab099c2140fb7fe63bf120fe92e2bcfcc} 
+{\bfseries Elliptic\+Curve} (\mbox{\hyperlink{classEllipticCurve}{Elliptic\+Curve}} \&\&) noexcept=delete
+\begin{DoxyCompactList}\small\item\em Deleted move constructor. \end{DoxyCompactList}\item 
+\Hypertarget{classEllipticCurve_a1e5dab8d047aaeb656542055fe074f13}\label{classEllipticCurve_a1e5dab8d047aaeb656542055fe074f13} 
+\mbox{\hyperlink{classEllipticCurve}{Elliptic\+Curve}} \& {\bfseries operator=} (\mbox{\hyperlink{classEllipticCurve}{Elliptic\+Curve}} \&\&) noexcept=delete
+\begin{DoxyCompactList}\small\item\em Deleted move assignment operator. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{structPoint}{Point}} \mbox{\hyperlink{classEllipticCurve_aa61ca550c5e1efc80546be87b1b63333}{multiply}} (const \mbox{\hyperlink{structPoint}{Point}} \&point, const \mbox{\hyperlink{classNumber}{Number}} \&scalar) const =0
+\begin{DoxyCompactList}\small\item\em Multiplies a point by a scalar on the curve. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{structPoint}{Point}} \mbox{\hyperlink{classEllipticCurve_ae80847e09eccbb27b890eed0d1013e1b}{add\+Points}} (const \mbox{\hyperlink{structPoint}{Point}} \&p1, const \mbox{\hyperlink{structPoint}{Point}} \&p2) const =0
+\begin{DoxyCompactList}\small\item\em Adds two points on the curve. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{structPoint}{Point}} \mbox{\hyperlink{classEllipticCurve_aa4ce69647b2ada9f771241a0ab33ce8a}{double\+Point}} (const \mbox{\hyperlink{structPoint}{Point}} \&point) const =0
+\begin{DoxyCompactList}\small\item\em Doubles a point on the curve. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{classEllipticCurve_ad8d84424a8ad6880f28b2138981d8f75}{is\+On\+Curve}} (const \mbox{\hyperlink{structPoint}{Point}} \&point) const =0
+\begin{DoxyCompactList}\small\item\em Checks if a point lies on the curve. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classEllipticCurve_acef6dc4b78be33f2786b472d095f22fb}\label{classEllipticCurve_acef6dc4b78be33f2786b472d095f22fb} 
+\mbox{\hyperlink{classNumber}{Number}} {\bfseries a}
+\begin{DoxyCompactList}\small\item\em Curve parameter (( a ) for Weierstrass, ( A ) for Montgomery). \end{DoxyCompactList}\item 
+\Hypertarget{classEllipticCurve_a3bf9cf0a4548fb6aae7c5c4819c2b4cf}\label{classEllipticCurve_a3bf9cf0a4548fb6aae7c5c4819c2b4cf} 
+\mbox{\hyperlink{classNumber}{Number}} {\bfseries b}
+\begin{DoxyCompactList}\small\item\em Curve parameter (( b ) for Weierstrass, ( B ) for Montgomery). \end{DoxyCompactList}\item 
+\Hypertarget{classEllipticCurve_aa93f259884a0cf68735ac303303e218f}\label{classEllipticCurve_aa93f259884a0cf68735ac303303e218f} 
+\mbox{\hyperlink{classNumber}{Number}} {\bfseries p}
+\begin{DoxyCompactList}\small\item\em Prime modulus ( p ) of the finite field. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
-Represents an elliptic curve defined by the equation ( y\texorpdfstring{$^\wedge$}{\string^}2 = x\texorpdfstring{$^\wedge$}{\string^}3 + ax + b ). 
+Abstract base class for elliptic curve cryptography. 
 
-This class provides the structure to define an elliptic curve over a field, characterized by the coefficients ( a ) and ( b ). 
+This class defines the interface for elliptic curves over a finite field, supporting both Weierstrass and Montgomery forms. The parameters ( a ) and ( b ) represent the curve parameters for either the Weierstrass form\+:   \[    y^2 = x^3 + ax + b \pmod{p}
+\] or the Montgomery form\+:   \[    By^2 = x^3 + Ax^2 + x \pmod{p}
+\] where ( a ), ( b ) (or ( A ), ( B )) are curve parameters and ( p ) is the prime modulus. 
 
-The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classEllipticCurve_ab167906c4cdf3dc6c1deaed98941ab21}\index{EllipticCurve@{EllipticCurve}!EllipticCurve@{EllipticCurve}}
+\index{EllipticCurve@{EllipticCurve}!EllipticCurve@{EllipticCurve}}
+\doxysubsubsection{\texorpdfstring{EllipticCurve()}{EllipticCurve()}}
+{\footnotesize\ttfamily \label{classEllipticCurve_ab167906c4cdf3dc6c1deaed98941ab21} 
+Elliptic\+Curve\+::\+Elliptic\+Curve (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classNumber}{Number}} \&}]{a}{, }\item[{const \mbox{\hyperlink{classNumber}{Number}} \&}]{b}{, }\item[{const \mbox{\hyperlink{classNumber}{Number}} \&}]{p}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+
+
+Constructs an elliptic curve with given parameters. 
+
+Constructs an elliptic curve with the given parameters.
+
+
+\begin{DoxyParams}{Parameters}
+{\em a} & The curve parameter (( a ) for Weierstrass, ( A ) for Montgomery). \\
+\hline
+{\em b} & The curve parameter (( b ) for Weierstrass, ( B ) for Montgomery). \\
+\hline
+{\em p} & The prime modulus ( p ) of the finite field.\\
+\hline
+\end{DoxyParams}
+The curve is defined by either the Weierstrass or Montgomery equation.
+
+
+\begin{DoxyParams}{Parameters}
+{\em a} & The curve parameter (( a ) for Weierstrass, ( A ) for Montgomery). \\
+\hline
+{\em b} & The curve parameter (( b ) for Weierstrass, ( B ) for Montgomery). \\
+\hline
+{\em p} & The prime modulus ( p ) of the finite field. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classEllipticCurve_a4798b0e32a8bd4a45e10515a1d82a468}\index{EllipticCurve@{EllipticCurve}!````~EllipticCurve@{\texorpdfstring{$\sim$}{\string~}EllipticCurve}}
+\index{````~EllipticCurve@{\texorpdfstring{$\sim$}{\string~}EllipticCurve}!EllipticCurve@{EllipticCurve}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}EllipticCurve()}{\string~EllipticCurve()}}
+{\footnotesize\ttfamily \label{classEllipticCurve_a4798b0e32a8bd4a45e10515a1d82a468} 
+Elliptic\+Curve\+::\texorpdfstring{$\sim$}{\string~}\+Elliptic\+Curve (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+
+
+Destructor. 
+
+Destructor for \doxylink{classEllipticCurve}{Elliptic\+Curve}. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classEllipticCurve_ae80847e09eccbb27b890eed0d1013e1b}\index{EllipticCurve@{EllipticCurve}!addPoints@{addPoints}}
+\index{addPoints@{addPoints}!EllipticCurve@{EllipticCurve}}
+\doxysubsubsection{\texorpdfstring{addPoints()}{addPoints()}}
+{\footnotesize\ttfamily \label{classEllipticCurve_ae80847e09eccbb27b890eed0d1013e1b} 
+virtual \mbox{\hyperlink{structPoint}{Point}} Elliptic\+Curve\+::add\+Points (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structPoint}{Point}} \&}]{p1}{, }\item[{const \mbox{\hyperlink{structPoint}{Point}} \&}]{p2}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [nodiscard]}, {\ttfamily [pure virtual]}}
+
+
+
+Adds two points on the curve. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p1} & The first point. \\
+\hline
+{\em p2} & The second point. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The resulting point after addition.
+\end{DoxyReturn}
+Computes ( R = P + Q ), where ( P ) and ( Q ) are points on the curve. 
+
+Implemented in \mbox{\hyperlink{classWeierstrassCurve_a06acefb31591c36ddfb605272416d978}{Weierstrass\+Curve}}.
+
+\Hypertarget{classEllipticCurve_aa4ce69647b2ada9f771241a0ab33ce8a}\index{EllipticCurve@{EllipticCurve}!doublePoint@{doublePoint}}
+\index{doublePoint@{doublePoint}!EllipticCurve@{EllipticCurve}}
+\doxysubsubsection{\texorpdfstring{doublePoint()}{doublePoint()}}
+{\footnotesize\ttfamily \label{classEllipticCurve_aa4ce69647b2ada9f771241a0ab33ce8a} 
+virtual \mbox{\hyperlink{structPoint}{Point}} Elliptic\+Curve\+::double\+Point (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structPoint}{Point}} \&}]{point}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [nodiscard]}, {\ttfamily [pure virtual]}}
+
+
+
+Doubles a point on the curve. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em point} & The point to double. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The resulting point after doubling.
+\end{DoxyReturn}
+Computes ( Q = 2P ), where ( P ) is a point on the curve. 
+
+Implemented in \mbox{\hyperlink{classWeierstrassCurve_ad094122a38934266b97b250210f739cd}{Weierstrass\+Curve}}.
+
+\Hypertarget{classEllipticCurve_ad8d84424a8ad6880f28b2138981d8f75}\index{EllipticCurve@{EllipticCurve}!isOnCurve@{isOnCurve}}
+\index{isOnCurve@{isOnCurve}!EllipticCurve@{EllipticCurve}}
+\doxysubsubsection{\texorpdfstring{isOnCurve()}{isOnCurve()}}
+{\footnotesize\ttfamily \label{classEllipticCurve_ad8d84424a8ad6880f28b2138981d8f75} 
+virtual bool Elliptic\+Curve\+::is\+On\+Curve (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structPoint}{Point}} \&}]{point}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [nodiscard]}, {\ttfamily [pure virtual]}}
+
+
+
+Checks if a point lies on the curve. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em point} & The point to check. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the point is on the curve, false otherwise.
+\end{DoxyReturn}
+Verifies if the given point satisfies the curve equation. 
+
+Implemented in \mbox{\hyperlink{classWeierstrassCurve_a9e2f9481316e87800e285269bc915f6c}{Weierstrass\+Curve}}.
+
+\Hypertarget{classEllipticCurve_aa61ca550c5e1efc80546be87b1b63333}\index{EllipticCurve@{EllipticCurve}!multiply@{multiply}}
+\index{multiply@{multiply}!EllipticCurve@{EllipticCurve}}
+\doxysubsubsection{\texorpdfstring{multiply()}{multiply()}}
+{\footnotesize\ttfamily \label{classEllipticCurve_aa61ca550c5e1efc80546be87b1b63333} 
+virtual \mbox{\hyperlink{structPoint}{Point}} Elliptic\+Curve\+::multiply (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structPoint}{Point}} \&}]{point}{, }\item[{const \mbox{\hyperlink{classNumber}{Number}} \&}]{scalar}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [nodiscard]}, {\ttfamily [pure virtual]}}
+
+
+
+Multiplies a point by a scalar on the curve. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em point} & The point to multiply. \\
+\hline
+{\em scalar} & The scalar value. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The resulting point after multiplication.
+\end{DoxyReturn}
+Computes ( Q = kP ), where ( P ) is a point on the curve and ( k ) is a scalar. 
+
+Implemented in \mbox{\hyperlink{classWeierstrassCurve_a67cd13c21270eb31b864cc0b323a7dea}{Weierstrass\+Curve}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
 \item 
-include/math/Elliptic\+Curve.\+hpp\end{DoxyCompactItemize}
+include/cryptography/ecc/Elliptic\+Curve.\+hpp\item 
+src/cryptography/ecc/\mbox{\hyperlink{EllipticCurve_8cpp}{Elliptic\+Curve.\+cpp}}\end{DoxyCompactItemize}
