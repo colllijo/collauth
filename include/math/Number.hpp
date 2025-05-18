@@ -11,18 +11,24 @@
 class Number
 {
 public:
-	constexpr Number();
+	/*******************************************
+	 * Constructors
+	 *******************************************/
+
+	Number();
 
 	template <std::integral T>
-	Number(T value)
-	{
-		fromIntegral(value);
-	}
+	Number(T value);
 
 	explicit Number(const std::string& value, uint32_t base = 10);
 	explicit Number(const std::vector<uint32_t>& digits, bool negative = false);
 
-	constexpr static uint64_t MASK32 = (1ULL << 32ULL) - 1;
+	constexpr static uint64_t BASE = 32;
+	constexpr static uint64_t MASK = (1ULL << BASE) - 1;
+
+	/*******************************************
+	 * Basic arithmetic operations
+	 *******************************************/
 
 	Number operator+(const Number& other) const;
 	Number operator-(const Number& other) const;
@@ -38,14 +44,33 @@ public:
 
 	Number operator-() const;
 
+	/*******************************************
+	 * Shifting operations
+	 *******************************************/
+
 	Number operator<<(size_t count) const;
 	Number operator>>(size_t count) const;
 
 	Number& operator<<=(size_t count);
 	Number& operator>>=(size_t count);
 
+	void rightShift(size_t count);
+	void leftShift(size_t count);
+	void rightShiftDigit(size_t count);
+	void leftShiftDigit(size_t count);
+
+	/*******************************************
+	 * Comparison operations
+	 *******************************************/
+
 	bool operator==(const Number& other) const;
 	std::strong_ordering operator<=>(const Number& other) const;
+
+	std::strong_ordering compareAbs(const Number& other) const;
+
+	/*******************************************
+	 * Advanced arithmetic operations
+	 *******************************************/
 
 	Number pow(const Number& exponent) const;
 	Number modPow(const Number& exponent, const Number& modulus) const;
@@ -53,22 +78,22 @@ public:
 	Number gcd(const Number& other) const;
 	Number modInverse(const Number& modulus) const;
 
-	void rightShift(size_t count);
-	void leftShift(size_t count);
-	void rightShiftDigit(size_t count);
-	void leftShiftDigit(size_t count);
-
-	size_t bitLength() const;
-
-	std::strong_ordering compareAbs(const Number& other) const;
-
-	std::vector<uint32_t> getDigits() const;
-
 	static Number pow(Number base, Number exponent);
 	static Number modPow(Number base, Number exponent, const Number& modulus);
 
 	static Number gcd(Number a, Number b);
-	static Number modInverse(Number a, const Number& modulus);
+	static Number modInverse(const Number& a, const Number& modulus);
+
+	/*******************************************
+	 * Information functions
+	 *******************************************/
+
+	size_t bitLength() const;
+	std::vector<uint32_t> getDigits() const;
+
+	/*******************************************
+	 * Conversion functions
+	 *******************************************/
 
 	static Number fromString(const std::string& str, uint32_t base = 10);
 	std::string toString() const;
@@ -87,17 +112,33 @@ private:
 	std::vector<uint32_t> digits;
 	bool negative{};
 
+	/*******************************************
+	 * Basic arithmetic operations
+	 *******************************************/
+
 	std::vector<uint32_t> add(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
 	std::vector<uint32_t> sub(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
 	std::vector<uint32_t> mul(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
 	std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> div(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
+
+	/*******************************************
+	 * Shifting operations
+	 *******************************************/
 
 	std::vector<uint32_t> bitShiftRight(const std::vector<uint32_t>& digits, size_t count) const;
 	std::vector<uint32_t> bitShiftLeft(const std::vector<uint32_t>& digits, size_t count) const;
 	std::vector<uint32_t> digitShiftRight(const std::vector<uint32_t>& digits, size_t count) const;
 	std::vector<uint32_t> digitShiftLeft(const std::vector<uint32_t>& digits, size_t count) const;
 
+	/*******************************************
+	 * Advanced arithmetic operations
+	 *******************************************/
+
 	static std::tuple<Number, Number, Number> extendedGCD(Number a, Number b);
+
+	/*******************************************
+	 * Conversion functions
+	 *******************************************/
 
 	void fromBinary(const std::string& binaryString);
 	void fromDecimal(const std::string& decimalString);
@@ -107,34 +148,28 @@ private:
 };
 
 template <std::integral T>
+Number::Number(T value)
+{
+	fromIntegral(value);
+}
+
+template <std::integral T>
 void Number::fromIntegral(T number)
 {
+	uint64_t value = static_cast<uint64_t>(number);
+
+	if (std::is_signed_v<T> && number < 0)
+	{
+		negative = true;
+		value = 0 - value;
+	}
+
 	digits.clear();
-
-	if constexpr (std::is_signed_v<T>)
+	while (value != 0)
 	{
-		negative = number < 0;
-		auto value = static_cast<uint64_t>(static_cast<std::make_unsigned_t<T>>(negative ? -(number + 1) + 1 : number));
-
-		do
-		{
-			digits.push_back(static_cast<uint32_t>(value & MASK32));
-			value >>= 32;
-		} while (value != 0);
+		digits.push_back(static_cast<uint32_t>(value & MASK));
+		value >>= 32;
 	}
-	else
-	{
-		negative = false;
-		auto value = static_cast<uint64_t>(number);
-
-		do
-		{
-			digits.push_back(static_cast<uint32_t>(value & MASK32));
-			value >>= 32;
-		} while (value != 0);
-	}
-
-	trimLeadingZeros();
 }
 
 template <std::integral T>

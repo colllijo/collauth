@@ -10,13 +10,19 @@
 
 namespace
 {
+	// String dividing decimal string by base for parsing
 	std::tuple<std::string, uint64_t> divideByBase(const std::string &value, uint64_t base);
 
+	// Utility functions for division
 	uint32_t estimateQuotientDigit(const std::vector<uint32_t> &remainder, const std::vector<uint32_t> &divisor);
 	void correctQuotientEstimate(std::vector<uint32_t> &remainder, const std::vector<uint32_t> &divisor, uint32_t &q_digit);
 };	// namespace
 
-constexpr Number::Number() : digits(), negative(false) {}
+/*******************************************
+ * Constructors
+ *******************************************/
+
+Number::Number() : digits(), negative(false) {}
 Number::Number(const std::string &value, uint32_t base)
 {
 	switch (base)
@@ -37,6 +43,10 @@ Number::Number(const std::string &value, uint32_t base)
 
 Number::Number(const std::vector<uint32_t> &digits, bool negative) : digits(digits), negative(negative) {}
 
+/*******************************************
+ * Basic arithmetic operations
+ *******************************************/
+
 Number Number::operator+(const Number &other) const
 {
 	Number result = *this;
@@ -50,26 +60,24 @@ Number &Number::operator+=(const Number &other)
 	if (negative == other.negative)
 	{
 		digits = add(digits, other.digits);
-
-		trimLeadingZeros();
-
-		return *this;
-	}
-
-	auto cmp = *this <=> other;
-	if (cmp == std::strong_ordering::equal)
-	{
-		negative = false;
-		digits.clear();
-	}
-	else if (cmp == std::strong_ordering::less)
-	{
-		negative = other.negative;
-		digits = sub(other.digits, digits);
 	}
 	else
 	{
-		digits = sub(digits, other.digits);
+		auto cmp = *this <=> other;
+		if (cmp == std::strong_ordering::equal)
+		{
+			negative = false;
+			digits.clear();
+		}
+		else if (cmp == std::strong_ordering::less)
+		{
+			negative = other.negative;
+			digits = sub(other.digits, digits);
+		}
+		else
+		{
+			digits = sub(digits, other.digits);
+		}
 	}
 
 	trimLeadingZeros();
@@ -90,27 +98,24 @@ Number &Number::operator-=(const Number &other)
 	if (negative != other.negative)
 	{
 		digits = add(digits, other.digits);
-
-		trimLeadingZeros();
-
-		return *this;
-	}
-
-	auto cmp = *this <=> other;
-
-	if (cmp == std::strong_ordering::equal)
-	{
-		negative = false;
-		digits.clear();
-	}
-	else if (cmp == std::strong_ordering::less)
-	{
-		negative = !other.negative;
-		digits = sub(other.digits, digits);
 	}
 	else
 	{
-		digits = sub(digits, other.digits);
+		auto cmp = *this <=> other;
+		if (cmp == std::strong_ordering::equal)
+		{
+			negative = false;
+			digits.clear();
+		}
+		else if (cmp == std::strong_ordering::less)
+		{
+			negative = !other.negative;
+			digits = sub(other.digits, digits);
+		}
+		else
+		{
+			digits = sub(digits, other.digits);
+		}
 	}
 
 	trimLeadingZeros();
@@ -212,6 +217,10 @@ Number Number::operator-() const
 	return result;
 }
 
+/*******************************************
+ * Shifting operations
+ *******************************************/
+
 Number Number::operator<<(size_t count) const
 {
 	Number result = *this;
@@ -251,6 +260,30 @@ Number &Number::operator>>=(size_t count)
 
 	return *this;
 }
+
+void Number::rightShift(size_t count)
+{
+	bitShiftRight(digits, count);
+}
+
+void Number::leftShift(size_t count)
+{
+	bitShiftLeft(digits, count);
+}
+
+void Number::rightShiftDigit(size_t count)
+{
+	digitShiftRight(digits, count);
+}
+
+void Number::leftShiftDigit(size_t count)
+{
+	digitShiftLeft(digits, count);
+}
+
+/*******************************************
+ * Comparison operations
+ *******************************************/
 
 bool Number::operator==(const Number &other) const
 {
@@ -302,6 +335,37 @@ std::strong_ordering Number::operator<=>(const Number &other) const
 	return cmp;
 }
 
+std::strong_ordering Number::compareAbs(const Number &other) const
+{
+	if (*this == other)
+	{
+		return std::strong_ordering::equal;
+	}
+
+	if (digits.size() != other.digits.size())
+	{
+		if (digits.size() < other.digits.size()) return std::strong_ordering::less;
+		else return std::strong_ordering::greater;
+	}
+	else
+	{
+		for (size_t i = digits.size(); i-- > 0;)
+		{
+			if (digits.at(i) != other.digits.at(i))
+			{
+				if (digits.at(i) < other.digits.at(i)) return std::strong_ordering::less;
+				else return std::strong_ordering::greater;
+			}
+		}
+	}
+
+	return std::strong_ordering::equal;
+}
+
+/*******************************************
+ * Advanced arithmetic operations
+ *******************************************/
+
 Number Number::pow(const Number &exponent) const
 {
 	Number result = pow(*this, exponent);
@@ -322,83 +386,6 @@ Number Number::gcd(const Number &other) const
 Number Number::modInverse(const Number &modulus) const
 {
 	return modInverse(*this, modulus);
-}
-
-void Number::rightShift(size_t count)
-{
-	bitShiftRight(digits, count);
-}
-
-void Number::leftShift(size_t count)
-{
-	bitShiftLeft(digits, count);
-}
-
-void Number::rightShiftDigit(size_t count)
-{
-	digitShiftRight(digits, count);
-}
-
-void Number::leftShiftDigit(size_t count)
-{
-	digitShiftLeft(digits, count);
-}
-
-size_t Number::bitLength() const
-{
-	if (digits.empty())
-	{
-		return 0;
-	}
-
-	size_t length = digits.size() * 32;
-
-	if (digits.back() != 0)
-	{
-		length -= __builtin_clz(digits.back());
-	}
-
-	return length;
-}
-
-std::strong_ordering Number::compareAbs(const Number &other) const
-{
-	if (*this == other)
-	{
-		return std::strong_ordering::equal;
-	}
-
-	int cmp = 0;
-	if (digits.size() != other.digits.size())
-	{
-		cmp = digits.size() < other.digits.size() ? -1 : 1;
-	}
-	else
-	{
-		for (size_t i = digits.size(); i-- > 0;)
-		{
-			if (digits[i] != other.digits[i])
-			{
-				cmp = digits[i] < other.digits[i] ? -1 : 1;
-				break;
-			}
-		}
-	}
-
-	switch (cmp)
-	{
-	case -1:
-		return std::strong_ordering::less;
-	case 1:
-		return std::strong_ordering::greater;
-	default:
-		return std::strong_ordering::equal;
-	}
-}
-
-std::vector<uint32_t> Number::getDigits() const
-{
-	return digits;
 }
 
 Number Number::pow(Number base, Number exponent)
@@ -440,25 +427,69 @@ Number Number::modPow(Number base, Number exponent, const Number &modulus)
 
 Number Number::gcd(Number a, Number b)
 {
-	return std::get<0>(extendedGCD(std::move(a), std::move(b)));
+	if (a == 0) return b;
+	else if (b == 0) return a;
+
+	a.negative = false;
+	b.negative = false;
+
+	size_t shiftA = a.bitLength() - (a.toBinaryString().find_last_of('1') + 1);
+	size_t shiftB = b.bitLength() - (b.toBinaryString().find_last_of('1') + 1);
+
+	a >>= shiftA;
+
+	do
+	{
+		b >>= b.bitLength() - (b.toBinaryString().find_last_of('1') + 1);
+		if (a > b)
+		{
+			std::swap(a, b);
+		}
+
+		b -= a;
+	} while (b != 0);
+
+	return a << std::min(shiftA, shiftB);
 }
 
-Number Number::modInverse(Number a, const Number &modulus)
+Number Number::modInverse(const Number &a, const Number &modulus)
 {
-	auto [gcd, x, y] = extendedGCD(std::move(a), modulus);
+	auto [gcd, x, y] = extendedGCD(a, modulus);
 
-	if (gcd != 1)
-	{
-		throw std::invalid_argument("Modular inverse does not exist.");
-	}
+	if (gcd != 1) throw std::invalid_argument("Modular inverse does not exist.");
 
-	if (x < 0)
-	{
-		x += modulus;
-	}
-
-	return x % modulus;
+	return (x % modulus + modulus) % modulus;
 }
+
+/*******************************************
+ * Information functions
+ *******************************************/
+
+size_t Number::bitLength() const
+{
+	if (digits.empty())
+	{
+		return 0;
+	}
+
+	size_t length = digits.size() * BASE;
+
+	if (digits.back() != 0)
+	{
+		length -= __builtin_clz(digits.back());
+	}
+
+	return length;
+}
+
+std::vector<uint32_t> Number::getDigits() const
+{
+	return digits;
+}
+
+/*******************************************
+ * Conversion functions
+ *******************************************/
 
 std::string Number::toString() const
 {
@@ -476,8 +507,8 @@ std::string Number::toString() const
 
 		for (size_t i = tmp.digits.size(); i-- > 0;)
 		{
-			carry = (carry << 32) + tmp.digits[i];
-			tmp.digits[i] = static_cast<uint32_t>((carry / 10) & MASK32);
+			carry = (carry << BASE) + tmp.digits.at(i);
+			tmp.digits.at(i) = static_cast<uint32_t>((carry / 10) & MASK);
 			carry %= 10;
 		}
 
@@ -535,6 +566,186 @@ Number Number::fromString(const std::string &str, uint32_t base)
 	}
 }
 
+/*******************************************
+ * Basic arithmetic operations
+ *******************************************/
+
+std::vector<uint32_t> Number::add(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const
+{
+	std::vector<uint32_t> result(std::max(a.size(), b.size()) + 1);
+
+	uint64_t carry = 0;
+	for (size_t i = 0; i < result.size(); ++i)
+	{
+		if (i < a.size()) carry += a.at(i);
+		if (i < b.size()) carry += b.at(i);
+
+		result[i] = static_cast<uint32_t>(carry & MASK);
+		carry >>= BASE;
+	}
+
+	if (carry != 0) result.push_back(static_cast<uint32_t>(carry));
+
+	return result;
+}
+
+std::vector<uint32_t> Number::sub(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const
+{
+	std::vector<uint32_t> result(std::max(a.size(), 1UL));
+
+	uint64_t borrow = 0;
+	for (size_t i = 0; i < a.size() || i < b.size(); ++i)
+	{
+		if (i < a.size()) borrow += a.at(i);
+		if (i < b.size()) borrow -= b.at(i);
+
+		result[i] = static_cast<uint32_t>(borrow & MASK);
+		borrow >>= BASE;
+	}
+
+	return result;
+}
+
+std::vector<uint32_t> Number::mul(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const
+{
+	std::vector<uint32_t> result(a.size() + b.size());
+
+	for (size_t i = 0; i < a.size(); ++i)
+	{
+		uint64_t carry = 0;
+		for (size_t j = 0; j < b.size(); ++j)
+		{
+			carry += static_cast<uint64_t>(a.at(i)) * b.at(j) + result.at(i + j);
+			result[i + j] = static_cast<uint32_t>(carry & MASK);
+			carry >>= BASE;
+		}
+		result[i + b.size()] += static_cast<uint32_t>(carry);
+	}
+
+	return result;
+}
+
+std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> Number::div(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const
+{
+	if (b.empty()) throw std::invalid_argument("Division by zero.");
+	if (a.empty()) return {};
+
+	std::vector<uint32_t> quotient(a.size(), 0);
+	std::vector<uint32_t> remainder;
+	remainder.reserve(a.size() + 1);
+
+	for (size_t i = a.size(); i-- > 0;)
+	{
+		remainder.insert(remainder.begin(), a.at(i));
+
+		while (!remainder.empty() && remainder.back() == 0) remainder.pop_back();
+
+		uint32_t q_digit = estimateQuotientDigit(remainder, b);
+		correctQuotientEstimate(remainder, b, q_digit);
+
+		quotient[i] = q_digit;
+	}
+
+	while (!quotient.empty() && quotient.back() == 0) quotient.pop_back();
+	while (!remainder.empty() && remainder.back() == 0) remainder.pop_back();
+
+	return {quotient, remainder};
+}
+
+/*******************************************
+ * Shifting operations
+ *******************************************/
+
+std::vector<uint32_t> Number::bitShiftRight(const std::vector<uint32_t> &digits, size_t count) const
+{
+	if (digits.empty() || count == 0) return digits;
+
+	size_t shift = count / BASE;
+	size_t bitShift = count % BASE;
+
+	if (shift >= digits.size()) return {};
+
+	std::vector<uint32_t> result(digits.begin() + shift, digits.end());
+
+	uint32_t carry = 0;
+	for (size_t i = result.size(); i-- > 0;)
+	{
+		uint64_t temp = (static_cast<uint64_t>(carry) << BASE) | result.at(i);
+		result[i] = (temp >> bitShift) & MASK;
+		carry = digits.at(i + shift);
+	}
+
+	while (!result.empty() && result.back() == 0) result.pop_back();
+
+	return result;
+}
+
+std::vector<uint32_t> Number::bitShiftLeft(const std::vector<uint32_t> &digits, size_t count) const
+{
+	size_t shift = count / BASE;
+	size_t bitShift = count % BASE;
+
+	std::vector<uint32_t> result = digitShiftLeft(digits, shift);
+
+	uint32_t carry = 0;
+	for (size_t i = 0; i < result.size(); ++i)
+	{
+		uint64_t temp = (static_cast<uint64_t>(result[i]) << bitShift) | carry;
+		result[i] = temp & MASK;
+		carry = temp >> BASE;
+	}
+
+	if (carry)
+	{
+		result.push_back(carry);
+	}
+
+	return result;
+}
+
+std::vector<uint32_t> Number::digitShiftRight(const std::vector<uint32_t> &digits, size_t count) const
+{
+	if (count >= digits.size()) return {};
+
+	std::vector<uint32_t> result(digits.begin() + count, digits.end());
+
+	while (!result.empty() && result.back() == 0) result.pop_back();
+	return result;
+}
+
+std::vector<uint32_t> Number::digitShiftLeft(const std::vector<uint32_t> &digits, size_t count) const
+{
+	std::vector<uint32_t> result(count, 0);
+	result.insert(result.end(), digits.begin(), digits.end());
+
+	return result;
+}
+
+/*******************************************
+ * Advanced arithmetic operations
+ *******************************************/
+
+std::tuple<Number, Number, Number> Number::extendedGCD(Number a, Number b)
+{
+	Number x = 1, y = 0;
+	Number x1 = 0, y1 = 1;
+
+	while (b != 0)
+	{
+		Number q = a / b;
+
+		std::tie(x, x1) = std::make_tuple(x1, x - q * x1);
+		std::tie(y, y1) = std::make_tuple(y1, y - q * y1);
+		std::tie(a, b) = std::make_tuple(b, a - q * b);
+	}
+
+	return std::make_tuple(a, x, y);
+}
+
+/*******************************************
+ * Conversion functions
+ *******************************************/
+
 void Number::fromBinary(const std::string &binaryString)
 {
 	if (binaryString.empty())
@@ -564,7 +775,7 @@ void Number::fromBinary(const std::string &binaryString)
 
 void Number::fromDecimal(const std::string &decimalString)
 {
-	const uint64_t base = 1ULL << 32;
+	const uint64_t base = 1ULL << BASE;
 
 	if (decimalString.empty())
 	{
@@ -573,9 +784,9 @@ void Number::fromDecimal(const std::string &decimalString)
 
 	std::string representation = decimalString;
 
-	if (representation[0] == '-' || representation[0] == '+')
+	if (representation.at(0) == '-' || representation.at(0) == '+')
 	{
-		negative = representation[0] == '-';
+		negative = representation.at(0) == '-';
 		representation = representation.substr(1);
 
 		// Check that there actually is a number not just a sign.
@@ -590,7 +801,7 @@ void Number::fromDecimal(const std::string &decimalString)
 		auto [quotient, remainder] = divideByBase(representation, base);
 
 		representation = quotient;
-		digits.push_back(static_cast<uint32_t>(remainder & MASK32));
+		digits.push_back(static_cast<uint32_t>(remainder & MASK));
 	} while (!representation.empty());
 
 	trimLeadingZeros();
@@ -638,200 +849,6 @@ std::ostream &operator<<(std::ostream &os, const Number &number)
 	return os;
 }
 
-std::vector<uint32_t> Number::add(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const
-{
-	std::vector<uint32_t> result(std::max(a.size(), b.size()) + 1);
-
-	uint64_t carry = 0;
-	for (size_t i = 0; i < result.size(); ++i)
-	{
-		if (i < a.size())
-		{
-			carry += a[i];
-		}
-		if (i < b.size())
-		{
-			carry += b[i];
-		}
-
-		result[i] = static_cast<uint32_t>(carry & MASK32);
-		carry >>= 32;
-	}
-
-	if (carry != 0)
-	{
-		result.push_back(static_cast<uint32_t>(carry));
-	}
-
-	return result;
-}
-
-std::vector<uint32_t> Number::sub(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const
-{
-	std::vector<uint32_t> result(std::max(a.size(), 1UL));
-
-	uint64_t borrow = 0;
-	for (size_t i = 0; i < a.size() || i < b.size(); ++i)
-	{
-		if (i < a.size())
-		{
-			borrow += a[i];
-		}
-		if (i < b.size())
-		{
-			borrow -= b[i];
-		}
-
-		result[i] = static_cast<uint32_t>(borrow & MASK32);
-		borrow >>= 32;
-	}
-
-	return result;
-}
-
-std::vector<uint32_t> Number::mul(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const
-{
-	std::vector<uint32_t> result(a.size() + b.size());
-
-	for (size_t i = 0; i < a.size(); ++i)
-	{
-		uint64_t carry = 0;
-		for (size_t j = 0; j < b.size(); ++j)
-		{
-			carry += static_cast<uint64_t>(a[i]) * b[j] + result[i + j];
-			result[i + j] = static_cast<uint32_t>(carry & MASK32);
-			carry >>= 32;
-		}
-		result[i + b.size()] += static_cast<uint32_t>(carry);
-	}
-
-	return result;
-}
-
-std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> Number::div(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const
-{
-	if (b.empty())
-	{
-		throw std::invalid_argument("Division by zero.");
-	}
-
-	if (a.empty())
-	{
-		return {};
-	}
-
-	std::vector<uint32_t> quotient(a.size(), 0);
-	std::vector<uint32_t> remainder;
-	remainder.reserve(a.size() + 1);
-
-	for (size_t i = a.size(); i-- > 0;)
-	{
-		remainder.insert(remainder.begin(), a[i]);
-
-		while (!remainder.empty() && remainder.back() == 0)
-		{
-			remainder.pop_back();
-		}
-
-		uint32_t q_digit = estimateQuotientDigit(remainder, b);
-
-		correctQuotientEstimate(remainder, b, q_digit);
-
-		quotient[i] = q_digit;
-	}
-
-	while (!quotient.empty() && quotient.back() == 0)
-	{
-		quotient.pop_back();
-	}
-	while (!remainder.empty() && remainder.back() == 0)
-	{
-		remainder.pop_back();
-	}
-
-	return {quotient, remainder};
-}
-
-std::vector<uint32_t> Number::bitShiftRight(const std::vector<uint32_t> &digits, size_t count) const
-{
-	if (digits.empty() || count == 0)
-	{
-		return digits;
-	}
-
-	size_t shift = count / 32;
-	size_t bitShift = count % 32;
-
-	if (shift >= digits.size())
-	{
-		return {};
-	}
-
-	std::vector<uint32_t> result(digits.begin() + shift, digits.end());
-
-	uint32_t carry = 0;
-	for (size_t i = result.size(); i-- > 0;)
-	{
-		uint64_t temp = (static_cast<uint64_t>(carry) << 32) | result.at(i);
-		result[i] = (temp >> bitShift) & MASK32;
-		carry = digits.at(i + shift);
-	}
-
-	while (!result.empty() && result.back() == 0)
-	{
-		result.pop_back();
-	}
-
-	return result;
-}
-
-std::vector<uint32_t> Number::bitShiftLeft(const std::vector<uint32_t> &digits, size_t count) const
-{
-	size_t shift = count / 32;
-	size_t bitShift = count % 32;
-
-	std::vector<uint32_t> result = digitShiftLeft(digits, shift);
-
-	uint32_t carry = 0;
-	for (size_t i = 0; i < result.size(); ++i)
-	{
-		uint64_t temp = (static_cast<uint64_t>(result[i]) << bitShift) | carry;
-		result[i] = temp & MASK32;
-		carry = temp >> 32;
-	}
-	if (carry)
-	{
-		result.push_back(carry);
-	}
-
-	return result;
-}
-
-std::vector<uint32_t> Number::digitShiftRight(const std::vector<uint32_t> &digits, size_t count) const
-{
-	if (count >= digits.size())
-	{
-		return {};
-	}
-
-	std::vector<uint32_t> result(digits.begin() + count, digits.end());
-
-	while (!result.empty() && result.back() == 0)
-	{
-		result.pop_back();
-	}
-
-	return result;
-}
-
-std::vector<uint32_t> Number::digitShiftLeft(const std::vector<uint32_t> &digits, size_t count) const
-{
-	std::vector<uint32_t> result(count, 0);
-	result.insert(result.end(), digits.begin(), digits.end());
-
-	return result;
-}
-
 void Number::trimLeadingZeros()
 {
 	while (!digits.empty() && digits.back() == 0)
@@ -842,30 +859,6 @@ void Number::trimLeadingZeros()
 	{
 		negative = false;
 	}
-}
-
-std::tuple<Number, Number, Number> Number::extendedGCD(Number a, Number b)
-{
-	Number x0 = 1, y0 = 0, x1 = 0, y1 = 1;
-
-	while (b != 0)
-	{
-		Number q = a / b;
-		Number r = a % b;
-
-		a = b;
-		b = r;
-
-		Number x_temp = x0 - q * x1;
-		x0 = x1;
-		x1 = x_temp;
-
-		Number y_temp = y0 - q * y1;
-		y0 = y1;
-		y1 = y_temp;
-	}
-
-	return {a, x0, y0};
 }
 
 namespace
@@ -911,10 +904,10 @@ namespace
 
 		if (m > n)
 		{
-			remainderHigh = remainderHigh << 32 | remainder.at(m - 2);
+			remainderHigh = remainderHigh << Number::BASE | remainder.at(m - 2);
 		}
 
-		auto q_digit = static_cast<uint32_t>((remainderHigh / divisorHigh) & Number::MASK32);
+		auto q_digit = static_cast<uint32_t>((remainderHigh / divisorHigh) & Number::MASK);
 
 		return q_digit;
 	}
