@@ -12,6 +12,7 @@ IndentCaseLabels: false
 # Brackets
 BreakBeforeBraces: Allman
 AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
 
 # Line Length
 ColumnLimit: 180
