@@ -1,24 +1,27 @@
 #include "cryptography/ecc/WeierstrassCurve.hpp"
 
-#include <algorithm>
-
-WeierstrassCurve::WeierstrassCurve(const Number& a, const Number& b, const Number& p) : a(a), b(b), p(p) {}
-
 Point WeierstrassCurve::scalarMultiply(const Point& G, const Number& n) const
 {
 	std::string bits = n.toBinaryString();
-	std::reverse(bits.begin(), bits.end());
 
-	Point result = Point::Identity;
-	Point accumulator = G;
+	Point R0 = Point::Identity;
+	Point R1 = G;
 
 	for (const auto& bit : bits)
 	{
-		if (bit == '1') result = addPoints(result, accumulator);
-		accumulator = doublePoint(accumulator);
+		if (bit == '0')
+		{
+			R1 = addPoints(R0, R1);
+			R0 = doublePoint(R0);
+		}
+		else if (bit == '1')
+		{
+			R0 = addPoints(R0, R1);
+			R1 = doublePoint(R1);
+		}
 	}
 
-	return result;
+	return R0;
 }
 
 Point WeierstrassCurve::addPoints(const Point& P, const Point& Q) const
