@@ -196,6 +196,36 @@ Number::operator T() const
 	}
 }
 
+template <std::integral T>
+Number operator+(const T& lhs, const Number& rhs)
+{
+	return static_cast<Number>(lhs) + rhs;
+}
+
+template <std::integral T>
+Number operator-(const T& lhs, const Number& rhs)
+{
+	return static_cast<Number>(lhs) - rhs;
+}
+
+template <std::integral T>
+Number operator*(const T& lhs, const Number& rhs)
+{
+	return static_cast<Number>(lhs) * rhs;
+}
+
+template <std::integral T>
+Number operator/(const T& lhs, const Number& rhs)
+{
+	return static_cast<Number>(lhs) / rhs;
+}
+
+template <std::integral T>
+Number operator%(const T& lhs, const Number& rhs)
+{
+	return static_cast<Number>(lhs) % rhs;
+}
+
 template <>
 struct std::formatter<Number> : std::formatter<std::string>
 {

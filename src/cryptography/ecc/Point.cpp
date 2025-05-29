@@ -1,37 +1,26 @@
-/**
- * @file Point.cpp
- * @brief Implementation of the Point struct for elliptic curve points.
- */
-
 #include "cryptography/ecc/Point.hpp"
 
 const Point Point::Zero = Point(0, 0);
-const Point Point::Identity = Point(0, 0, true);
+const Point Point::Identity = Point();
 
-/**
- * @brief Checks if this point is the point at infinity.
- * @return True if the point is at infinity, false otherwise.
- */
-bool Point::isInfinite() const
+Point::Point() : x(0), y(0), infinity(true) {}
+Point::Point(const Number& x, const Number& y) : x(x), y(y), infinity(false) {}
+
+bool Point::isInfinity() const
 {
-	return infinite;
+	return infinity;
 }
 
-/**
- * @brief Equality operator for Point.
- * @param other The point to compare with.
- * @return True if the points are equal, false otherwise.
- */
 bool Point::operator==(const Point& other) const
 {
-	if (infinite && other.infinite)
-	{
-		return true;
-	}
-	if (infinite || other.infinite)
-	{
-		return false;
-	}
+	if (infinity && other.infinity) return true;
+	if (infinity || other.infinity) return false;
 
 	return x == other.x && y == other.y;
+}
+
+Point Point::operator-() const
+{
+	if (infinity) return *this;
+	return Point(x, -y);
 }

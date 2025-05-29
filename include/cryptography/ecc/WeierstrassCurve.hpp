@@ -1,18 +1,20 @@
 #pragma once
 
-#include "cryptography/ecc/EllipticCurve.hpp"
+#include "cryptography/ecc/Point.hpp"
 #include "math/Number.hpp"
-
-class WeierstrassCurve : public EllipticCurve
+class WeierstrassCurve
 {
 public:
 	explicit WeierstrassCurve(const Number& a, const Number& b, const Number& p);
 
-	Point multiply(const Point& point, const Number& scalar) const override;
+	Point scalarMultiply(const Point& G, const Number& n) const;
 
-	Point addPoints(const Point& p1, const Point& p2) const override;
+private:
+	Number a;
+	Number b;
 
-	Point doublePoint(const Point& point) const override;
+	Number p;
 
-	bool isOnCurve(const Point& point) const override;
+	Point addPoints(const Point& P, const Point& Q) const;
+	Point doublePoint(const Point& P) const;
 };

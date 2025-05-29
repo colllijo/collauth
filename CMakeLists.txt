@@ -14,7 +14,7 @@ set(SOURCES
   "${SOURCE_DIR}/main.cpp"
   "${SOURCE_DIR}/cryptography/Random.cpp"
   "${SOURCE_DIR}/cryptography/SHA256.cpp"
-  "${SOURCE_DIR}/cryptography/ecc/EllipticCurve.cpp"
+  "${SOURCE_DIR}/cryptography/ecc/MontgomeryCurve.cpp"
   "${SOURCE_DIR}/cryptography/ecc/Point.cpp"
   "${SOURCE_DIR}/cryptography/ecc/WeierstrassCurve.cpp"
   "${SOURCE_DIR}/events/EpollPoller.cpp"
@@ -53,7 +53,7 @@ set(SOURCES
 set(HEADERS
   "${INCLUDE_DIR}/cryptography/Random.hpp"
   "${INCLUDE_DIR}/cryptography/SHA256.hpp"
-  "${INCLUDE_DIR}/cryptography/ecc/EllipticCurve.hpp"
+  "${INCLUDE_DIR}/cryptography/ecc/MontgomeryCurve.hpp"
   "${INCLUDE_DIR}/cryptography/ecc/Point.hpp"
   "${INCLUDE_DIR}/cryptography/ecc/WeierstrassCurve.hpp"
   "${INCLUDE_DIR}/events/EventPoller.hpp"
@@ -92,6 +92,7 @@ set(HEADERS
 
 include_directories(${INCLUDE_DIR})
 
+# Source code checks
 add_custom_target(format
     COMMAND clang-format -i -Werror ${SOURCES} ${HEADERS}
     COMMENT "Formatting source files with clang-format"
@@ -114,6 +115,8 @@ add_custom_target(tidy-fix
     COMMENT "Running clang-tidy with fixes"
 )
 
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
+add_executable(${PROJECT_NAME}  ${SOURCES} ${HEADERS})
+target_compile_options(${PROJECT_NAME}
+    PRIVATE -Wall -Wextra -Wpedantic -Werror
+)
