@@ -33,6 +33,11 @@ void BufferWriter::writeBytes(const std::vector<uint8_t>& bytes)
 	buffer.insert(buffer.end(), bytes.begin(), bytes.end());
 }
 
+void BufferWriter::clear()
+{
+	buffer.clear();
+}
+
 std::vector<uint8_t> BufferWriter::getBuffer() const
 {
 	return buffer;

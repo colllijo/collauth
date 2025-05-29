@@ -413,7 +413,7 @@ Number Number::modPow(Number base, Number exponent, const Number &modulus)
 
 	while (exponent != 0)
 	{
-		if (exponent % 2 != 0)
+		if ((exponent.digits.at(0) & 0b1) != 0)
 		{
 			result = (result * base) % modulus;
 		}
@@ -591,7 +591,7 @@ std::vector<uint32_t> Number::add(const std::vector<uint32_t> &a, const std::vec
 
 std::vector<uint32_t> Number::sub(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const
 {
-	std::vector<uint32_t> result(std::max(a.size(), 1UL));
+	std::vector<uint32_t> result(std::max(a.size(), b.size()));
 
 	uint64_t borrow = 0;
 	for (size_t i = 0; i < a.size() || i < b.size(); ++i)

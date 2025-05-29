@@ -1,11 +1,12 @@
 #pragma once
 
 #include <cstdint>
-#include <unordered_map>
 #include <vector>
 
 #include "tls/TLS.hpp"
+#include "tls/extension/TLSExtension.hpp"
 
+// TODO: Change away from raw buffers
 struct ClientHello
 {
 	uint16_t legacyVersion{};
@@ -13,7 +14,7 @@ struct ClientHello
 	std::vector<uint8_t> sessionId;
 	std::vector<TLSCipherSuite> cipherSuites;
 	std::vector<uint8_t> compressionMethods;
-	std::unordered_map<TLSExtensionType, std::vector<uint8_t>> extensions;
+	TLSExtension extensions;
 };
 
 ClientHello parseClientHello(const std::vector<uint8_t>& data);

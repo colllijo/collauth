@@ -1,16 +1,20 @@
 #include "tls/TLSContext.hpp"
 
+#include <algorithm>
+#include <atomic>
 #include <unordered_map>
 
+#include "cryptography/Random.hpp"
 #include "logging/Logger.hpp"
+#include "math/Number.hpp"
 #include "tls/ClientHello.hpp"
 #include "tls/ServerHello.hpp"
 #include "tls/TLS.hpp"
-#include "tls/TLSKeyShare.hpp"
 #include "tls/TLSPlaintext.hpp"
-#include "tls/TLSServerName.hpp"
 #include "tls/TLSSignature.hpp"
 #include "tls/TLSVersion.hpp"
+#include "tls/extension/TLSKeyShare.hpp"
+#include "tls/extension/TLSServerName.hpp"
 
 TLSContext::TLSContext(Socket& socket) : socket(socket), state(TLSState::INITIAL) {}
 
@@ -50,52 +54,35 @@ bool TLSContext::exchangeHandshake(const std::vector<uint8_t>& data)
 	ClientHello clientHello = parseClientHello(clientHandshake);
 
 	// Extension: Supported Versions
-	if (!clientHello.extensions.contains(TLSExtensionType::SUPPORTED_VERSIONS))
-	{
-		Logger::error("TLS handshake failed: missing supported versions extension.");
-		return false;
-	};
-
-	std::vector<TLSVersion> supportedVersions = parseTLSVersion(clientHello.extensions[TLSExtensionType::SUPPORTED_VERSIONS]);
-	if (std::find(supportedVersions.begin(), supportedVersions.end(), TLSVersion::TLS_1_3) == supportedVersions.end())
+	if (std::find(clientHello.extensions.supportedVersions.begin(), clientHello.extensions.supportedVersions.end(), TLSVersion::TLS_1_3) ==
+		clientHello.extensions.supportedVersions.end())
 	{
 		Logger::info("TLS handshake failed: unsupported TLS version.");
 		return false;
 	}
 
-	// Extension: Supported Groups
-	if (clientHello.extensions.contains(TLSExtensionType::SUPPORTED_GROUPS))
+	for (const auto& type : clientHello.extensions.supportedGroups)
 	{
-		std::vector<TLSKeyShareType> supportedGroups = parseTLSSupportedGroupes(clientHello.extensions[TLSExtensionType::SUPPORTED_GROUPS]);
+		Logger::debug("{:04X}", static_cast<uint16_t>(type));
 	}
 
-	// Extension: Key Share
-	if (!clientHello.extensions.contains(TLSExtensionType::KEY_SHARE))
-	{
-		Logger::error("TLS handshake failed: missing key share extension.");
-		return false;
-	}
+	// TODO: Check that server supports or accepts at least of the groups supported by the server
+	// else a handshake_failure or insufficient_security answer needs to be sent.
 
-	parseTLSKeyShares(clientHello.extensions[TLSExtensionType::KEY_SHARE]);
+	// TODO: Choose a cipher suite and a group
+
+	// TODO: Check if the keyshare for the choosen group is contained
+	// else send a HelloRetryRequest
 
 	// TODO: Pick key share and compute shared key.
 
 	// Extension: Signature Algorithms
-	if (!clientHello.extensions.contains(TLSExtensionType::SIGNATURE_ALGORITHMS))
-	{
-		Logger::error("TLS handshake failed: missing signature algorithms extension.");
-		return false;
-	}
-
-	std::vector<TLSSignatureScheme> signatureSchemes = parseTLSSignatureSchemes(clientHello.extensions[TLSExtensionType::SIGNATURE_ALGORITHMS]);
+	// TODO: Parse TLS Signature algorithms
 
 	// Extension: Server Name
-	if (clientHello.extensions.contains(TLSExtensionType::SERVER_NAME))
-	{
-		std::unordered_map<TLSServerNameType, std::string> serverNames = parseTLSServerName(clientHello.extensions[TLSExtensionType::SERVER_NAME]);
-		Logger::info("Server name: {}", serverNames[TLSServerNameType::HOST_NAME]);
-	}
+	Logger::info("Server name: {}", clientHello.extensions.serverName.name);
 
+	// TODO: Acutally do this thing correctly
 	ServerHello serverHello = buildServerHello(clientHello);
 
 	auto serverHandshake = buildTLSHandshake(TLSHandshakeType::SERVER_HELLO, serverHello.serialize());

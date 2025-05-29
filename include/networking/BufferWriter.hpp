@@ -14,6 +14,8 @@ public:
 
 	void writeBytes(const std::vector<uint8_t>& bytes);
 
+	void clear();
+
 	std::vector<uint8_t> getBuffer() const;
 
 private:

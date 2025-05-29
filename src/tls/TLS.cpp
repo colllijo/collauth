@@ -1,7 +1,5 @@
 #include "tls/TLS.hpp"
 
-#include <unordered_map>
-
 #include "networking/BufferReader.hpp"
 #include "networking/BufferWriter.hpp"
 
@@ -28,20 +26,4 @@ std::vector<uint8_t> buildTLSHandshake(TLSHandshakeType handshakeType, const std
 	buffer.writeBytes(handshake);
 
 	return buffer.getBuffer();
-}
-
-std::unordered_map<TLSExtensionType, std::vector<uint8_t>> parseTLSExtensions(const std::vector<uint8_t>& data)
-{
-	BufferReader buffer(data);
-	std::unordered_map<TLSExtensionType, std::vector<uint8_t>> extensions;
-
-	while (!buffer.complete())
-	{
-		auto type = static_cast<TLSExtensionType>(buffer.readUint16());
-
-		uint16_t length = buffer.readUint16();
-		extensions[type] = buffer.readBytes(length);
-	}
-
-	return extensions;
 }
