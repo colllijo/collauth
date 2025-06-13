@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cryptography/ecc/Point.hpp"
 #include "math/Number.hpp"
 
 class MontgomeryCurve
@@ -7,7 +8,7 @@ class MontgomeryCurve
 public:
 	explicit MontgomeryCurve(const Number& A, const Number& B, const Number& p);
 
-	Number multiply(const Number& generator, const Number& scalar) const;
+	Point scalarMultiply(const Point& G, const Number& n) const;
 
 private:
 	Number A;
@@ -15,13 +16,7 @@ private:
 
 	Number p;
 
-	struct Point
-	{
-		Number X;
-		Number Z;
-	};
-
-	Point addPoints(const Point& p1, const Point& p2) const;
+	Point addPoints(const Point& P, const Point& Q, const Point& D) const;
 
 	Point doublePoint(const Point& point) const;
 };

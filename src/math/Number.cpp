@@ -3,10 +3,14 @@
 #include <algorithm>
 #include <bitset>
 #include <compare>
+#include <format>
 #include <stdexcept>
 #include <string>
 #include <tuple>
 #include <utility>
+
+#include "math/operations/Addition.hpp"
+#include "math/operations/Subtraction.hpp"
 
 namespace
 {
@@ -59,28 +63,25 @@ Number &Number::operator+=(const Number &other)
 {
 	if (negative == other.negative)
 	{
-		digits = add(digits, other.digits);
-	}
-	else
-	{
-		auto cmp = *this <=> other;
-		if (cmp == std::strong_ordering::equal)
-		{
-			negative = false;
-			digits.clear();
-		}
-		else if (cmp == std::strong_ordering::less)
-		{
-			negative = other.negative;
-			digits = sub(other.digits, digits);
-		}
-		else
-		{
-			digits = sub(digits, other.digits);
-		}
+		digits = addDigits(digits, other.digits);
+		return *this;
 	}
 
-	trimLeadingZeros();
+	auto cmp = *this <=> other;
+	if (cmp == std::strong_ordering::greater)
+	{
+		digits = subtractDigits(digits, other.digits);
+	}
+	else if (cmp == std::strong_ordering::less)
+	{
+		digits = subtractDigits(other.digits, digits);
+		negative = other.negative;
+	}
+	else if (cmp == std::strong_ordering::equal)
+	{
+		digits.clear();
+		negative = false;
+	}
 
 	return *this;
 }
@@ -97,28 +98,25 @@ Number &Number::operator-=(const Number &other)
 {
 	if (negative != other.negative)
 	{
-		digits = add(digits, other.digits);
-	}
-	else
-	{
-		auto cmp = *this <=> other;
-		if (cmp == std::strong_ordering::equal)
-		{
-			negative = false;
-			digits.clear();
-		}
-		else if (cmp == std::strong_ordering::less)
-		{
-			negative = !other.negative;
-			digits = sub(other.digits, digits);
-		}
-		else
-		{
-			digits = sub(digits, other.digits);
-		}
+		digits = addDigits(digits, other.digits);
+		return *this;
 	}
 
-	trimLeadingZeros();
+	auto cmp = compareAbs(other);
+	if (cmp == std::strong_ordering::greater)
+	{
+		digits = subtractDigits(digits, other.digits);
+	}
+	else if (cmp == std::strong_ordering::less)
+	{
+		digits = subtractDigits(other.digits, digits);
+		negative = !other.negative;
+	}
+	else if (cmp == std::strong_ordering::equal)
+	{
+		negative = false;
+		digits.clear();
+	}
 
 	return *this;
 }
@@ -406,20 +404,20 @@ Number Number::pow(Number base, Number exponent)
 	return result;
 }
 
-Number Number::modPow(Number base, Number exponent, const Number &modulus)
+Number Number::modPow(Number base, const Number &exponent, const Number &modulus)
 {
-	Number result = 1;
+	if (modulus == 1) return 0;
 	base %= modulus;
 
-	while (exponent != 0)
+	Number result = 1;
+	for (const auto &bit : exponent.toBinaryString())
 	{
-		if ((exponent.digits.at(0) & 0b1) != 0)
+		result = (result * result) % modulus;
+
+		if (bit == '1')
 		{
 			result = (result * base) % modulus;
 		}
-
-		base = (base * base) % modulus;
-		exponent >>= 1;
 	}
 
 	return result;
@@ -531,10 +529,7 @@ std::string Number::toString() const
 
 std::string Number::toBinaryString() const
 {
-	if (digits.empty())
-	{
-		return "0";
-	}
+	if (digits.empty()) return "0";
 
 	std::string result;
 
@@ -549,6 +544,20 @@ std::string Number::toBinaryString() const
 		return result.substr(firstOne);
 	}
 	return "0";
+}
+
+std::string Number::toHexString() const
+{
+	if (digits.empty()) return "0";
+
+	std::string result;
+
+	for (auto it = digits.rbegin(); it != digits.rend(); ++it)
+	{
+		result += std::format("{:08x}", *it);
+	}
+
+	return result;
 }
 
 Number Number::fromString(const std::string &str, uint32_t base)
@@ -569,42 +578,6 @@ Number Number::fromString(const std::string &str, uint32_t base)
 /*******************************************
  * Basic arithmetic operations
  *******************************************/
-
-std::vector<uint32_t> Number::add(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const
-{
-	std::vector<uint32_t> result(std::max(a.size(), b.size()) + 1);
-
-	uint64_t carry = 0;
-	for (size_t i = 0; i < result.size(); ++i)
-	{
-		if (i < a.size()) carry += a.at(i);
-		if (i < b.size()) carry += b.at(i);
-
-		result[i] = static_cast<uint32_t>(carry & MASK);
-		carry >>= BASE;
-	}
-
-	if (carry != 0) result.push_back(static_cast<uint32_t>(carry));
-
-	return result;
-}
-
-std::vector<uint32_t> Number::sub(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const
-{
-	std::vector<uint32_t> result(std::max(a.size(), b.size()));
-
-	uint64_t borrow = 0;
-	for (size_t i = 0; i < a.size() || i < b.size(); ++i)
-	{
-		if (i < a.size()) borrow += a.at(i);
-		if (i < b.size()) borrow -= b.at(i);
-
-		result[i] = static_cast<uint32_t>(borrow & MASK);
-		borrow >>= BASE;
-	}
-
-	return result;
-}
 
 std::vector<uint32_t> Number::mul(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const
 {

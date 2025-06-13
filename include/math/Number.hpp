@@ -79,7 +79,7 @@ public:
 	Number modInverse(const Number& modulus) const;
 
 	static Number pow(Number base, Number exponent);
-	static Number modPow(Number base, Number exponent, const Number& modulus);
+	static Number modPow(Number base, const Number& exponent, const Number& modulus);
 
 	static Number gcd(Number a, Number b);
 	static Number modInverse(const Number& a, const Number& modulus);
@@ -98,6 +98,7 @@ public:
 	static Number fromString(const std::string& str, uint32_t base = 10);
 	std::string toString() const;
 	std::string toBinaryString() const;
+	std::string toHexString() const;
 
 	template <std::integral T>
 	void fromIntegral(T number);
@@ -116,8 +117,6 @@ private:
 	 * Basic arithmetic operations
 	 *******************************************/
 
-	std::vector<uint32_t> add(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
-	std::vector<uint32_t> sub(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
 	std::vector<uint32_t> mul(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
 	std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> div(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
 
