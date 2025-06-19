@@ -117,7 +117,6 @@ private:
 	 * Basic arithmetic operations
 	 *******************************************/
 
-	std::vector<uint32_t> mul(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
 	std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> div(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
 
 	/*******************************************

@@ -29,6 +29,7 @@ set(SOURCES
   "${SOURCE_DIR}/math/Montgomery.cpp"
   "${SOURCE_DIR}/math/Number.cpp"
   "${SOURCE_DIR}/math/operations/Addition.cpp"
+  "${SOURCE_DIR}/math/operations/Multiplication.cpp"
   "${SOURCE_DIR}/math/operations/Subtraction.cpp"
   "${SOURCE_DIR}/networking/BufferReader.cpp"
   "${SOURCE_DIR}/networking/BufferWriter.cpp"
@@ -72,6 +73,7 @@ set(HEADERS
   "${INCLUDE_DIR}/math/Montgomery.hpp"
   "${INCLUDE_DIR}/math/Number.hpp"
   "${INCLUDE_DIR}/math/operations/Addition.hpp"
+  "${INCLUDE_DIR}/math/operations/Multiplication.hpp"
   "${INCLUDE_DIR}/math/operations/Subtraction.hpp"
   "${INCLUDE_DIR}/logging/Logger.hpp"
   "${INCLUDE_DIR}/networking/BufferReader.hpp"
@@ -123,6 +125,11 @@ add_custom_target(tidy-fix
     COMMENT "Running clang-tidy with fixes"
 )
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
+endif()
+
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
 
 add_executable(${PROJECT_NAME}  ${SOURCES} ${HEADERS})
 target_compile_options(${PROJECT_NAME}

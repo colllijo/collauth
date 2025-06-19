@@ -10,6 +10,7 @@
 #include <utility>
 
 #include "math/operations/Addition.hpp"
+#include "math/operations/Multiplication.hpp"
 #include "math/operations/Subtraction.hpp"
 
 namespace
@@ -135,13 +136,12 @@ Number &Number::operator*=(const Number &other)
 	{
 		digits.clear();
 		negative = false;
+
 		return *this;
 	}
 
-	negative = negative != other.negative;
-	digits = mul(digits, other.digits);
-
-	trimLeadingZeros();
+	negative ^= other.negative;
+	digits = multiplyDigits(digits, other.digits);
 
 	return *this;
 }
@@ -578,25 +578,6 @@ Number Number::fromString(const std::string &str, uint32_t base)
 /*******************************************
  * Basic arithmetic operations
  *******************************************/
-
-std::vector<uint32_t> Number::mul(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const
-{
-	std::vector<uint32_t> result(a.size() + b.size());
-
-	for (size_t i = 0; i < a.size(); ++i)
-	{
-		uint64_t carry = 0;
-		for (size_t j = 0; j < b.size(); ++j)
-		{
-			carry += static_cast<uint64_t>(a.at(i)) * b.at(j) + result.at(i + j);
-			result[i + j] = static_cast<uint32_t>(carry & MASK);
-			carry >>= BASE;
-		}
-		result[i + b.size()] += static_cast<uint32_t>(carry);
-	}
-
-	return result;
-}
 
 std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> Number::div(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const
 {

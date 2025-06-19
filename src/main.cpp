@@ -3,7 +3,6 @@
 #include <cstdlib>
 
 #include "events/EpollPoller.hpp"
-#include "math/Number.hpp"
 #ifndef USE_EPOLL
 #include "events/SelectPoller.hpp"
 #endif
@@ -17,13 +16,6 @@ constexpr int HTTP_PORT = 8080;
 int main()
 {
 	SignalHandler& signalHandler = *SignalHandler::getInstance();
-
-	Number a("-2");
-	Number b("-4");
-
-	Logger::info("{}", (a - b));
-
-	return 1;
 
 	try
 	{
