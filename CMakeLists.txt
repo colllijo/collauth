@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.30)
 
-project(CollAuth)
+project(CollAuth VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -29,7 +29,10 @@ set(SOURCES
   "${SOURCE_DIR}/math/Montgomery.cpp"
   "${SOURCE_DIR}/math/Number.cpp"
   "${SOURCE_DIR}/math/operations/Addition.cpp"
+  "${SOURCE_DIR}/math/operations/Comparison.cpp"
+  "${SOURCE_DIR}/math/operations/Division.cpp"
   "${SOURCE_DIR}/math/operations/Multiplication.cpp"
+  "${SOURCE_DIR}/math/operations/Shifting.cpp"
   "${SOURCE_DIR}/math/operations/Subtraction.cpp"
   "${SOURCE_DIR}/networking/BufferReader.cpp"
   "${SOURCE_DIR}/networking/BufferWriter.cpp"
@@ -73,7 +76,10 @@ set(HEADERS
   "${INCLUDE_DIR}/math/Montgomery.hpp"
   "${INCLUDE_DIR}/math/Number.hpp"
   "${INCLUDE_DIR}/math/operations/Addition.hpp"
+  "${INCLUDE_DIR}/math/operations/Comparison.hpp"
+  "${INCLUDE_DIR}/math/operations/Division.hpp"
   "${INCLUDE_DIR}/math/operations/Multiplication.hpp"
+  "${INCLUDE_DIR}/math/operations/Shifting.hpp"
   "${INCLUDE_DIR}/math/operations/Subtraction.hpp"
   "${INCLUDE_DIR}/logging/Logger.hpp"
   "${INCLUDE_DIR}/networking/BufferReader.hpp"

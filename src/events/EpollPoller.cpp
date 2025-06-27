@@ -3,6 +3,7 @@
 #include <cerrno>
 #include <cstring>
 #include <stdexcept>
+
 #include "events/EventPoller.hpp"
 
 EpollPoller::EpollPoller() : EventPoller()

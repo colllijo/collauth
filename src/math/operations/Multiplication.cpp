@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include "logging/Logger.hpp"
 #include "math/operations/Addition.hpp"
 #include "math/operations/Subtraction.hpp"
 
@@ -55,12 +56,10 @@ std::vector<uint32_t> longMultiplication(const std::vector<uint32_t>& multiplier
 
 std::vector<uint32_t> karatsubaMultiplication(const std::vector<uint32_t>& multiplier, const std::vector<uint32_t>& multiplicand)
 {
-	// TODO: Add base condition
-	if (multiplier.size() == 1 && multiplicand.size() == 1) return hardwareMultiplication(multiplier, multiplicand);
+	if (multiplier.size() <= 1 && multiplicand.size() <= 1) return hardwareMultiplication(multiplier, multiplicand);
 
 	size_t m = std::max(multiplier.size(), multiplicand.size()) >> 1;
 
-	// TODO: Split vector in two
 	auto [lowMultiplier, highMultiplier] = splitVector(multiplier, m);
 	auto [lowMultiplicand, highMultiplicand] = splitVector(multiplicand, m);
 
@@ -73,7 +72,7 @@ std::vector<uint32_t> karatsubaMultiplication(const std::vector<uint32_t>& multi
 
 std::pair<std::vector<uint32_t>, std::vector<uint32_t>> splitVector(const std::vector<uint32_t>& vec, size_t index)
 {
-	if (index > vec.size()) index = vec.size();
+	index = std::min(index, vec.size());
 
 	std::vector<uint32_t> lower(vec.begin(), vec.begin() + index);
 	std::vector<uint32_t> upper(vec.begin() + index, vec.end());

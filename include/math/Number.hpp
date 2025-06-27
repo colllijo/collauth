@@ -66,8 +66,6 @@ public:
 	bool operator==(const Number& other) const;
 	std::strong_ordering operator<=>(const Number& other) const;
 
-	std::strong_ordering compareAbs(const Number& other) const;
-
 	/*******************************************
 	 * Advanced arithmetic operations
 	 *******************************************/
@@ -112,21 +110,6 @@ public:
 private:
 	std::vector<uint32_t> digits;
 	bool negative{};
-
-	/*******************************************
-	 * Basic arithmetic operations
-	 *******************************************/
-
-	std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> div(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const;
-
-	/*******************************************
-	 * Shifting operations
-	 *******************************************/
-
-	std::vector<uint32_t> bitShiftRight(const std::vector<uint32_t>& digits, size_t count) const;
-	std::vector<uint32_t> bitShiftLeft(const std::vector<uint32_t>& digits, size_t count) const;
-	std::vector<uint32_t> digitShiftRight(const std::vector<uint32_t>& digits, size_t count) const;
-	std::vector<uint32_t> digitShiftLeft(const std::vector<uint32_t>& digits, size_t count) const;
 
 	/*******************************************
 	 * Advanced arithmetic operations

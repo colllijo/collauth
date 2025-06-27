@@ -1,6 +1,7 @@
 #include "cryptography/ecc/MontgomeryCurve.hpp"
 
 #include "cryptography/ecc/Point.hpp"
+#include "logging/Logger.hpp"
 
 MontgomeryCurve::MontgomeryCurve(const Number& A, const Number& B, const Number& p) : A(A), B(B), p(p) {}
 
@@ -36,21 +37,20 @@ Point MontgomeryCurve::addPoints(const Point& P, const Point& Q, const Point& D)
 
 	if (P == Q) return doublePoint(P);
 
-	Number A = ((P.x - P.z) * (Q.x + Q.z)) % p;
-	Number B = ((P.x + P.z) * (Q.x - Q.z)) % p;
+	Number X = (D.z * ((P.x - P.z) * (Q.x + Q.z) + (P.x + P.z) * (Q.x - Q.z)).pow(2)) % p;
+	Number Z = (D.x * ((P.x - P.z) * (Q.x + Q.z) - (P.x + P.z) * (Q.x - Q.z)).pow(2)) % p;
 
-	Number x = (D.z * (A + B).pow(2)) % p;
-	Number z = (D.x * (A - B).pow(2)) % p;
-
-	return Point(x, 0, z);
+	Logger::info("({}, {}) + ({}, {}) = ({}, {})", P.x, P.z, Q.x, Q.z, X, Z);
+	return Point(X, 0, Z);
 }
 
 Point MontgomeryCurve::doublePoint(const Point& P) const
 {
-	Number FOUR_X_Z = ((P.x + P.z).pow(2) - (P.x - P.z)) % p;
+	Number FOUR_X_ONE_Z = ((P.x + P.z).pow(2) - (P.x - P.z).pow(2)) % p;
 
-	Number x = ((P.x + P.z).pow(2) * (P.x - P.z).pow(2)) % p;
-	Number z = (FOUR_X_Z * ((P.x - P.z).pow(2) + ((A + 2) * static_cast<Number>(4).modInverse(p)) * (FOUR_X_Z))) % p;
+	Number X = ((P.x + P.z).pow(2) * (P.x - P.z).pow(2)) % p;
+	Number Z = (FOUR_X_ONE_Z * ((P.x - P.z).pow(2) + ((A + 2) * Number(4).modPow(p - 2, p)) * (FOUR_X_ONE_Z))) % p;
 
-	return Point(x, 0, z);
+	Logger::info("2 * ({}, {}) = ({}, {})", P.x, P.z, X, Z);
+	return Point(X, 0, Z);
 }

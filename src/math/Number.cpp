@@ -1,8 +1,11 @@
 #include "math/Number.hpp"
 
+#include <sys/types.h>
+
 #include <algorithm>
 #include <bitset>
 #include <compare>
+#include <cstdlib>
 #include <format>
 #include <stdexcept>
 #include <string>
@@ -10,17 +13,16 @@
 #include <utility>
 
 #include "math/operations/Addition.hpp"
+#include "math/operations/Comparison.hpp"
+#include "math/operations/Division.hpp"
 #include "math/operations/Multiplication.hpp"
+#include "math/operations/Shifting.hpp"
 #include "math/operations/Subtraction.hpp"
 
 namespace
 {
 	// String dividing decimal string by base for parsing
 	std::tuple<std::string, uint64_t> divideByBase(const std::string &value, uint64_t base);
-
-	// Utility functions for division
-	uint32_t estimateQuotientDigit(const std::vector<uint32_t> &remainder, const std::vector<uint32_t> &divisor);
-	void correctQuotientEstimate(std::vector<uint32_t> &remainder, const std::vector<uint32_t> &divisor, uint32_t &q_digit);
 };	// namespace
 
 /*******************************************
@@ -103,7 +105,7 @@ Number &Number::operator-=(const Number &other)
 		return *this;
 	}
 
-	auto cmp = compareAbs(other);
+	auto cmp = compareDigits(digits, other.digits);
 	if (cmp == std::strong_ordering::greater)
 	{
 		digits = subtractDigits(digits, other.digits);
@@ -167,9 +169,7 @@ Number &Number::operator/=(const Number &other)
 	}
 
 	negative = negative != other.negative;
-	digits = std::get<0>(div(digits, other.digits));
-
-	trimLeadingZeros();
+	digits = std::get<0>(divideDigits(digits, other.digits));
 
 	return *this;
 }
@@ -194,15 +194,13 @@ Number &Number::operator%=(const Number &other)
 		return *this;
 	}
 
-	digits = std::get<1>(div(digits, other.digits));
+	digits = std::get<1>(divideDigits(digits, other.digits));
 
 	if (negative)
 	{
 		*this += other;
 		negative = false;
 	}
-
-	trimLeadingZeros();
 
 	return *this;
 }
@@ -316,7 +314,7 @@ std::strong_ordering Number::operator<=>(const Number &other) const
 		return negative ? std::strong_ordering::less : std::strong_ordering::greater;
 	}
 
-	auto cmp = compareAbs(other);
+	auto cmp = compareDigits(digits, other.digits);
 
 	if (negative)
 	{
@@ -331,33 +329,6 @@ std::strong_ordering Number::operator<=>(const Number &other) const
 	}
 
 	return cmp;
-}
-
-std::strong_ordering Number::compareAbs(const Number &other) const
-{
-	if (*this == other)
-	{
-		return std::strong_ordering::equal;
-	}
-
-	if (digits.size() != other.digits.size())
-	{
-		if (digits.size() < other.digits.size()) return std::strong_ordering::less;
-		else return std::strong_ordering::greater;
-	}
-	else
-	{
-		for (size_t i = digits.size(); i-- > 0;)
-		{
-			if (digits.at(i) != other.digits.at(i))
-			{
-				if (digits.at(i) < other.digits.at(i)) return std::strong_ordering::less;
-				else return std::strong_ordering::greater;
-			}
-		}
-	}
-
-	return std::strong_ordering::equal;
 }
 
 /*******************************************
@@ -576,106 +547,6 @@ Number Number::fromString(const std::string &str, uint32_t base)
 }
 
 /*******************************************
- * Basic arithmetic operations
- *******************************************/
-
-std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> Number::div(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) const
-{
-	if (b.empty()) throw std::invalid_argument("Division by zero.");
-	if (a.empty()) return {};
-
-	std::vector<uint32_t> quotient(a.size(), 0);
-	std::vector<uint32_t> remainder;
-	remainder.reserve(a.size() + 1);
-
-	for (size_t i = a.size(); i-- > 0;)
-	{
-		remainder.insert(remainder.begin(), a.at(i));
-
-		while (!remainder.empty() && remainder.back() == 0) remainder.pop_back();
-
-		uint32_t q_digit = estimateQuotientDigit(remainder, b);
-		correctQuotientEstimate(remainder, b, q_digit);
-
-		quotient[i] = q_digit;
-	}
-
-	while (!quotient.empty() && quotient.back() == 0) quotient.pop_back();
-	while (!remainder.empty() && remainder.back() == 0) remainder.pop_back();
-
-	return {quotient, remainder};
-}
-
-/*******************************************
- * Shifting operations
- *******************************************/
-
-std::vector<uint32_t> Number::bitShiftRight(const std::vector<uint32_t> &digits, size_t count) const
-{
-	if (digits.empty() || count == 0) return digits;
-
-	size_t shift = count / BASE;
-	size_t bitShift = count % BASE;
-
-	if (shift >= digits.size()) return {};
-
-	std::vector<uint32_t> result(digits.begin() + shift, digits.end());
-
-	uint32_t carry = 0;
-	for (size_t i = result.size(); i-- > 0;)
-	{
-		uint64_t temp = (static_cast<uint64_t>(carry) << BASE) | result.at(i);
-		result[i] = (temp >> bitShift) & MASK;
-		carry = digits.at(i + shift);
-	}
-
-	while (!result.empty() && result.back() == 0) result.pop_back();
-
-	return result;
-}
-
-std::vector<uint32_t> Number::bitShiftLeft(const std::vector<uint32_t> &digits, size_t count) const
-{
-	size_t shift = count / BASE;
-	size_t bitShift = count % BASE;
-
-	std::vector<uint32_t> result = digitShiftLeft(digits, shift);
-
-	uint32_t carry = 0;
-	for (size_t i = 0; i < result.size(); ++i)
-	{
-		uint64_t temp = (static_cast<uint64_t>(result[i]) << bitShift) | carry;
-		result[i] = temp & MASK;
-		carry = temp >> BASE;
-	}
-
-	if (carry)
-	{
-		result.push_back(carry);
-	}
-
-	return result;
-}
-
-std::vector<uint32_t> Number::digitShiftRight(const std::vector<uint32_t> &digits, size_t count) const
-{
-	if (count >= digits.size()) return {};
-
-	std::vector<uint32_t> result(digits.begin() + count, digits.end());
-
-	while (!result.empty() && result.back() == 0) result.pop_back();
-	return result;
-}
-
-std::vector<uint32_t> Number::digitShiftLeft(const std::vector<uint32_t> &digits, size_t count) const
-{
-	std::vector<uint32_t> result(count, 0);
-	result.insert(result.end(), digits.begin(), digits.end());
-
-	return result;
-}
-
-/*******************************************
  * Advanced arithmetic operations
  *******************************************/
 
@@ -841,50 +712,5 @@ namespace
 		}
 
 		return {quotient, remainder};
-	}
-
-	uint32_t estimateQuotientDigit(const std::vector<uint32_t> &remainder, const std::vector<uint32_t> &divisor)
-	{
-		if (remainder.size() < divisor.size())
-		{
-			return 0;
-		}
-
-		size_t n = divisor.size();
-		size_t m = remainder.size();
-
-		uint64_t divisorHigh = divisor.at(n - 1);
-		uint64_t remainderHigh = remainder.at(m - 1);
-
-		if (m > n)
-		{
-			remainderHigh = remainderHigh << Number::BASE | remainder.at(m - 2);
-		}
-
-		auto q_digit = static_cast<uint32_t>((remainderHigh / divisorHigh) & Number::MASK);
-
-		return q_digit;
-	}
-
-	void correctQuotientEstimate(std::vector<uint32_t> &remainder, const std::vector<uint32_t> &divisor, uint32_t &q_digit)
-	{
-		if (q_digit == 0)
-		{
-			return;
-		}
-
-		Number div = Number(divisor);
-		Number rem = Number(remainder);
-
-		Number product = div * q_digit;
-		rem -= product;
-
-		if (rem < 0)
-		{
-			q_digit--;
-			rem += div;
-		}
-
-		remainder = rem.getDigits();
 	}
 };	// namespace
