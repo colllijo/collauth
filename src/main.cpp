@@ -3,8 +3,6 @@
 #include <cstdlib>
 
 #include "events/EpollPoller.hpp"
-#include "math/Montgomery.hpp"
-#include "math/Number.hpp"
 #ifndef USE_EPOLL
 #include "events/SelectPoller.hpp"
 #endif
@@ -18,12 +16,6 @@ constexpr int HTTP_PORT = 8080;
 int main()
 {
 	SignalHandler& signalHandler = *SignalHandler::getInstance();
-
-	Number test = montgomery::modPow(13, 128, 27);
-	Logger::info("Montgomery modPow result: {}", test);
-	Logger::info("modPow result: {}", Number::modPow(13, 128, 27));
-
-	return 1;
 
 	try
 	{
