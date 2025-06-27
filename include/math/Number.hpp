@@ -66,6 +66,15 @@ public:
 	bool operator==(const Number& other) const;
 	std::strong_ordering operator<=>(const Number& other) const;
 
+	bool isEven() const;
+	bool isOdd() const;
+
+	/*******************************************
+	 * Bitwise operations
+	 *******************************************/
+
+	Number operator&(const Number& other) const;
+
 	/*******************************************
 	 * Advanced arithmetic operations
 	 *******************************************/
@@ -87,6 +96,7 @@ public:
 	 *******************************************/
 
 	size_t bitLength() const;
+	size_t digitLength() const;
 	std::vector<uint32_t> getDigits() const;
 
 	/*******************************************

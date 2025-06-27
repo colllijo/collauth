@@ -2,9 +2,9 @@
 #include <csignal>
 #include <cstdlib>
 
-#include "cryptography/ecc/MontgomeryCurve.hpp"
-#include "cryptography/ecc/Point.hpp"
 #include "events/EpollPoller.hpp"
+#include "math/Montgomery.hpp"
+#include "math/Number.hpp"
 #ifndef USE_EPOLL
 #include "events/SelectPoller.hpp"
 #endif
@@ -15,33 +15,13 @@
 
 constexpr int HTTP_PORT = 8080;
 
-int main(int, char** argv)
+int main()
 {
 	SignalHandler& signalHandler = *SignalHandler::getInstance();
 
-	Number prime = Number(2).pow(255) - 19;
-	Logger::info("Computed prime for curve25519: {}", prime);
-	MontgomeryCurve curve25519(486662, 1, prime);
-	Point G(9, 0, 1);
-	Logger::info("MontgomeryCurve initialized");
-
-	Number priv = Number("77076d0a7318a57d3c16c17251b26645df4c2f87ebc0992ab177fba51db92c2a", 16);
-	priv = Number(argv[1]);
-	Logger::info("Calculating public key for private key: {}", priv);
-	auto pub = curve25519.scalarMultiply(G, priv);
-
-	Logger::info("Pub Point: ({}, {})", pub.x.toHexString(), pub.z.toHexString());
-
-	Number Z_prime = pub.z.modPow(prime - 2, prime);
-	Number publicKey = (pub.x * Z_prime) % prime;
-
-	Logger::info("Public key: {}", publicKey.toHexString());
-
-	Point test(6400, 0, Number("57894719725999370035306716613809057224872645803389535971048342734787925792161"));
-	Number zetti = test.z.modPow(prime - 2, prime);
-	Number xetti = (test.x * zetti) % prime;
-
-	Logger::info("Test: {}", xetti);
+	Number test = montgomery::modPow(13, 128, 27);
+	Logger::info("Montgomery modPow result: {}", test);
+	Logger::info("modPow result: {}", Number::modPow(13, 128, 27));
 
 	return 1;
 

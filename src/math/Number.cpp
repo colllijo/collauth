@@ -13,6 +13,7 @@
 #include <utility>
 
 #include "math/operations/Addition.hpp"
+#include "math/operations/Bitwise.hpp"
 #include "math/operations/Comparison.hpp"
 #include "math/operations/Division.hpp"
 #include "math/operations/Multiplication.hpp"
@@ -230,7 +231,7 @@ Number Number::operator>>(size_t count) const
 	Number result = *this;
 	result >>= count;
 
-	return *this;
+	return result;
 }
 
 Number &Number::operator<<=(size_t count)
@@ -329,6 +330,25 @@ std::strong_ordering Number::operator<=>(const Number &other) const
 	}
 
 	return cmp;
+}
+
+bool Number::isEven() const
+{
+	return digits.empty() || (digits[0] & 1) == 0;
+}
+
+bool Number::isOdd() const
+{
+	return !digits.empty() && (digits[0] & 1) != 0;
+}
+
+/*******************************************
+ * Comparison operations
+ *******************************************/
+
+Number Number::operator&(const Number &other) const
+{
+	return Number(bitwiseAnd(digits, other.digits), negative && other.negative);
 }
 
 /*******************************************
@@ -449,6 +469,11 @@ size_t Number::bitLength() const
 	}
 
 	return length;
+}
+
+size_t Number::digitLength() const
+{
+	return digits.size();
 }
 
 std::vector<uint32_t> Number::getDigits() const
