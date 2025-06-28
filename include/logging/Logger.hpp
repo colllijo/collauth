@@ -4,6 +4,7 @@
 #include <format>
 #include <iostream>
 #include <mutex>
+#include <print>
 #include <source_location>
 #include <string>
 #include <vector>
@@ -28,10 +29,8 @@ public:
 		{
 			std::lock_guard<std::mutex> lock(logMutex);
 
-			std::string logMessage = std::format("[{}] [{}] [{}:{} ({})]: {}", getCurrentTime(), toString(Level::TRACE), getRelativePath(location.file_name()), location.line(),
-												 getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
-
-			std::cout << logMessage << "\n";
+			std::println("[{}] [{}] [{}:{} ({})]: {}", getCurrentTime(), toString(Level::TRACE), getRelativePath(location.file_name()), location.line(), getFunctionName(location),
+						 std::vformat(message, std::make_format_args(args...)));
 		}
 	};
 
@@ -45,10 +44,8 @@ public:
 		{
 			std::lock_guard<std::mutex> lock(logMutex);
 
-			std::string logMessage = std::format("[{}] [{}] [{}:{} ({})]: {}", getCurrentTime(), toString(Level::DEBUG), getRelativePath(location.file_name()), location.line(),
-												 getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
-
-			std::cout << logMessage << "\n";
+			std::println("[{}] [{}] [{}:{} ({})]: {}", getCurrentTime(), toString(Level::DEBUG), getRelativePath(location.file_name()), location.line(), getFunctionName(location),
+						 std::vformat(message, std::make_format_args(args...)));
 		}
 	};
 
@@ -62,10 +59,8 @@ public:
 		{
 			std::lock_guard<std::mutex> lock(logMutex);
 
-			std::string logMessage = std::format("[{}] [{}] [{}:{} ({})]: {}", getCurrentTime(), toString(Level::INFO), getRelativePath(location.file_name()), location.line(),
-												 getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
-
-			std::cout << logMessage << "\n";
+			std::println("[{}] [{}] [{}:{} ({})]: {}", getCurrentTime(), toString(Level::INFO), getRelativePath(location.file_name()), location.line(), getFunctionName(location),
+						 std::vformat(message, std::make_format_args(args...)));
 		}
 	};
 
@@ -96,10 +91,8 @@ public:
 		{
 			std::lock_guard<std::mutex> lock(logMutex);
 
-			std::string logMessage = std::format("[{}] [{}] [{}:{} ({})]: {}", getCurrentTime(), toString(Level::ERROR), getRelativePath(location.file_name()), location.line(),
-												 getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
-
-			std::cerr << logMessage << "\n";
+			std::println(std::cerr, "[{}] [{}] [{}:{} ({})]: {}", getCurrentTime(), toString(Level::ERROR), getRelativePath(location.file_name()), location.line(),
+						 getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
 		}
 	};
 
@@ -113,10 +106,8 @@ public:
 		{
 			std::lock_guard<std::mutex> lock(logMutex);
 
-			std::string logMessage = std::format("[{}] [{}] [{}:{} ({})]: {}", getCurrentTime(), toString(Level::FATAL), getRelativePath(location.file_name()), location.line(),
-												 getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
-
-			std::cerr << logMessage << "\n";
+			std::println(std::cerr, "[{}] [{}] [{}:{} ({})]: {}", getCurrentTime(), toString(Level::FATAL), getRelativePath(location.file_name()), location.line(),
+						 getFunctionName(location), std::vformat(message, std::make_format_args(args...)));
 		}
 	};
 
