@@ -2,6 +2,7 @@
 
 #include "cryptography/ecc/Point.hpp"
 #include "logging/Logger.hpp"
+#include "math/Montgomery.hpp"
 
 MontgomeryCurve::MontgomeryCurve(const Number& A, const Number& B, const Number& p) : A(A), B(B), p(p) {}
 
@@ -49,7 +50,7 @@ Point MontgomeryCurve::doublePoint(const Point& P) const
 	Number FOUR_X_ONE_Z = ((P.x + P.z).pow(2) - (P.x - P.z).pow(2)) % p;
 
 	Number X = ((P.x + P.z).pow(2) * (P.x - P.z).pow(2)) % p;
-	Number Z = (FOUR_X_ONE_Z * ((P.x - P.z).pow(2) + ((A + 2) * Number(4).modPow(p - 2, p)) * (FOUR_X_ONE_Z))) % p;
+	Number Z = (FOUR_X_ONE_Z * ((P.x - P.z).pow(2) + ((A + 2) * montgomery::modPow(4, p - 2, p)) * (FOUR_X_ONE_Z))) % p;
 
 	Logger::info("2 * ({}, {}) = ({}, {})", P.x, P.z, X, Z);
 	return Point(X, 0, Z);

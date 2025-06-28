@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.30)
+cmake_minimum_required(VERSION 3.28)
 
 project(CollAuth VERSION 0.1.0 LANGUAGES CXX)
 
@@ -29,6 +29,7 @@ set(SOURCES
   "${SOURCE_DIR}/math/Montgomery.cpp"
   "${SOURCE_DIR}/math/Number.cpp"
   "${SOURCE_DIR}/math/operations/Addition.cpp"
+  "${SOURCE_DIR}/math/operations/Bitwise.cpp"
   "${SOURCE_DIR}/math/operations/Comparison.cpp"
   "${SOURCE_DIR}/math/operations/Division.cpp"
   "${SOURCE_DIR}/math/operations/Multiplication.cpp"
@@ -76,6 +77,7 @@ set(HEADERS
   "${INCLUDE_DIR}/math/Montgomery.hpp"
   "${INCLUDE_DIR}/math/Number.hpp"
   "${INCLUDE_DIR}/math/operations/Addition.hpp"
+  "${INCLUDE_DIR}/math/operations/Bitwise.hpp"
   "${INCLUDE_DIR}/math/operations/Comparison.hpp"
   "${INCLUDE_DIR}/math/operations/Division.hpp"
   "${INCLUDE_DIR}/math/operations/Multiplication.hpp"
