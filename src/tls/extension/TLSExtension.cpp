@@ -65,7 +65,8 @@ TLSExtension parseTLSExtensions(const std::vector<uint8_t>& data)
 			extension.keyShares = parseTLSKeyShares(data);
 			break;
 		default:
-			Logger::debug("Received extension of type {:04X}, which currently isn't supported", static_cast<uint16_t>(type));
+			// TODO: Reenable this line of code / actually implement the extensions
+			// Logger::debug("Received extension of type {:04X}, which currently isn't supported", static_cast<uint16_t>(type));
 			break;
 		}
 	}

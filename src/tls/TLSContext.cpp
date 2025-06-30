@@ -1,19 +1,13 @@
 #include "tls/TLSContext.hpp"
 
 #include <algorithm>
-#include <atomic>
-#include <unordered_map>
 
-#include "cryptography/Random.hpp"
 #include "logging/Logger.hpp"
-#include "math/Number.hpp"
 #include "tls/ClientHello.hpp"
 #include "tls/ServerHello.hpp"
 #include "tls/TLS.hpp"
 #include "tls/TLSPlaintext.hpp"
-#include "tls/TLSSignature.hpp"
 #include "tls/TLSVersion.hpp"
-#include "tls/extension/TLSKeyShare.hpp"
 #include "tls/extension/TLSServerName.hpp"
 
 TLSContext::TLSContext(Socket& socket) : socket(socket), state(TLSState::INITIAL) {}
@@ -61,10 +55,8 @@ bool TLSContext::exchangeHandshake(const std::vector<uint8_t>& data)
 		return false;
 	}
 
-	for (const auto& type : clientHello.extensions.supportedGroups)
-	{
-		Logger::debug("{:04X}", static_cast<uint16_t>(type));
-	}
+	Logger::debug("Client supports the following groups: ");
+	for (const auto& type : clientHello.extensions.supportedGroups) Logger::debug("{:04X}", static_cast<uint16_t>(type));
 
 	// TODO: Check that server supports or accepts at least of the groups supported by the server
 	// else a handshake_failure or insufficient_security answer needs to be sent.

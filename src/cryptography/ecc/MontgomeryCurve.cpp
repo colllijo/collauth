@@ -8,7 +8,7 @@ MontgomeryCurve::MontgomeryCurve(const Number& A, const Number& B, const Number&
 
 Point MontgomeryCurve::scalarMultiply(const Point& G, const Number& n) const
 {
-	std::string bits = n.toBinaryString();
+	std::string bits = n.toBinary();
 
 	Point R0 = Point::Identity;
 	Point R1 = G;

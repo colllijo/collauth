@@ -351,6 +351,11 @@ Number Number::operator&(const Number &other) const
 	return Number(bitwiseAnd(digits, other.digits), negative && other.negative);
 }
 
+Number Number::operator|(const Number &other) const
+{
+	return Number(bitwiseOr(digits, other.digits), negative || other.negative);
+}
+
 /*******************************************
  * Advanced arithmetic operations
  *******************************************/
@@ -370,6 +375,11 @@ Number Number::modPow(const Number &exponent, const Number &modulus) const
 Number Number::gcd(const Number &other) const
 {
 	return gcd(*this, other);
+}
+
+std::tuple<Number, Number, Number> Number::extendedGCD(const Number &other) const
+{
+	return extendedGCD(*this, other);
 }
 
 Number Number::modInverse(const Number &modulus) const
@@ -401,7 +411,7 @@ Number Number::modPow(Number base, const Number &exponent, const Number &modulus
 	base %= modulus;
 
 	Number result = 1;
-	for (const auto &bit : exponent.toBinaryString())
+	for (const auto &bit : exponent.toBinary())
 	{
 		result = (result * result) % modulus;
 
@@ -416,20 +426,19 @@ Number Number::modPow(Number base, const Number &exponent, const Number &modulus
 
 Number Number::gcd(Number a, Number b)
 {
-	if (a == 0) return b;
-	else if (b == 0) return a;
-
 	a.negative = false;
 	b.negative = false;
 
-	size_t shiftA = a.bitLength() - (a.toBinaryString().find_last_of('1') + 1);
-	size_t shiftB = b.bitLength() - (b.toBinaryString().find_last_of('1') + 1);
+	if (a == 0) return b;
+	else if (b == 0) return a;
 
-	a >>= shiftA;
+	size_t k = (a | b).bits() - ((a | b).toBinary().find_last_of('1') + 1);
+	a >>= k;
+	b >>= k;
 
 	do
 	{
-		b >>= b.bitLength() - (b.toBinaryString().find_last_of('1') + 1);
+		b >>= b.bits() - (b.toBinary().find_last_of('1') + 1);
 		if (a > b)
 		{
 			std::swap(a, b);
@@ -438,7 +447,66 @@ Number Number::gcd(Number a, Number b)
 		b -= a;
 	} while (b != 0);
 
-	return a << std::min(shiftA, shiftB);
+	return a << k;
+}
+
+std::tuple<Number, Number, Number> Number::extendedGCD(Number a, Number b)
+{
+	a.negative = false;
+	b.negative = false;
+
+	if (a == 0) return {b, 0, 1};
+	if (b == 0) return {a, 1, 0};
+
+	size_t k = (a | b).bits() - ((a | b).toBinary().find_last_of('1') + 1);
+	a >>= k;
+	b >>= k;
+
+	Number a0 = a, b0 = b;
+
+	Number x0 = 1, y0 = 0;
+	Number x1 = 0, y1 = 1;
+
+	while (a.isEven())
+	{
+		if (!(x0.isEven() && y0.isEven()))
+		{
+			x0 -= b0;
+			y0 += a0;
+		}
+
+		a >>= 1;
+		x0 >>= 1;
+		y0 >>= 1;
+	}
+
+	do
+	{
+		while (b.isEven())
+		{
+			if (!(x1.isEven() && y1.isEven()))
+			{
+				x1 -= b0;
+				y1 += a0;
+			}
+			b >>= 1;
+			x1 >>= 1;
+			y1 >>= 1;
+		}
+
+		if (a > b)
+		{
+			std::swap(a, b);
+			std::swap(x0, x1);
+			std::swap(y0, y1);
+		}
+
+		b = b - a;
+		x1 = x1 - x0;
+		y1 = y1 - y0;
+	} while (b != 0);
+
+	return {a << k, x0, y0};
 }
 
 Number Number::modInverse(const Number &a, const Number &modulus)
@@ -454,7 +522,15 @@ Number Number::modInverse(const Number &a, const Number &modulus)
  * Information functions
  *******************************************/
 
-size_t Number::bitLength() const
+Number Number::abs() const
+{
+	Number result = *this;
+	result.negative = false;
+
+	return result;
+}
+
+size_t Number::bits() const
 {
 	if (digits.empty())
 	{
@@ -471,7 +547,7 @@ size_t Number::bitLength() const
 	return length;
 }
 
-size_t Number::digitLength() const
+size_t Number::digis() const
 {
 	return digits.size();
 }
@@ -523,7 +599,7 @@ std::string Number::toString() const
 	return result;
 }
 
-std::string Number::toBinaryString() const
+std::string Number::toBinary() const
 {
 	if (digits.empty()) return "0";
 
@@ -542,7 +618,7 @@ std::string Number::toBinaryString() const
 	return "0";
 }
 
-std::string Number::toHexString() const
+std::string Number::toHex() const
 {
 	if (digits.empty()) return "0";
 
@@ -569,27 +645,6 @@ Number Number::fromString(const std::string &str, uint32_t base)
 	default:
 		throw std::invalid_argument("Base not supported.");
 	}
-}
-
-/*******************************************
- * Advanced arithmetic operations
- *******************************************/
-
-std::tuple<Number, Number, Number> Number::extendedGCD(Number a, Number b)
-{
-	Number x = 1, y = 0;
-	Number x1 = 0, y1 = 1;
-
-	while (b != 0)
-	{
-		Number q = a / b;
-
-		std::tie(x, x1) = std::make_tuple(x1, x - q * x1);
-		std::tie(y, y1) = std::make_tuple(y1, y - q * y1);
-		std::tie(a, b) = std::make_tuple(b, a - q * b);
-	}
-
-	return std::make_tuple(a, x, y);
 }
 
 /*******************************************

@@ -37,6 +37,27 @@ std::vector<uint8_t> generateRandomBytes(size_t length)
 	return bytes;
 }
 
+Number generateRandomNumber(size_t bitLength)
+{
+	if (bitLength == 0)
+	{
+		throw std::invalid_argument("Bit length must be greater than 0");
+	}
+
+	size_t byteLength = (bitLength + 7) / 8;
+	std::vector<uint8_t> randomBytes = generateRandomBytes(byteLength);
+
+	// Ensure the generated number is non-zero
+	Number randomNumber(bytesToDigits(randomBytes));
+	while (randomNumber == 0)
+	{
+		randomBytes = generateRandomBytes(byteLength);
+		randomNumber = Number(bytesToDigits(randomBytes));
+	}
+
+	return randomNumber;
+}
+
 Number generateRandomNumber(const Number& max)
 {
 	if (max <= 0)
@@ -44,7 +65,7 @@ Number generateRandomNumber(const Number& max)
 		throw std::invalid_argument("Max must be greater than 0");
 	}
 
-	size_t byteLength = (max.bitLength() + 7) / 8;
+	size_t byteLength = (max.bits() + 7) / 8;
 	std::vector<uint8_t> randomBytes = generateRandomBytes(byteLength);
 
 	// Ensure the generated number is less than max

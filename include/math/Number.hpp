@@ -74,6 +74,7 @@ public:
 	 *******************************************/
 
 	Number operator&(const Number& other) const;
+	Number operator|(const Number& other) const;
 
 	/*******************************************
 	 * Advanced arithmetic operations
@@ -83,20 +84,24 @@ public:
 	Number modPow(const Number& exponent, const Number& modulus) const;
 
 	Number gcd(const Number& other) const;
+	std::tuple<Number, Number, Number> extendedGCD(const Number& other) const;
 	Number modInverse(const Number& modulus) const;
 
 	static Number pow(Number base, Number exponent);
 	static Number modPow(Number base, const Number& exponent, const Number& modulus);
 
 	static Number gcd(Number a, Number b);
+	static std::tuple<Number, Number, Number> extendedGCD(Number a, Number b);
 	static Number modInverse(const Number& a, const Number& modulus);
 
 	/*******************************************
 	 * Information functions
 	 *******************************************/
 
-	size_t bitLength() const;
-	size_t digitLength() const;
+	Number abs() const;
+
+	size_t bits() const;
+	size_t digis() const;
 	std::vector<uint32_t> getDigits() const;
 
 	/*******************************************
@@ -105,8 +110,8 @@ public:
 
 	static Number fromString(const std::string& str, uint32_t base = 10);
 	std::string toString() const;
-	std::string toBinaryString() const;
-	std::string toHexString() const;
+	std::string toBinary() const;
+	std::string toHex() const;
 
 	template <std::integral T>
 	void fromIntegral(T number);
@@ -120,12 +125,6 @@ public:
 private:
 	std::vector<uint32_t> digits;
 	bool negative{};
-
-	/*******************************************
-	 * Advanced arithmetic operations
-	 *******************************************/
-
-	static std::tuple<Number, Number, Number> extendedGCD(Number a, Number b);
 
 	/*******************************************
 	 * Conversion functions
