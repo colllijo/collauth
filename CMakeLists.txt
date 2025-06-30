@@ -7,6 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
+
 set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/src")
 set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
 
@@ -110,34 +112,12 @@ set(HEADERS
 
 include_directories(${INCLUDE_DIR})
 
-# Source code checks
-add_custom_target(format
-    COMMAND clang-format -i -Werror ${SOURCES} ${HEADERS}
-    COMMENT "Formatting source files with clang-format"
-)
+include(cmake/Style.cmake)
 
-add_custom_target(format-check
-    COMMAND clang-format --dry-run -Werror ${SOURCES} ${HEADERS}
-    COMMENT "Checking source files with clang-format"
-)
-
-add_custom_target(tidy
-    COMMAND clang-tidy -p=${CMAKE_BINARY_DIR} ${SOURCES} ${HEADERS}
-            --format-style=file
-    COMMENT "Running clang-tidy without fixing"
-)
-
-add_custom_target(tidy-fix
-    COMMAND clang-tidy -p=${CMAKE_BINARY_DIR} ${SOURCES} ${HEADERS}
-            --fix --format-style=file
-    COMMENT "Running clang-tidy with fixes"
-)
-
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
+option(BUILD_TESTS "Build tests" ON)
+if(BUILD_TESTS)
+    include(cmake/Tests.cmake)
 endif()
-
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
 
 add_executable(${PROJECT_NAME}  ${SOURCES} ${HEADERS})
 target_compile_options(${PROJECT_NAME}
