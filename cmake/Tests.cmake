@@ -7,7 +7,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Catch2)
 
-file(GLOB_RECURSE TEST_SOURCES "${CMAKE_SOURCE_DIR}/test/*.cpp")
+file(GLOB_RECURSE TEST_SOURCES "${CMAKE_SOURCE_DIR}/test/**/*.cpp")
 
 add_executable(tests ${TEST_SOURCES})
 target_link_libraries(tests PRIVATE "lib${PROJECT_NAME}" Catch2::Catch2WithMain)

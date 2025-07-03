@@ -165,7 +165,7 @@ Number::operator T() const
 {
 	if (digits.empty()) return 0;
 
-	uint64_t value = digits.at(0);
+	uint64_t value = digits[0];
 
 	if (std::is_signed_v<T> && negative) return static_cast<T>(-static_cast<std::make_signed_t<uint64_t>>(value));
 	else return static_cast<T>(value);

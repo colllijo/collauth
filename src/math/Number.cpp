@@ -546,7 +546,7 @@ size_t Number::bits() const
 
 	if (digits.back() != 0)
 	{
-		length -= __builtin_clz(digits.back());
+		length -= std::countl_zero(digits.back());
 	}
 
 	return length;
@@ -568,37 +568,28 @@ std::vector<uint64_t> Number::getDigits() const
 
 std::string Number::toString() const
 {
-	if (digits.empty())
-	{
-		return "0";
-	}
+	if (digits.empty()) return "0";
 
 	std::string result;
 	Number tmp = *this;
 
 	do
 	{
-		uint64_t carry = 0;
+		__uint128_t carry = 0;
 
 		for (size_t i = tmp.digits.size(); i-- > 0;)
 		{
-			carry = (carry) + tmp.digits.at(i);
-			tmp.digits.at(i) = static_cast<uint64_t>((carry / 10) & MASK);
+			carry = (carry) + tmp.digits[i];
+			tmp.digits[i] = static_cast<__uint128_t>((carry / 10) & MASK);
 			carry %= 10;
 		}
 
 		result += static_cast<char>(carry + '0');
 
-		while (!tmp.digits.empty() && tmp.digits.back() == 0)
-		{
-			tmp.digits.pop_back();
-		}
+		while (!tmp.digits.empty() && tmp.digits.back() == 0) tmp.digits.pop_back();
 	} while (!tmp.digits.empty());
 
-	if (negative)
-	{
-		result += '-';
-	}
+	if (negative) result += '-';
 	std::reverse(result.begin(), result.end());
 
 	return result;
@@ -612,14 +603,12 @@ std::string Number::toBinary() const
 
 	for (auto it = digits.rbegin(); it != digits.rend(); ++it)
 	{
-		result += std::bitset<32>(*it).to_string();
+		result += std::bitset<64>(*it).to_string();
 	}
 
-	auto firstOne = result.find('1');
-	if (firstOne != std::string::npos)
-	{
-		return result.substr(firstOne);
-	}
+	auto start = result.find_first_not_of('0');
+	if (start != std::string::npos) return result.substr(start);
+
 	return "0";
 }
 
@@ -628,13 +617,12 @@ std::string Number::toHex() const
 	if (digits.empty()) return "0";
 
 	std::string result;
+	for (auto it = digits.rbegin(); it != digits.rend(); ++it) result += std::format("{:016X}", *it);
 
-	for (auto it = digits.rbegin(); it != digits.rend(); ++it)
-	{
-		result += std::format("{:08x}", *it);
-	}
+	size_t start = result.find_first_not_of('0');
+	if (start != std::string::npos) return result.substr(start);
 
-	return result;
+	return "0";
 }
 
 Number Number::fromString(const std::string &str, uint32_t base)
@@ -658,21 +646,28 @@ Number Number::fromString(const std::string &str, uint32_t base)
 
 void Number::fromBinary(const std::string &binaryString)
 {
-	if (binaryString.empty())
+	if (binaryString.empty()) throw std::invalid_argument("Value is required to create a number.");
+
+	std::string representation = binaryString;
+
+	if (representation[0] == '-' || representation[0] == '+')
 	{
-		throw std::invalid_argument("Value is required to create a number.");
+		negative = representation[0] == '-';
+		representation = representation.substr(1);
+
+		// Check that there actually is a number not just a sign.
+		if (representation.empty()) throw std::invalid_argument("Value is required to create a number.");
 	}
 
-	// Initialize the digits vector with one element to avoid out-of-bounds access.
-	digits.push_back(0);
+	if (std::any_of(representation.begin(), representation.end(), [](const char c) { return c != '0' && c != '1'; }))
+		throw std::invalid_argument("Invalid character in binary string.");
 
+	// Initialize the digits vector with one element to avoid out-of-bounds access.
+	digits.emplace_back(0);
+
+	// OPTIMIZE: Count repeated zeros and shift them at once, instead of shifting one by one.
 	for (char bit : binaryString)
 	{
-		if (bit != '0' && bit != '1')
-		{
-			throw std::invalid_argument("Invalid character in binary string.");
-		}
-
 		digits = bitShiftLeft(digits, 1);
 		if (bit == '1')
 		{
@@ -689,9 +684,9 @@ void Number::fromDecimal(const std::string &decimalString)
 
 	std::string representation = decimalString;
 
-	if (representation.at(0) == '-' || representation.at(0) == '+')
+	if (representation[0] == '-' || representation[0] == '+')
 	{
-		negative = representation.at(0) == '-';
+		negative = representation[0] == '-';
 		representation = representation.substr(1);
 
 		// Check that there actually is a number not just a sign.
@@ -699,7 +694,8 @@ void Number::fromDecimal(const std::string &decimalString)
 	}
 
 	// Check that the representation only contains valid decimal digits.
-	if (std::any_of(representation.begin(), representation.end(), [](char c) { return c < '0' || c > '9'; })) throw std::invalid_argument("Invalid character in decimal string.");
+	if (std::any_of(representation.begin(), representation.end(), [](const char c) { return c < '0' || c > '9'; }))
+		throw std::invalid_argument("Invalid character in decimal string.");
 
 	do
 	{
@@ -714,32 +710,30 @@ void Number::fromDecimal(const std::string &decimalString)
 
 void Number::fromHex(const std::string &hexString)
 {
-	if (hexString.empty())
+	if (hexString.empty()) throw std::invalid_argument("Value is required to create a number.");
+
+	std::string representation = hexString;
+	std::transform(representation.begin(), representation.end(), representation.begin(), ::toupper);
+
+	if (representation[0] == '-' || representation[0] == '+')
 	{
-		throw std::invalid_argument("Value is required to create a number.");
+		negative = representation[0] == '-';
+		representation = representation.substr(1);
+
+		// Check that there actually is a number not just a sign.
+		if (representation.empty()) throw std::invalid_argument("Value is required to create a number.");
 	}
 
-	// Initialize the digits vector with one element to avoid out-of-bounds access.
-	digits.push_back(0);
+	if (std::any_of(representation.begin(), representation.end(), [](const char c) { return (c < '0' || c > '9') && (c < 'A' || c > 'F'); }))
+		throw std::invalid_argument("Invalid character in hex string.");
 
-	for (char digit : hexString)
+	// Initialize the digits vector with one element to avoid out-of-bounds access.
+	digits.emplace_back(0);
+
+	for (char digit : representation)
 	{
-		if (digit >= '0' && digit <= '9')
-		{
-			digit -= '0';
-		}
-		else if (digit >= 'A' && digit <= 'F')
-		{
-			digit -= 'A' - 10;
-		}
-		else if (digit >= 'a' && digit <= 'f')
-		{
-			digit -= 'a' - 10;
-		}
-		else
-		{
-			throw std::invalid_argument("Invalid character in binary string.");
-		}
+		if (digit >= '0' && digit <= '9') digit -= '0';
+		else if (digit >= 'A' && digit <= 'F') digit -= 'A' - 10;
 
 		digits = bitShiftLeft(digits, 4);
 		digits[0] |= digit;
