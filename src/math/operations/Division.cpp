@@ -7,13 +7,13 @@
 #include "math/operations/Shifting.hpp"
 #include "math/operations/Subtraction.hpp"
 
-std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> divideDigits(const std::vector<uint32_t>& dividend, const std::vector<uint32_t>& divisor)
+std::tuple<std::vector<uint64_t>, std::vector<uint64_t>> divideDigits(const std::vector<uint64_t>& dividend, const std::vector<uint64_t>& divisor)
 {
 	if (divisor.empty()) throw std::invalid_argument("Division by zero.");
 	if (dividend.empty()) return {{}, {}};
 
-	std::vector<uint32_t> quotient(dividend.size(), 0);
-	std::vector<uint32_t> remainder(divisor.size(), 0);
+	std::vector<uint64_t> quotient(dividend.size(), 0);
+	std::vector<uint64_t> remainder(divisor.size(), 0);
 
 	for (size_t i = dividend.size() * 32; i-- > 0;)
 	{
@@ -33,7 +33,7 @@ std::tuple<std::vector<uint32_t>, std::vector<uint32_t>> divideDigits(const std:
 	return {quotient, remainder};
 }
 
-bool getBit(const std::vector<uint32_t>& digits, size_t i)
+bool getBit(const std::vector<uint64_t>& digits, size_t i)
 {
 	size_t index = i / 32;
 	size_t bitPos = i % 32;
@@ -44,7 +44,7 @@ bool getBit(const std::vector<uint32_t>& digits, size_t i)
 	return (digits[index] & (1U << bitPos)) != 0;
 }
 
-void setBit(std::vector<uint32_t>& digits, size_t i, bool value)
+void setBit(std::vector<uint64_t>& digits, size_t i, bool value)
 {
 	size_t index = i / 32;
 	size_t bitPos = i % 32;

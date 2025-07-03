@@ -1,6 +1,6 @@
 #include "math/operations/Comparison.hpp"
 
-std::strong_ordering compareDigits(const std::vector<uint32_t>& lhs, const std::vector<uint32_t>& rhs)
+std::strong_ordering compareDigits(const std::vector<uint64_t>& lhs, const std::vector<uint64_t>& rhs)
 {
 	if (lhs == rhs) return std::strong_ordering::equal;
 

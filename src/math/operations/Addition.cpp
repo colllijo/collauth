@@ -2,11 +2,11 @@
 
 #include <algorithm>
 
-std::vector<uint32_t> addDigits(const std::vector<uint32_t>& augend, const std::vector<uint32_t>& addend)
+std::vector<uint64_t> addDigits(const std::vector<uint64_t>& augend, const std::vector<uint64_t>& addend)
 {
 	size_t maxDigits = std::max(augend.size(), addend.size()) + 1;
 
-	std::vector<uint32_t> sum;
+	std::vector<uint64_t> sum;
 	sum.reserve(maxDigits);
 
 	uint64_t carry = 0;
@@ -15,11 +15,11 @@ std::vector<uint32_t> addDigits(const std::vector<uint32_t>& augend, const std::
 		if (i < augend.size()) carry += augend[i];
 		if (i < addend.size()) carry += addend[i];
 
-		sum.emplace_back(static_cast<uint32_t>(carry));
+		sum.emplace_back(static_cast<uint64_t>(carry));
 		carry >>= 32;
 	}
 
-	if (carry) sum.emplace_back(static_cast<uint32_t>(carry));
+	if (carry) sum.emplace_back(static_cast<uint64_t>(carry));
 
 	return sum;
 }

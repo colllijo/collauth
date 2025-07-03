@@ -21,10 +21,10 @@ public:
 	Number(T value);
 
 	explicit Number(const std::string& value, uint32_t base = 10);
-	explicit Number(const std::vector<uint32_t>& digits, bool negative = false);
+	explicit Number(const std::vector<uint64_t>& digits, bool negative = false);
 
-	constexpr static uint64_t BASE = 32;
-	constexpr static uint64_t MASK = (1ULL << BASE) - 1;
+	constexpr static uint64_t BASE = 64;
+	constexpr static uint64_t MASK = 0xFFFFFFFFFFFFFFFF;
 
 	/*******************************************
 	 * Basic arithmetic operations
@@ -98,11 +98,12 @@ public:
 	 * Information functions
 	 *******************************************/
 
+	bool isNegative() const;
 	Number abs() const;
 
 	size_t bits() const;
 	size_t digis() const;
-	std::vector<uint32_t> getDigits() const;
+	std::vector<uint64_t> getDigits() const;
 
 	/*******************************************
 	 * Conversion functions
@@ -123,8 +124,8 @@ public:
 	friend struct std::formatter<Number>;
 
 private:
-	std::vector<uint32_t> digits;
-	bool negative{};
+	std::vector<uint64_t> digits;
+	bool negative;
 
 	/*******************************************
 	 * Conversion functions
@@ -141,6 +142,7 @@ template <std::integral T>
 Number::Number(T value)
 {
 	fromIntegral(value);
+	trimLeadingZeros();
 }
 
 template <std::integral T>
@@ -155,35 +157,18 @@ void Number::fromIntegral(T number)
 	}
 
 	digits.clear();
-	while (value != 0)
-	{
-		digits.push_back(static_cast<uint32_t>(value & MASK));
-		value >>= 32;
-	}
+	digits.emplace_back(value);
 }
 
 template <std::integral T>
 Number::operator T() const
 {
-	if (digits.empty())
-	{
-		return 0;
-	}
+	if (digits.empty()) return 0;
 
 	uint64_t value = digits.at(0);
-	if (digits.size() > 1)
-	{
-		value = value << 32 | digits.at(1);
-	}
 
-	if (std::is_signed_v<T> && negative)
-	{
-		return static_cast<T>(-static_cast<std::make_signed_t<uint64_t>>(value));
-	}
-	else
-	{
-		return static_cast<T>(value);
-	}
+	if (std::is_signed_v<T> && negative) return static_cast<T>(-static_cast<std::make_signed_t<uint64_t>>(value));
+	else return static_cast<T>(value);
 }
 
 template <std::integral T>

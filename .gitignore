@@ -2,6 +2,9 @@
 /.cache/
 /build/
 
+# Testing artifacts
+/Testing/Temporary
+
 # Prerequisites
 *.d
 

@@ -23,7 +23,7 @@
 namespace
 {
 	// String dividing decimal string by base for parsing
-	std::tuple<std::string, uint64_t> divideByBase(const std::string &value, uint64_t base);
+	std::tuple<std::string, uint64_t> divideByBase(const std::string &value);
 };	// namespace
 
 /*******************************************
@@ -49,7 +49,7 @@ Number::Number(const std::string &value, uint32_t base)
 	}
 }
 
-Number::Number(const std::vector<uint32_t> &digits, bool negative) : digits(digits), negative(negative) {}
+Number::Number(const std::vector<uint64_t> &digits, bool negative) : digits(digits), negative(negative) {}
 
 /*******************************************
  * Basic arithmetic operations
@@ -522,6 +522,11 @@ Number Number::modInverse(const Number &a, const Number &modulus)
  * Information functions
  *******************************************/
 
+bool Number::isNegative() const
+{
+	return negative;
+}
+
 Number Number::abs() const
 {
 	Number result = *this;
@@ -552,7 +557,7 @@ size_t Number::digis() const
 	return digits.size();
 }
 
-std::vector<uint32_t> Number::getDigits() const
+std::vector<uint64_t> Number::getDigits() const
 {
 	return digits;
 }
@@ -577,8 +582,8 @@ std::string Number::toString() const
 
 		for (size_t i = tmp.digits.size(); i-- > 0;)
 		{
-			carry = (carry << BASE) + tmp.digits.at(i);
-			tmp.digits.at(i) = static_cast<uint32_t>((carry / 10) & MASK);
+			carry = (carry) + tmp.digits.at(i);
+			tmp.digits.at(i) = static_cast<uint64_t>((carry / 10) & MASK);
 			carry %= 10;
 		}
 
@@ -680,12 +685,7 @@ void Number::fromBinary(const std::string &binaryString)
 
 void Number::fromDecimal(const std::string &decimalString)
 {
-	const uint64_t base = 1ULL << BASE;
-
-	if (decimalString.empty())
-	{
-		throw std::invalid_argument("Value is required to create a number.");
-	}
+	if (decimalString.empty()) throw std::invalid_argument("Value is required to create a number.");
 
 	std::string representation = decimalString;
 
@@ -695,18 +695,18 @@ void Number::fromDecimal(const std::string &decimalString)
 		representation = representation.substr(1);
 
 		// Check that there actually is a number not just a sign.
-		if (representation.empty())
-		{
-			throw std::invalid_argument("Value is required to create a number.");
-		}
+		if (representation.empty()) throw std::invalid_argument("Value is required to create a number.");
 	}
+
+	// Check that the representation only contains valid decimal digits.
+	if (std::any_of(representation.begin(), representation.end(), [](char c) { return c < '0' || c > '9'; })) throw std::invalid_argument("Invalid character in decimal string.");
 
 	do
 	{
-		auto [quotient, remainder] = divideByBase(representation, base);
+		auto [quotient, remainder] = divideByBase(representation);
 
 		representation = quotient;
-		digits.push_back(static_cast<uint32_t>(remainder & MASK));
+		digits.emplace_back(remainder);
 	} while (!representation.empty());
 
 	trimLeadingZeros();
@@ -768,28 +768,23 @@ void Number::trimLeadingZeros()
 
 namespace
 {
-	std::tuple<std::string, uint64_t> divideByBase(const std::string &value, uint64_t base)
+	std::tuple<std::string, uint64_t> divideByBase(const std::string &value)
 	{
+		const __uint128_t BASE = static_cast<__uint128_t>(1) << 64;
+
 		std::string quotient = "";
-		uint64_t remainder = 0;
+		__uint128_t remainder = 0;
 
-		for (size_t i = 0; i < value.size(); ++i)
+		for (const auto &digit : value)
 		{
-			if (value.at(i) < '0' || value.at(i) > '9')
-			{
-				throw std::invalid_argument("Invalid character in number string.");
-			}
+			remainder = (remainder * 10) + (digit - '0');
 
-			remainder = remainder * 10 + value.at(i) - '0';
-
-			quotient += static_cast<char>((remainder / base) + '0');
-			remainder %= base;
+			quotient += static_cast<char>((remainder / BASE) + '0');
+			remainder %= BASE;
 		}
 
-		while (!quotient.empty() && quotient.at(0) == '0')
-		{
-			quotient = quotient.substr(1);
-		}
+		size_t leadingZeroes = quotient.find_first_not_of('0');
+		quotient = quotient.substr(leadingZeroes == std::string::npos ? quotient.size() : leadingZeroes);
 
 		return {quotient, remainder};
 	}
