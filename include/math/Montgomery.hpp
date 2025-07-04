@@ -11,7 +11,7 @@ namespace montgomery
 		Number Rmask;	// R-1 (for fast mod R via bit-and)
 		Number Nprime;	// -N^-1 (mod R)
 		size_t k;		// k = log2(R)
-		
+
 		explicit MontgomeryContext(const Number& modulus);
 
 		Number toMontgomery(const Number& a) const;

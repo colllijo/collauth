@@ -39,9 +39,7 @@ TEST_CASE(
 	}
 }
 
-TEST_CASE(
-	"Number constructor from string representation (Base 10)",
-	"[math][number]")
+TEST_CASE("Number constructor from string representation (Base 10)", "[math][number]")
 {
 	SECTION("Construct from postiv decimal string")
 	{

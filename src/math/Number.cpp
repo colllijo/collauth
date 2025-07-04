@@ -31,7 +31,7 @@ namespace
  *******************************************/
 
 Number::Number() : digits(), negative(false) {}
-Number::Number(const std::string &value, uint32_t base)
+Number::Number(const std::string &value, uint32_t base) : digits(), negative(false)
 {
 	switch (base)
 	{
@@ -258,24 +258,32 @@ Number &Number::operator>>=(size_t count)
 	return *this;
 }
 
-void Number::rightShift(size_t count)
+Number &Number::rightShift(size_t count)
 {
 	bitShiftRight(digits, count);
+
+	return *this;
 }
 
-void Number::leftShift(size_t count)
+Number &Number::leftShift(size_t count)
 {
 	bitShiftLeft(digits, count);
+
+	return *this;
 }
 
-void Number::rightShiftDigit(size_t count)
+Number &Number::rightShiftDigit(size_t count)
 {
 	digitShiftRight(digits, count);
+
+	return *this;
 }
 
-void Number::leftShiftDigit(size_t count)
+Number &Number::leftShiftDigit(size_t count)
 {
 	digitShiftLeft(digits, count);
+
+	return *this;
 }
 
 /*******************************************

@@ -1,18 +1,21 @@
 #include "math/operations/Multiplication.hpp"
 
 #include <algorithm>
+#include <bit>
+#include <cassert>
 
 #include "math/operations/Addition.hpp"
 #include "math/operations/Shifting.hpp"
 #include "math/operations/Subtraction.hpp"
 
+[[nodiscard]]
 std::vector<uint64_t> multiplyDigits(const std::vector<uint64_t>& multiplier, const std::vector<uint64_t>& multiplicand)
 {
-	size_t bits = std::max(multiplier.size(), multiplicand.size()) << 5;
+	size_t bits = std::max(multiplier.size(), multiplicand.size()) << 6;
 	std::vector<uint64_t> product;
 
 	if (bits <= 64) product = hardwareMultiplication(multiplier, multiplicand);
-	if (bits <= 256) product =  longMultiplication(multiplier, multiplicand);
+	else if (bits <= 256) product = longMultiplication(multiplier, multiplicand);
 	else product = karatsubaMultiplication(multiplier, multiplicand);  // Once a better algorithm is implemented limit karatsuba to 2048 digits.
 
 	// Remove leading zeros
@@ -21,14 +24,15 @@ std::vector<uint64_t> multiplyDigits(const std::vector<uint64_t>& multiplier, co
 	return product;
 }
 
+[[nodiscard]]
 std::vector<uint64_t> hardwareMultiplication(const std::vector<uint64_t>& multiplier, const std::vector<uint64_t>& multiplicand)
 {
+	assert(multiplier.size() <= 1 && "Multiplier should be at most 1 digit");
+	assert(multiplicand.size() <= 1 && "Multiplicand should be at most 1 digit");
+
 	if (multiplier.empty() || multiplicand.empty()) return {};
 
-	__uint128_t product = 1;
-
-	if (!multiplier.empty()) product *= multiplier[0];
-	if (!multiplicand.empty()) product *= multiplicand[0];
+	__uint128_t product = static_cast<__uint128_t>(multiplier[0]) * static_cast<__uint128_t>(multiplicand[0]);
 
 	return {
 		static_cast<uint64_t>(product),
@@ -36,8 +40,11 @@ std::vector<uint64_t> hardwareMultiplication(const std::vector<uint64_t>& multip
 	};
 }
 
+[[nodiscard]]
 std::vector<uint64_t> longMultiplication(const std::vector<uint64_t>& multiplier, const std::vector<uint64_t>& multiplicand)
 {
+	if (multiplier.empty() || multiplicand.empty()) return {};
+
 	size_t maxDigits = multiplier.size() + multiplicand.size();
 
 	// Fill product with zeros, so that it can be index (unlike with reserve)
@@ -59,28 +66,37 @@ std::vector<uint64_t> longMultiplication(const std::vector<uint64_t>& multiplier
 	return product;
 }
 
-std::vector<uint64_t> karatsubaMultiplication(const std::vector<uint64_t>& multiplier, const std::vector<uint64_t>& multiplicand)
+[[nodiscard]]
+std::vector<uint64_t> karatsubaMultiplication(std::vector<uint64_t> multiplier, std::vector<uint64_t> multiplicand)
 {
 	if (multiplier.size() <= 1 && multiplicand.size() <= 1) return hardwareMultiplication(multiplier, multiplicand);
 
-	size_t m = std::max(multiplier.size(), multiplicand.size()) >> 1;
+	// Pad vectors to multiple of 2
+	size_t maxSize = std::max(multiplier.size(), multiplicand.size());
+	size_t padding = std::bit_ceil(maxSize);
+	size_t m = padding >> 1;
 
-	auto [lowMultiplier, highMultiplier] = splitVector(multiplier, m);
-	auto [lowMultiplicand, highMultiplicand] = splitVector(multiplicand, m);
+	multiplier.resize(padding, 0);
+	multiplicand.resize(padding, 0);
 
-	std::vector<uint64_t> z0 = karatsubaMultiplication(lowMultiplier, lowMultiplicand);
-	std::vector<uint64_t> z1 = karatsubaMultiplication(addDigits(lowMultiplier, highMultiplier), addDigits(lowMultiplicand, highMultiplicand));
-	std::vector<uint64_t> z2 = karatsubaMultiplication(highMultiplier, highMultiplicand);
+	auto [highMultiplier, lowMultiplier] = splitVector(multiplier, m);
+	auto [highMultiplicand, lowMultiplicand] = splitVector(multiplicand, m);
 
-	return addDigits(addDigits((digitShiftLeft(z2, (m << 1))), (digitShiftLeft((subtractDigits(subtractDigits(z1, z2), z0)), m))), z0);
+	auto z0 = karatsubaMultiplication(lowMultiplier, lowMultiplicand);
+	auto z2 = karatsubaMultiplication(highMultiplier, highMultiplicand);
+	auto s = karatsubaMultiplication(addDigits(lowMultiplier, highMultiplier), addDigits(lowMultiplicand, highMultiplicand));
+
+	auto z1 = subtractDigits(s, addDigits(z0, z2));
+
+	// z2 * B^{2m} + (z1 − z2 − z0) * B^{m} + z0
+	return (addDigits(digitShiftLeft(z2, m << 1), addDigits(digitShiftLeft(z1, m), z0)));
 }
 
+[[nodiscard]]
 std::pair<std::vector<uint64_t>, std::vector<uint64_t>> splitVector(const std::vector<uint64_t>& vec, size_t index)
 {
-	index = std::min(index, vec.size());
+	assert(index <= vec.size() && index > 0 && "Index out of bounds for vector split");
+	assert(vec.size() > 0 && (vec.size() & 0b1) == 0 && "Vector should be power of two in size");
 
-	std::vector<uint64_t> lower(vec.begin(), vec.begin() + index);
-	std::vector<uint64_t> upper(vec.begin() + index, vec.end());
-
-	return {lower, upper};
+	return {std::vector<uint64_t>(vec.begin() + index, vec.end()), std::vector<uint64_t>(vec.begin(), vec.begin() + index)};
 }

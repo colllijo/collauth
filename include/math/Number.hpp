@@ -54,10 +54,10 @@ public:
 	Number& operator<<=(size_t count);
 	Number& operator>>=(size_t count);
 
-	void rightShift(size_t count);
-	void leftShift(size_t count);
-	void rightShiftDigit(size_t count);
-	void leftShiftDigit(size_t count);
+	Number& rightShift(size_t count);
+	Number& leftShift(size_t count);
+	Number& rightShiftDigit(size_t count);
+	Number& leftShiftDigit(size_t count);
 
 	/*******************************************
 	 * Comparison operations
