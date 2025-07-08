@@ -2,7 +2,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-std::vector<uint64_t> removeLeadingZeros(const std::vector<uint64_t>& vec)
+inline std::vector<uint64_t> removeLeadingZeros(const std::vector<uint64_t>& vec)
 {
 	return std::vector<uint64_t>(vec.begin(), std::find_if_not(vec.rbegin(), vec.rend(), [](uint64_t digit) { return digit == 0; }).base());
 }

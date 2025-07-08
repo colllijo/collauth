@@ -1,6 +1,5 @@
 #include "math/operations/Division.hpp"
 
-#include <compare>
 #include <stdexcept>
 
 #include "math/operations/Comparison.hpp"
@@ -13,9 +12,9 @@ std::tuple<std::vector<uint64_t>, std::vector<uint64_t>> divideDigits(const std:
 	if (dividend.empty()) return {{}, {}};
 
 	std::vector<uint64_t> quotient(dividend.size(), 0);
-	std::vector<uint64_t> remainder(divisor.size(), 0);
+	std::vector<uint64_t> remainder(dividend.size(), 0);
 
-	for (size_t i = dividend.size() * 32; i-- > 0;)
+	for (size_t i = dividend.size() * 64; i-- > 0;)
 	{
 		remainder = bitShiftLeft(remainder, 1);
 		setBit(remainder, 0, getBit(dividend, i));
@@ -35,29 +34,21 @@ std::tuple<std::vector<uint64_t>, std::vector<uint64_t>> divideDigits(const std:
 
 bool getBit(const std::vector<uint64_t>& digits, size_t i)
 {
-	size_t index = i / 32;
-	size_t bitPos = i % 32;
-	if (index >= digits.size())
-	{
-		throw std::out_of_range("Bit index out of range");
-	}
-	return (digits[index] & (1U << bitPos)) != 0;
+	size_t index = i / 64;
+	size_t bitPos = i % 64;
+
+	if (index >= digits.size()) throw std::out_of_range("Bit index out of range");
+
+	return (digits[index] & (1ULL << bitPos)) != 0;
 }
 
 void setBit(std::vector<uint64_t>& digits, size_t i, bool value)
 {
-	size_t index = i / 32;
-	size_t bitPos = i % 32;
-	if (index >= digits.size())
-	{
-		throw std::out_of_range("Bit index out of range");
-	}
-	if (value)
-	{
-		digits[index] |= (1U << bitPos);  // Set the bit to 1
-	}
-	else
-	{
-		digits[index] &= ~(1U << bitPos);  // Clear the bit to 0
-	}
+	size_t index = i / 64;
+	size_t bitPos = i % 64;
+
+	if (index >= digits.size()) throw std::out_of_range("Bit index out of range");
+
+	if (value) digits[index] |= (1ULL << bitPos);  // Set the bit to 1
+	else digits[index] &= ~(1ULL << bitPos);	   // Clear the bit to 0
 }
