@@ -1,7 +1,7 @@
 #include "math/operations/Shifting.hpp"
 
 [[nodiscard]]
-std::vector<uint64_t> bitShiftRight(const std::vector<uint64_t> &digits, size_t count)
+std::vector<uint64_t> bitShiftRight(const std::vector<uint64_t> &digits, size_t count) noexcept
 {
 	if (digits.empty() || count == 0) return digits;
 
@@ -26,7 +26,7 @@ std::vector<uint64_t> bitShiftRight(const std::vector<uint64_t> &digits, size_t 
 }
 
 [[nodiscard]]
-std::vector<uint64_t> bitShiftLeft(const std::vector<uint64_t> &digits, size_t count)
+std::vector<uint64_t> bitShiftLeft(const std::vector<uint64_t> &digits, size_t count) noexcept
 {
 	size_t shift = count / 64;
 	size_t bitShift = count % 64;
@@ -47,7 +47,7 @@ std::vector<uint64_t> bitShiftLeft(const std::vector<uint64_t> &digits, size_t c
 }
 
 [[nodiscard]]
-std::vector<uint64_t> digitShiftRight(const std::vector<uint64_t> &digits, size_t count)
+std::vector<uint64_t> digitShiftRight(const std::vector<uint64_t> &digits, size_t count) noexcept
 {
 	if (count >= digits.size()) return {};
 
@@ -58,7 +58,7 @@ std::vector<uint64_t> digitShiftRight(const std::vector<uint64_t> &digits, size_
 }
 
 [[nodiscard]]
-std::vector<uint64_t> digitShiftLeft(const std::vector<uint64_t> &digits, size_t count)
+std::vector<uint64_t> digitShiftLeft(const std::vector<uint64_t> &digits, size_t count) noexcept
 {
 	std::vector<uint64_t> result(count, 0);
 	result.insert(result.end(), digits.begin(), digits.end());

@@ -2,7 +2,8 @@
 
 #include <algorithm>
 
-std::strong_ordering compareDigits(const std::vector<uint64_t>& lhs, const std::vector<uint64_t>& rhs)
+[[nodiscard]]
+std::strong_ordering compareDigits(const std::vector<uint64_t>& lhs, const std::vector<uint64_t>& rhs) noexcept
 {
 	if (lhs == rhs) return std::strong_ordering::equal;
 

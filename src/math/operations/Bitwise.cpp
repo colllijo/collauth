@@ -1,6 +1,7 @@
 #include "math/operations/Bitwise.hpp"
 
-std::vector<uint64_t> bitwiseAnd(const std::vector<uint64_t>& lhs, const std::vector<uint64_t>& rhs)
+[[nodiscard]]
+std::vector<uint64_t> bitwiseAnd(const std::vector<uint64_t>& lhs, const std::vector<uint64_t>& rhs) noexcept
 {
 	size_t minSize = std::min(lhs.size(), rhs.size());
 
@@ -12,7 +13,8 @@ std::vector<uint64_t> bitwiseAnd(const std::vector<uint64_t>& lhs, const std::ve
 	return result;
 }
 
-std::vector<uint64_t> bitwiseOr(const std::vector<uint64_t>& lhs, const std::vector<uint64_t>& rhs)
+[[nodiscard]]
+std::vector<uint64_t> bitwiseOr(const std::vector<uint64_t>& lhs, const std::vector<uint64_t>& rhs) noexcept
 {
 	size_t maxSize = std::max(lhs.size(), rhs.size());
 

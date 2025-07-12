@@ -9,7 +9,7 @@
 #include "math/operations/Subtraction.hpp"
 
 [[nodiscard]]
-std::vector<uint64_t> multiplyDigits(const std::vector<uint64_t>& multiplier, const std::vector<uint64_t>& multiplicand)
+std::vector<uint64_t> multiplyDigits(const std::vector<uint64_t>& multiplier, const std::vector<uint64_t>& multiplicand) noexcept
 {
 	size_t bits = std::max(multiplier.size(), multiplicand.size()) << 6;
 	std::vector<uint64_t> product;
@@ -25,7 +25,7 @@ std::vector<uint64_t> multiplyDigits(const std::vector<uint64_t>& multiplier, co
 }
 
 [[nodiscard]]
-std::vector<uint64_t> hardwareMultiplication(const std::vector<uint64_t>& multiplier, const std::vector<uint64_t>& multiplicand)
+std::vector<uint64_t> hardwareMultiplication(const std::vector<uint64_t>& multiplier, const std::vector<uint64_t>& multiplicand) noexcept
 {
 	assert(multiplier.size() <= 1 && "Multiplier should be at most 1 digit");
 	assert(multiplicand.size() <= 1 && "Multiplicand should be at most 1 digit");
@@ -41,7 +41,7 @@ std::vector<uint64_t> hardwareMultiplication(const std::vector<uint64_t>& multip
 }
 
 [[nodiscard]]
-std::vector<uint64_t> longMultiplication(const std::vector<uint64_t>& multiplier, const std::vector<uint64_t>& multiplicand)
+std::vector<uint64_t> longMultiplication(const std::vector<uint64_t>& multiplier, const std::vector<uint64_t>& multiplicand) noexcept
 {
 	if (multiplier.empty() || multiplicand.empty()) return {};
 
@@ -67,7 +67,7 @@ std::vector<uint64_t> longMultiplication(const std::vector<uint64_t>& multiplier
 }
 
 [[nodiscard]]
-std::vector<uint64_t> karatsubaMultiplication(std::vector<uint64_t> multiplier, std::vector<uint64_t> multiplicand)
+std::vector<uint64_t> karatsubaMultiplication(std::vector<uint64_t> multiplier, std::vector<uint64_t> multiplicand) noexcept
 {
 	if (multiplier.size() <= 1 && multiplicand.size() <= 1) return hardwareMultiplication(multiplier, multiplicand);
 
@@ -93,7 +93,7 @@ std::vector<uint64_t> karatsubaMultiplication(std::vector<uint64_t> multiplier, 
 }
 
 [[nodiscard]]
-std::pair<std::vector<uint64_t>, std::vector<uint64_t>> splitVector(const std::vector<uint64_t>& vec, size_t index)
+std::pair<std::vector<uint64_t>, std::vector<uint64_t>> splitVector(const std::vector<uint64_t>& vec, size_t index) noexcept
 {
 	assert(index <= vec.size() && index > 0 && "Index out of bounds for vector split");
 	assert(vec.size() > 0 && (vec.size() & 0b1) == 0 && "Vector should be power of two in size");

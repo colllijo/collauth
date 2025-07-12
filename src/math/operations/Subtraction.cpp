@@ -5,6 +5,7 @@
 
 #include "math/operations/Comparison.hpp"
 
+[[nodiscard]]
 std::vector<uint64_t> subtractDigits(const std::vector<uint64_t>& minuend, const std::vector<uint64_t>& subtrahend)
 {
 	if (compareDigits(minuend, subtrahend) == std::strong_ordering::less) throw std::invalid_argument("Minuend must be greater than or equal to subtrahend for subtraction.");

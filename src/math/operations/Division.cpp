@@ -6,6 +6,7 @@
 #include "math/operations/Shifting.hpp"
 #include "math/operations/Subtraction.hpp"
 
+[[nodiscard]]
 std::tuple<std::vector<uint64_t>, std::vector<uint64_t>> divideDigits(const std::vector<uint64_t>& dividend, const std::vector<uint64_t>& divisor)
 {
 	if (divisor.empty()) throw std::invalid_argument("Division by zero.");
@@ -32,6 +33,7 @@ std::tuple<std::vector<uint64_t>, std::vector<uint64_t>> divideDigits(const std:
 	return {quotient, remainder};
 }
 
+[[nodiscard]]
 bool getBit(const std::vector<uint64_t>& digits, size_t i)
 {
 	size_t index = i / 64;
