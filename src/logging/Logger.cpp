@@ -2,6 +2,7 @@
 
 #include <unistd.h>
 
+#include <chrono>
 #include <iomanip>
 #include <regex>
 #include <sstream>
@@ -36,22 +37,13 @@ std::string Logger::getRelativePath(const std::string& path)
 	std::string marker = "/src/";
 
 	size_t pos = path.find(marker);
-	if (pos != std::string::npos)
-	{
-		return path.substr(pos + marker.length());
-	}
+	if (pos != std::string::npos) return path.substr(pos + marker.length());
 	return path;
 }
 
 std::string Logger::getCurrentTime()
 {
-	auto now = std::chrono::system_clock::now();
-	auto in_time_t = std::chrono::system_clock::to_time_t(now);
-
-	std::ostringstream oss;
-	oss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%dT%X%z");
-
-	return oss.str();
+	return std::format("{:%FT%TZ}", std::chrono::floor<std::chrono::milliseconds>(std::chrono::system_clock::now()));
 }
 
 bool isTerminal()
@@ -97,7 +89,7 @@ std::string Logger::toString(Logger::Level level)
 			return "FATAL";
 		}
 	}
-	return "[UNKNOWN]";
+	return "UNKNOWN";
 }
 
 std::string Logger::toHex(const std::vector<uint8_t>& data)
