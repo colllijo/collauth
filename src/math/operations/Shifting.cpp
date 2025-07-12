@@ -1,5 +1,6 @@
 #include "math/operations/Shifting.hpp"
 
+[[nodiscard]]
 std::vector<uint64_t> bitShiftRight(const std::vector<uint64_t> &digits, size_t count)
 {
 	if (digits.empty() || count == 0) return digits;
@@ -24,6 +25,7 @@ std::vector<uint64_t> bitShiftRight(const std::vector<uint64_t> &digits, size_t 
 	return result;
 }
 
+[[nodiscard]]
 std::vector<uint64_t> bitShiftLeft(const std::vector<uint64_t> &digits, size_t count)
 {
 	size_t shift = count / 64;
@@ -44,6 +46,7 @@ std::vector<uint64_t> bitShiftLeft(const std::vector<uint64_t> &digits, size_t c
 	return result;
 }
 
+[[nodiscard]]
 std::vector<uint64_t> digitShiftRight(const std::vector<uint64_t> &digits, size_t count)
 {
 	if (count >= digits.size()) return {};
@@ -54,6 +57,7 @@ std::vector<uint64_t> digitShiftRight(const std::vector<uint64_t> &digits, size_
 	return result;
 }
 
+[[nodiscard]]
 std::vector<uint64_t> digitShiftLeft(const std::vector<uint64_t> &digits, size_t count)
 {
 	std::vector<uint64_t> result(count, 0);

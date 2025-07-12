@@ -260,28 +260,28 @@ Number &Number::operator>>=(size_t count)
 
 Number &Number::rightShift(size_t count)
 {
-	bitShiftRight(digits, count);
+	digits = bitShiftRight(digits, count);
 
 	return *this;
 }
 
 Number &Number::leftShift(size_t count)
 {
-	bitShiftLeft(digits, count);
+	digits = bitShiftLeft(digits, count);
 
 	return *this;
 }
 
 Number &Number::rightShiftDigit(size_t count)
 {
-	digitShiftRight(digits, count);
+	digits = digitShiftRight(digits, count);
 
 	return *this;
 }
 
 Number &Number::leftShiftDigit(size_t count)
 {
-	digitShiftLeft(digits, count);
+	digits = digitShiftLeft(digits, count);
 
 	return *this;
 }
