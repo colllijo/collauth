@@ -489,3 +489,173 @@ TEST_CASE("Number constructor from string representation (Base 2)", "[math][numb
 		REQUIRE_THROWS_AS(Number("", 2), std::invalid_argument);
 	}
 }
+
+TEST_CASE("Number basic arithmetic operations", "[math][number][arithmetic]")
+{
+	SECTION("Addition")
+	{
+		Number a(12345);
+		Number b(67890);
+
+		auto c = a + b;
+
+		REQUIRE(c == Number(80235));
+		REQUIRE_FALSE(c.isNegative());
+
+		Number d(-12345);
+
+		Number e = d + b;
+
+		REQUIRE(e == Number(55545));
+		REQUIRE_FALSE(e.isNegative());
+
+		Number f = a + d;
+
+		REQUIRE(f == Number(0));
+		REQUIRE_FALSE(f.isNegative());
+
+		Number zero(0);
+
+		REQUIRE((a + zero) == a);
+		REQUIRE((zero + a) == a);
+
+		Number big("18446744073709551615");
+		Number one(1);
+
+		Number sum = big + one;
+
+		REQUIRE(sum == Number("18446744073709551616"));
+	}
+
+	SECTION("Subtraction")
+	{
+		Number a(10000);
+		Number b(2500);
+
+		Number c = a - b;
+
+		REQUIRE(c == Number(7500));
+		REQUIRE_FALSE(c.isNegative());
+
+		Number d = b - a;
+
+		REQUIRE(d == Number(-7500));
+		REQUIRE(d.isNegative());
+
+		Number e(-10000);
+
+		Number f = e - b;
+
+		REQUIRE(f == Number(-12500));
+		REQUIRE(f.isNegative());
+
+		Number zero(0);
+
+		REQUIRE((a - zero) == a);
+		REQUIRE((zero - a) == Number(-10000));
+		REQUIRE((zero - zero) == Number(0));
+
+		Number big("18446744073709551615");
+		REQUIRE((big - big) == Number(0));
+	}
+
+	SECTION("Multiplication")
+	{
+		Number a(123);
+		Number b(456);
+		Number c = a * b;
+		REQUIRE(c == Number(56088));
+		REQUIRE_FALSE(c.isNegative());
+
+		Number d(-123);
+		Number e = d * b;
+		REQUIRE(e == Number(-56088));
+		REQUIRE(e.isNegative());
+
+		Number f = d * Number(-1);
+		REQUIRE(f == Number(123));
+		REQUIRE_FALSE(f.isNegative());
+
+		Number zero(0);
+		REQUIRE((a * zero) == Number(0));
+		REQUIRE((zero * a) == Number(0));
+
+		Number big("18446744073709551615");
+		Number prod = big * big;
+		REQUIRE(prod.getDigits().size() == 2);
+		REQUIRE(prod.getDigits()[0] == 1);
+		REQUIRE(prod.getDigits()[1] == 0xFFFFFFFFFFFFFFFEULL);
+	}
+
+	SECTION("Division")
+	{
+		Number a(56088);
+		Number b(456);
+		Number c = a / b;
+		REQUIRE(c == Number(123));
+		REQUIRE_FALSE(c.isNegative());
+
+		Number d(-56088);
+		Number e = d / b;
+		REQUIRE(e == Number(-123));
+		REQUIRE(e.isNegative());
+
+		Number f = a / Number(-456);
+		REQUIRE(f == Number(-123));
+		REQUIRE(f.isNegative());
+
+		Number zero(0);
+		REQUIRE((zero / b) == Number(0));
+
+		Number big("18446744073709551615");
+		REQUIRE((big / big) == Number(1));
+
+		REQUIRE_THROWS_AS(a / Number(0), std::invalid_argument);
+		REQUIRE_THROWS_AS(zero / Number(0), std::invalid_argument);
+	}
+
+	SECTION("Modulo")
+	{
+		Number a(56088);
+		Number b(456);
+		Number c = a % b;
+		REQUIRE(c == Number(0));
+		REQUIRE_FALSE(c.isNegative());
+
+		Number d(56089);
+		Number e = d % b;
+		REQUIRE(e == Number(1));
+		REQUIRE_FALSE(e.isNegative());
+
+		Number f(-56089);
+		Number g = f % b;
+		REQUIRE(g == Number(455));
+		REQUIRE_FALSE(g.isNegative());
+
+		Number zero(0);
+		REQUIRE((zero % b) == Number(0));
+
+		Number big("18446744073709551615");
+		REQUIRE((big % big) == Number(0));
+
+		REQUIRE_THROWS_AS(a % Number(0), std::invalid_argument);
+		REQUIRE_THROWS_AS(zero % Number(0), std::invalid_argument);
+	}
+
+	SECTION("Edge cases: negative zero, large numbers, zero operands")
+	{
+		Number negZero("-0");
+		Number zero(0);
+
+		REQUIRE(negZero == zero);
+		REQUIRE_FALSE(negZero.isNegative());
+
+		Number big("340282366920938463463374607431768211455");	// 2^128 - 1
+		Number small(1);
+
+		REQUIRE((big + small).getDigits().size() == 3);
+		REQUIRE((big - big) == Number(0));
+		REQUIRE((big * zero) == Number(0));
+		REQUIRE((zero * big) == Number(0));
+	}
+}

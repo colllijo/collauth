@@ -55,7 +55,8 @@ Number::Number(const std::vector<uint64_t> &digits, bool negative) : digits(digi
  * Basic arithmetic operations
  *******************************************/
 
-Number Number::operator+(const Number &other) const
+[[nodiscard]]
+Number Number::operator+(const Number &other) const noexcept
 {
 	Number result = *this;
 	result += other;
@@ -63,34 +64,27 @@ Number Number::operator+(const Number &other) const
 	return result;
 }
 
-Number &Number::operator+=(const Number &other)
+Number &Number::operator+=(const Number &other) noexcept
 {
-	if (negative == other.negative)
+	// As digits get modified, the comparison is done before the operation.
+	auto cmp = compareDigits(digits, other.digits);
+
+	if (negative == other.negative) digits = addDigits(digits, other.digits);
+	else if (compareDigits(digits, other.digits) == std::strong_ordering::less) digits = subtractDigits(other.digits, digits);
+	else digits = subtractDigits(digits, other.digits);
+
+	if (negative != other.negative)
 	{
-		digits = addDigits(digits, other.digits);
-		return *this;
+		if (cmp == std::strong_ordering::less) negative = other.negative;
+		else if (cmp == std::strong_ordering::equal) negative = false;
 	}
 
-	auto cmp = *this <=> other;
-	if (cmp == std::strong_ordering::greater)
-	{
-		digits = subtractDigits(digits, other.digits);
-	}
-	else if (cmp == std::strong_ordering::less)
-	{
-		digits = subtractDigits(other.digits, digits);
-		negative = other.negative;
-	}
-	else if (cmp == std::strong_ordering::equal)
-	{
-		digits.clear();
-		negative = false;
-	}
-
+	trimLeadingZeros();
 	return *this;
 }
 
-Number Number::operator-(const Number &other) const
+[[nodiscard]]
+Number Number::operator-(const Number &other) const noexcept
 {
 	Number result = *this;
 	result -= other;
@@ -98,34 +92,27 @@ Number Number::operator-(const Number &other) const
 	return result;
 }
 
-Number &Number::operator-=(const Number &other)
+Number &Number::operator-=(const Number &other) noexcept
 {
-	if (negative != other.negative)
-	{
-		digits = addDigits(digits, other.digits);
-		return *this;
-	}
-
+	// As digits get modified, the comparison is done before the operation.
 	auto cmp = compareDigits(digits, other.digits);
-	if (cmp == std::strong_ordering::greater)
+
+	if (negative != other.negative) digits = addDigits(digits, other.digits);
+	else if (compareDigits(digits, other.digits) == std::strong_ordering::less) digits = subtractDigits(other.digits, digits);
+	else digits = subtractDigits(digits, other.digits);
+
+	if (negative == other.negative)
 	{
-		digits = subtractDigits(digits, other.digits);
-	}
-	else if (cmp == std::strong_ordering::less)
-	{
-		digits = subtractDigits(other.digits, digits);
-		negative = !other.negative;
-	}
-	else if (cmp == std::strong_ordering::equal)
-	{
-		negative = false;
-		digits.clear();
+		if (cmp == std::strong_ordering::less) negative = !other.negative;
+		else if (cmp == std::strong_ordering::equal) negative = false;
 	}
 
+	trimLeadingZeros();
 	return *this;
 }
 
-Number Number::operator*(const Number &other) const
+[[nodiscard]]
+Number Number::operator*(const Number &other) const noexcept
 {
 	Number result = *this;
 	result *= other;
@@ -133,7 +120,7 @@ Number Number::operator*(const Number &other) const
 	return result;
 }
 
-Number &Number::operator*=(const Number &other)
+Number &Number::operator*=(const Number &other) noexcept
 {
 	if (digits.empty() || other.digits.empty())
 	{
@@ -143,12 +130,14 @@ Number &Number::operator*=(const Number &other)
 		return *this;
 	}
 
-	negative ^= other.negative;
 	digits = multiplyDigits(digits, other.digits);
+	negative ^= other.negative;
 
+	trimLeadingZeros();
 	return *this;
 }
 
+[[nodiscard]]
 Number Number::operator/(const Number &other) const
 {
 	Number result = *this;
@@ -159,22 +148,18 @@ Number Number::operator/(const Number &other) const
 
 Number &Number::operator/=(const Number &other)
 {
-	if (other.digits.empty())
-	{
-		throw std::invalid_argument("Division by zero.");
-	}
+	if (other.digits.empty()) throw std::invalid_argument("Division by zero.");
 
-	if (digits.empty())
-	{
-		return *this;
-	}
+	if (digits.empty()) return *this;
 
-	negative = negative != other.negative;
 	digits = std::get<0>(divideDigits(digits, other.digits));
+	negative ^= other.negative;
 
+	trimLeadingZeros();
 	return *this;
 }
 
+[[nodiscard]]
 Number Number::operator%(const Number &other) const
 {
 	Number result = *this;
@@ -185,15 +170,9 @@ Number Number::operator%(const Number &other) const
 
 Number &Number::operator%=(const Number &other)
 {
-	if (other.digits.empty())
-	{
-		throw std::invalid_argument("Division by zero.");
-	}
+	if (other.digits.empty()) throw std::invalid_argument("Division by zero.");
 
-	if (digits.empty())
-	{
-		return *this;
-	}
+	if (digits.empty()) return *this;
 
 	digits = std::get<1>(divideDigits(digits, other.digits));
 
@@ -203,9 +182,11 @@ Number &Number::operator%=(const Number &other)
 		negative = false;
 	}
 
+	trimLeadingZeros();
 	return *this;
 }
 
+[[nodiscard]]
 Number Number::operator-() const
 {
 	Number result = *this;
@@ -292,22 +273,12 @@ Number &Number::leftShiftDigit(size_t count)
 
 bool Number::operator==(const Number &other) const
 {
-	if (negative != other.negative)
-	{
-		return false;
-	}
-	if (digits.size() != other.digits.size())
-	{
-		return false;
-	}
+	if (negative != other.negative) return false;
+
+	if (digits.size() != other.digits.size()) return false;
 
 	for (size_t i = 0; i < digits.size(); ++i)
-	{
-		if (digits[i] != other.digits[i])
-		{
-			return false;
-		}
-	}
+		if (digits[i] != other.digits[i]) return false;
 
 	return true;
 }
@@ -758,14 +729,8 @@ std::ostream &operator<<(std::ostream &os, const Number &number)
 
 void Number::trimLeadingZeros()
 {
-	while (!digits.empty() && digits.back() == 0)
-	{
-		digits.pop_back();
-	}
-	if (digits.empty())
-	{
-		negative = false;
-	}
+	while (!digits.empty() && digits.back() == 0) digits.pop_back();
+	if (digits.empty()) negative = false;
 }
 
 namespace

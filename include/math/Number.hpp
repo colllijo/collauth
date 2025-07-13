@@ -30,19 +30,19 @@ public:
 	 * Basic arithmetic operations
 	 *******************************************/
 
-	Number operator+(const Number& other) const;
-	Number operator-(const Number& other) const;
-	Number operator*(const Number& other) const;
-	Number operator/(const Number& other) const;
-	Number operator%(const Number& other) const;
+	[[nodiscard]] Number operator+(const Number& other) const noexcept;
+	[[nodiscard]] Number operator-(const Number& other) const noexcept;
+	[[nodiscard]] Number operator*(const Number& other) const noexcept;
+	[[nodiscard]] Number operator/(const Number& other) const;
+	[[nodiscard]] Number operator%(const Number& other) const;
 
-	Number& operator+=(const Number& other);
-	Number& operator-=(const Number& other);
-	Number& operator*=(const Number& other);
+	Number& operator+=(const Number& other) noexcept;
+	Number& operator-=(const Number& other) noexcept;
+	Number& operator*=(const Number& other) noexcept;
 	Number& operator/=(const Number& other);
 	Number& operator%=(const Number& other);
 
-	Number operator-() const;
+	[[nodiscard]] Number operator-() const;
 
 	/*******************************************
 	 * Shifting operations
@@ -139,7 +139,7 @@ private:
 };
 
 template <std::integral T>
-Number::Number(T value)
+Number::Number(T value): digits(), negative(false)
 {
 	fromIntegral(value);
 	trimLeadingZeros();
