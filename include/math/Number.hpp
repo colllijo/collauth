@@ -48,51 +48,54 @@ public:
 	 * Shifting operations
 	 *******************************************/
 
-	Number operator<<(size_t count) const;
-	Number operator>>(size_t count) const;
+	[[nodiscard]] Number operator<<(size_t count) const noexcept;
+	[[nodiscard]] Number operator>>(size_t count) const noexcept;
 
-	Number& operator<<=(size_t count);
-	Number& operator>>=(size_t count);
+	Number& operator<<=(size_t count) noexcept;
+	Number& operator>>=(size_t count) noexcept;
 
-	Number& rightShift(size_t count);
-	Number& leftShift(size_t count);
-	Number& rightShiftDigit(size_t count);
-	Number& leftShiftDigit(size_t count);
+	Number& rightShift(size_t count) noexcept;
+	Number& leftShift(size_t count) noexcept;
+	Number& rightShiftDigit(size_t count) noexcept;
+	Number& leftShiftDigit(size_t count) noexcept;
 
 	/*******************************************
 	 * Comparison operations
 	 *******************************************/
 
-	bool operator==(const Number& other) const;
-	std::strong_ordering operator<=>(const Number& other) const;
+	[[nodiscard]] bool operator==(const Number& other) const noexcept;
+	[[nodiscard]] std::strong_ordering operator<=>(const Number& other) const noexcept;
 
-	bool isEven() const;
-	bool isOdd() const;
+	[[nodiscard]] bool isEven() const noexcept;
+	[[nodiscard]] bool isOdd() const noexcept;
 
 	/*******************************************
 	 * Bitwise operations
 	 *******************************************/
 
-	Number operator&(const Number& other) const;
-	Number operator|(const Number& other) const;
+	[[nodiscard]] Number operator&(const Number& other) const noexcept;
+	[[nodiscard]] Number operator|(const Number& other) const noexcept;
+
+	Number &operator&=(const Number& other) noexcept;
+	Number &operator|=(const Number& other) noexcept;
 
 	/*******************************************
 	 * Advanced arithmetic operations
 	 *******************************************/
 
-	Number pow(const Number& exponent) const;
-	Number modPow(const Number& exponent, const Number& modulus) const;
+	[[nodiscard]] Number pow(const Number& exponent) const noexcept;
+	[[nodiscard]] Number modPow(const Number& exponent, const Number& modulus) const noexcept;
 
-	Number gcd(const Number& other) const;
-	std::tuple<Number, Number, Number> extendedGCD(const Number& other) const;
-	Number modInverse(const Number& modulus) const;
+	[[nodiscard]] Number gcd(const Number& other) const noexcept;
+	[[nodiscard]] std::tuple<Number, Number, Number> extendedGCD(const Number& other) const noexcept;
+	[[nodiscard]] Number modInverse(const Number& modulus) const;
 
-	static Number pow(Number base, Number exponent);
-	static Number modPow(Number base, const Number& exponent, const Number& modulus);
+	[[nodiscard]] static Number pow(Number base, Number exponent) noexcept;
+	[[nodiscard]] static Number modPow(Number base, const Number& exponent, const Number& modulus) noexcept;
 
-	static Number gcd(Number a, Number b);
-	static std::tuple<Number, Number, Number> extendedGCD(Number a, Number b);
-	static Number modInverse(const Number& a, const Number& modulus);
+	[[nodiscard]] static Number gcd(Number a, Number b) noexcept;
+	[[nodiscard]] static std::tuple<Number, Number, Number> extendedGCD(Number a, Number b) noexcept;
+	[[nodiscard]] static Number modInverse(const Number& a, const Number& modulus);
 
 	/*******************************************
 	 * Information functions

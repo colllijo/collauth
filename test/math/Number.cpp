@@ -659,3 +659,144 @@ TEST_CASE("Number basic arithmetic operations", "[math][number][arithmetic]")
 		REQUIRE((zero * big) == Number(0));
 	}
 }
+
+TEST_CASE("Number shifting operations", "[math][number][shifting]")
+{
+	SECTION("Shifting Operator")
+	{
+		Number num("F00D", 16);
+
+		REQUIRE(num << 4 == Number("F00D0", 16));
+		REQUIRE(num << 8 == Number("F00D00", 16));
+		REQUIRE(num >> 4 == Number("F00", 16));
+		REQUIRE(num >> 8 == Number("F0", 16));
+	}
+
+	SECTION("Shifting bits")
+	{
+		Number num("F00D", 16);
+
+		REQUIRE(num.leftShift(4) == Number("F00D0", 16));
+		REQUIRE(num.leftShift(4) == Number("F00D00", 16));
+
+		num = Number("F00D", 16);
+
+		REQUIRE(num.rightShift(4) == Number("F00", 16));
+		REQUIRE(num.rightShift(4) == Number("F0", 16));
+	}
+
+	SECTION("Shifting digits")
+	{
+		Number num("F00D", 16);
+
+		REQUIRE(num.leftShiftDigit(1) == Number("F00D0000000000000000", 16));
+
+		num = Number("F00D", 16);
+
+		REQUIRE(num.rightShiftDigit(1) == Number("0", 16));
+	}
+}
+
+
+TEST_CASE("Number comparison operations", "[math][number][comparison]")
+{
+	SECTION("Equality and Comparison")
+	{
+		Number a(12345);
+		Number b(12345);
+		Number c(67890);
+		Number d(-12345);
+
+		REQUIRE(a == b);
+		REQUIRE_FALSE(a == c);
+		REQUIRE_FALSE(a == d);
+
+		REQUIRE(a < c);
+		REQUIRE(a > d);
+		REQUIRE(c > a);
+		REQUIRE(d < a);
+
+		REQUIRE((a <=> b) == std::strong_ordering::equal);
+		REQUIRE((a <=> c) == std::strong_ordering::less);
+		REQUIRE((c <=> a) == std::strong_ordering::greater);
+		REQUIRE((a <=> d) == std::strong_ordering::greater);
+	}
+}
+
+TEST_CASE("Number bitwise operations", "[math][number][bitwise]")
+{
+	SECTION("Bitwise AND")
+	{
+		Number a(0b1100);
+		Number b(0b1010);
+		Number c = a & b;
+
+		REQUIRE(c == Number(0b1000));
+		REQUIRE_FALSE(c.isNegative());
+	}
+
+	SECTION("Bitwise OR")
+	{
+		Number a(0b1100);
+		Number b(0b1010);
+		Number c = a | b;
+
+		REQUIRE(c == Number(0b1110));
+		REQUIRE_FALSE(c.isNegative());
+	}
+}
+
+TEST_CASE("Number advanced arithmetic operations", "[math][number][advanced]")
+{
+	SECTION("Power (pow)")
+	{
+		Number base(2);
+		Number exp(10);
+		Number result = base.pow(exp);
+		REQUIRE(result == Number(1024));
+
+		REQUIRE(Number::pow(Number(3), Number(4)) == Number(81));
+		REQUIRE(Number::pow(Number(5), Number(0)) == Number(1));
+	}
+
+	SECTION("Modular Power (modPow)")
+	{
+		Number base(2);
+		Number exp(10);
+		Number mod(1000);
+		Number result = base.modPow(exp, mod);
+		REQUIRE(result == Number(24));
+
+		REQUIRE(Number::modPow(Number(3), Number(4), Number(5)) == Number(1));
+	}
+
+	SECTION("GCD")
+	{
+		Number a(48);
+		Number b(18);
+		REQUIRE(a.gcd(b) == Number(6));
+		REQUIRE(Number::gcd(Number(270), Number(192)) == Number(6));
+	}
+
+	SECTION("Extended GCD")
+	{
+		Number a(30);
+		Number b(20);
+		auto [g, x, y] = a.extendedGCD(b);
+		REQUIRE(g == Number(10));
+		REQUIRE(a * x + b * y == g);
+
+		auto [g2, x2, y2] = Number::extendedGCD(Number(99), Number(78));
+		REQUIRE(g2 == Number(3));
+		REQUIRE(Number(99) * x2 + Number(78) * y2 == g2);
+	}
+
+	SECTION("Modular Inverse")
+	{
+		Number a(3);
+		Number mod(11);
+		REQUIRE(a.modInverse(mod) == Number(4));
+		REQUIRE(Number::modInverse(Number(10), Number(17)) == Number(12));
+		REQUIRE_THROWS_AS(Number(2).modInverse(Number(4)), std::invalid_argument);
+	}
+}

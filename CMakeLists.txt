@@ -13,7 +13,7 @@ set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/src")
 set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
 
 set(SOURCES
-  # "${SOURCE_DIR}/cryptography/Random.cpp"
+  "${SOURCE_DIR}/cryptography/Random.cpp"
   # "${SOURCE_DIR}/cryptography/SHA256.cpp"
   # "${SOURCE_DIR}/cryptography/ecc/MontgomeryCurve.cpp"
   # "${SOURCE_DIR}/cryptography/ecc/Point.cpp"
@@ -61,7 +61,7 @@ set(SOURCES
 )
 
 set(HEADERS
-  # "${INCLUDE_DIR}/cryptography/Random.hpp"
+  "${INCLUDE_DIR}/cryptography/Random.hpp"
   # "${INCLUDE_DIR}/cryptography/SHA256.hpp"
   # "${INCLUDE_DIR}/cryptography/ecc/MontgomeryCurve.hpp"
   # "${INCLUDE_DIR}/cryptography/ecc/Point.hpp"

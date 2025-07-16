@@ -7,7 +7,7 @@
 
 namespace
 {
-	std::vector<uint32_t> bytesToDigits(const std::vector<uint8_t>& bytes);
+	std::vector<uint64_t> bytesToDigits(const std::vector<uint8_t>& bytes);
 }
 
 std::vector<uint8_t> generateRandomBytes(size_t length)
@@ -81,12 +81,12 @@ Number generateRandomNumber(const Number& max)
 
 namespace
 {
-	std::vector<uint32_t> bytesToDigits(const std::vector<uint8_t>& bytes)
+	std::vector<uint64_t> bytesToDigits(const std::vector<uint8_t>& bytes)
 	{
-		std::vector<uint32_t> digits((bytes.size() + 3) / 4);
+		std::vector<uint64_t> digits((bytes.size() + 7) / 8);
 		for (size_t i = 0; i < bytes.size(); ++i)
 		{
-			digits[i / 4] |= static_cast<uint32_t>(bytes[i]) << ((i % 4) * 8);
+			digits[i / 8] |= static_cast<uint32_t>(bytes[i]) << ((i % 8) * 16);
 		}
 		return digits;
 	}

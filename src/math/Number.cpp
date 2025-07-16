@@ -199,7 +199,8 @@ Number Number::operator-() const
  * Shifting operations
  *******************************************/
 
-Number Number::operator<<(size_t count) const
+[[nodiscard]]
+Number Number::operator<<(size_t count) const noexcept
 {
 	Number result = *this;
 	result <<= count;
@@ -207,7 +208,8 @@ Number Number::operator<<(size_t count) const
 	return result;
 }
 
-Number Number::operator>>(size_t count) const
+[[nodiscard]]
+Number Number::operator>>(size_t count) const noexcept
 {
 	Number result = *this;
 	result >>= count;
@@ -215,52 +217,46 @@ Number Number::operator>>(size_t count) const
 	return result;
 }
 
-Number &Number::operator<<=(size_t count)
+Number &Number::operator<<=(size_t count) noexcept
 {
-	if (count == 0)
-	{
-		return *this;
-	}
+	if (count == 0) return *this;
 
 	digits = bitShiftLeft(digits, count);
 
 	return *this;
 }
 
-Number &Number::operator>>=(size_t count)
+Number &Number::operator>>=(size_t count) noexcept
 {
-	if (count == 0)
-	{
-		return *this;
-	}
+	if (count == 0) return *this;
 
 	digits = bitShiftRight(digits, count);
 
 	return *this;
 }
 
-Number &Number::rightShift(size_t count)
+Number &Number::rightShift(size_t count) noexcept
 {
 	digits = bitShiftRight(digits, count);
 
 	return *this;
 }
 
-Number &Number::leftShift(size_t count)
+Number &Number::leftShift(size_t count) noexcept
 {
 	digits = bitShiftLeft(digits, count);
 
 	return *this;
 }
 
-Number &Number::rightShiftDigit(size_t count)
+Number &Number::rightShiftDigit(size_t count) noexcept
 {
 	digits = digitShiftRight(digits, count);
 
 	return *this;
 }
 
-Number &Number::leftShiftDigit(size_t count)
+Number &Number::leftShiftDigit(size_t count) noexcept
 {
 	digits = digitShiftLeft(digits, count);
 
@@ -271,102 +267,117 @@ Number &Number::leftShiftDigit(size_t count)
  * Comparison operations
  *******************************************/
 
-bool Number::operator==(const Number &other) const
+[[nodiscard]]
+bool Number::operator==(const Number &other) const noexcept
 {
 	if (negative != other.negative) return false;
 
-	if (digits.size() != other.digits.size()) return false;
-
-	for (size_t i = 0; i < digits.size(); ++i)
-		if (digits[i] != other.digits[i]) return false;
-
-	return true;
+	return compareDigits(digits, other.digits) == std::strong_ordering::equal;
 }
 
-std::strong_ordering Number::operator<=>(const Number &other) const
+[[nodiscard]]
+std::strong_ordering Number::operator<=>(const Number &other) const noexcept
 {
-	if (*this == other)
-	{
-		return std::strong_ordering::equal;
-	}
-	if (negative != other.negative)
-	{
-		return negative ? std::strong_ordering::less : std::strong_ordering::greater;
-	}
+	if (*this == other) return std::strong_ordering::equal;
+	if (negative != other.negative) return negative ? std::strong_ordering::less : std::strong_ordering::greater;
 
 	auto cmp = compareDigits(digits, other.digits);
 
 	if (negative)
 	{
-		if (cmp == std::strong_ordering::less)
-		{
-			return std::strong_ordering::greater;
-		}
-		if (cmp == std::strong_ordering::greater)
-		{
-			return std::strong_ordering::less;
-		}
+		if (cmp == std::strong_ordering::less) return std::strong_ordering::greater;
+		if (cmp == std::strong_ordering::greater) return std::strong_ordering::less;
 	}
 
 	return cmp;
 }
 
-bool Number::isEven() const
+[[nodiscard]]
+bool Number::isEven() const noexcept
 {
 	return digits.empty() || (digits[0] & 1) == 0;
 }
 
-bool Number::isOdd() const
+[[nodiscard]]
+bool Number::isOdd() const noexcept
 {
-	return !digits.empty() && (digits[0] & 1) != 0;
+	return !digits.empty() && (digits[0] & 1) == 1;
 }
 
 /*******************************************
- * Comparison operations
+ * Bitwise operations
  *******************************************/
 
-Number Number::operator&(const Number &other) const
+[[nodiscard]]
+Number Number::operator&(const Number &other) const noexcept
 {
-	return Number(bitwiseAnd(digits, other.digits), negative && other.negative);
+	Number result = *this;
+	result &= other;
+
+	return result;
 }
 
-Number Number::operator|(const Number &other) const
+Number &Number::operator&=(const Number &other) noexcept
 {
-	return Number(bitwiseOr(digits, other.digits), negative || other.negative);
+	digits = bitwiseAnd(digits, other.digits);
+	negative &= other.negative;
+
+	return *this;
+}
+
+[[nodiscard]]
+Number Number::operator|(const Number &other) const noexcept
+{
+	Number result = *this;
+	result |= other;
+
+	return result;
+}
+
+Number &Number::operator|=(const Number &other) noexcept
+{
+	digits = bitwiseOr(digits, other.digits);
+	negative |= other.negative;
+
+	return *this;
 }
 
 /*******************************************
  * Advanced arithmetic operations
  *******************************************/
 
-Number Number::pow(const Number &exponent) const
+[[nodiscard]]
+Number Number::pow(const Number &exponent) const noexcept
 {
-	Number result = pow(*this, exponent);
-	return result;
+	return pow(*this, exponent);
 }
 
-Number Number::modPow(const Number &exponent, const Number &modulus) const
+[[nodiscard]]
+Number Number::modPow(const Number &exponent, const Number &modulus) const noexcept
 {
-	Number result = modPow(*this, exponent, modulus);
-	return result;
+	return modPow(*this, exponent, modulus);
 }
 
-Number Number::gcd(const Number &other) const
+[[nodiscard]]
+Number Number::gcd(const Number &other) const noexcept
 {
 	return gcd(*this, other);
 }
 
-std::tuple<Number, Number, Number> Number::extendedGCD(const Number &other) const
+[[nodiscard]]
+std::tuple<Number, Number, Number> Number::extendedGCD(const Number &other) const noexcept
 {
 	return extendedGCD(*this, other);
 }
 
+[[nodiscard]]
 Number Number::modInverse(const Number &modulus) const
 {
 	return modInverse(*this, modulus);
 }
 
-Number Number::pow(Number base, Number exponent)
+[[nodiscard]]
+Number Number::pow(Number base, Number exponent) noexcept
 {
 	Number result = 1;
 
@@ -384,7 +395,8 @@ Number Number::pow(Number base, Number exponent)
 	return result;
 }
 
-Number Number::modPow(Number base, const Number &exponent, const Number &modulus)
+[[nodiscard]]
+Number Number::modPow(Number base, const Number &exponent, const Number &modulus) noexcept
 {
 	if (modulus == 1) return 0;
 	base %= modulus;
@@ -403,7 +415,8 @@ Number Number::modPow(Number base, const Number &exponent, const Number &modulus
 	return result;
 }
 
-Number Number::gcd(Number a, Number b)
+[[nodiscard]]
+Number Number::gcd(Number a, Number b) noexcept
 {
 	a.negative = false;
 	b.negative = false;
@@ -429,7 +442,7 @@ Number Number::gcd(Number a, Number b)
 	return a << k;
 }
 
-std::tuple<Number, Number, Number> Number::extendedGCD(Number a, Number b)
+std::tuple<Number, Number, Number> Number::extendedGCD(Number a, Number b) noexcept
 {
 	a.negative = false;
 	b.negative = false;
@@ -488,6 +501,7 @@ std::tuple<Number, Number, Number> Number::extendedGCD(Number a, Number b)
 	return {a << k, x0, y0};
 }
 
+[[nodiscard]]
 Number Number::modInverse(const Number &a, const Number &modulus)
 {
 	auto [gcd, x, y] = extendedGCD(a, modulus);
